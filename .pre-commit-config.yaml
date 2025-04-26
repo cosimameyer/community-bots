@@ -1,0 +1,23 @@
+repos:
+  - repo: local
+    hooks:
+      - id: pylint-pep-check
+        name: 💅 Pylint PEP Check
+        entry: pdm run pylint
+        language: system
+        types: [python]
+        files: \.py$
+        verbose: true
+        args:
+        - --fail-under=4
+  - repo: https://github.com/pdm-project/pdm
+    rev: 2.24.1
+    hooks:
+      - id: pdm-lock-check
+        name: 🔒 Check that your pdm.lock is ok
+      - id: pdm-sync
+        name: 🔄 Sync pdm.lock with pyproject.toml
+      - id: pdm-export
+        name: 💾  Export your requirements.txt based on pdm.lock
+        args: ['-o', 'requirements.txt', '--without-hashes']
+        files: ^pdm.lock$
