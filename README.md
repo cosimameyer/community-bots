@@ -55,6 +55,10 @@ To  allow dependency management, this repository uses [`pdm`](https://pdm-projec
 
 In case you run into issues here, let me know! We'll figure it out :)
 
+### What's the default branch?
+
+The default branch is main. To contribute to it, create a feature branch and open a PR with your changes. Direct pushes to `main` are blocked (because that's where our production code is) but collaboration is of course highly welcome 😊
+
 ## Any Open Questions?
 
 If you have any questions or suggestions, please reach out to
