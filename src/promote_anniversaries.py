@@ -1,21 +1,22 @@
-import requests
-import logging
 import json
+import logging
+import os
+import posixpath
+import re
+import shutil
 from datetime import datetime
 from urllib.parse import urlsplit
-import os
-import re
-from atproto import client_utils, models
-import posixpath
-import shutil
-from helper.login_mastodon import login_mastodon
-from helper.login_bluesky import login_bluesky
 
+import requests
 from dotenv import load_dotenv
 
-load_dotenv()
+from atproto import client_utils, models
 
 import config
+from helper.login_bluesky import login_bluesky
+from helper.login_mastodon import login_mastodon
+
+load_dotenv()
 
 class PromoteAnniversary():
     def __init__(self, config_dict=None, no_dry_run=True):
