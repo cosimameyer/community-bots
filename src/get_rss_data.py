@@ -4,9 +4,13 @@ import json
 import re
 import os
 import json
-import requests
 import pickle
 import logging
+import requests
+
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class RSSData():
     def __init__(self, config_dict=None, no_dry_run=True):
