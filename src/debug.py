@@ -2,7 +2,7 @@
 import os
 from promote_blog_post import PromoteBlogPost
 from get_rss_data import RSSData
-from boost_tags import boost_tags
+from boost_tags import BoostTags
 from promote_anniversaries import PromoteAnniversary
 
 from dotenv import load_dotenv
@@ -28,12 +28,19 @@ class DebugBots():
 
         elif self.what_to_debug == 'rss':
             config_dict = self.get_config_rss()
-            rss_data_handler = RSSData(config_dict, self.no_dry_run)
+            rss_data_handler = RSSData(
+                config_dict, 
+                self.no_dry_run
+            )
             rss_data_handler.get_rss_data()
             
         elif self.what_to_debug == 'boost':
             config_dict = self.get_config_boost()
-            boost_tags(config_dict, self.no_dry_run)
+            boost_tags_handler = BoostTags(
+                config_dict=None, 
+                self.no_dry_run=True
+            )
+            boost_tags_handler.boost_tags()
         
         elif self.what_to_debug == 'anniversary':
             config_dict = self.get_config_anniversary()

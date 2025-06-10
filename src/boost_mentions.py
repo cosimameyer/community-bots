@@ -3,6 +3,10 @@ import config
 from helper.login_mastodon import login_mastodon
 from helper.login_bluesky import login_bluesky
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 if __name__ == "__main__":
     config_dict = {
         "platform": os.getenv("PLATFORM"),
