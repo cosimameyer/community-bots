@@ -44,7 +44,7 @@ class PromoteBlogPost():
                 "pickle_file": os.getenv("PICKLE_FILE"),
                 "gen_ai_support": True,
                 "gemini_api_key": os.getenv("GEMINI_API_KEY"),
-                "gemini_model_name": "gemini-1.5-flash"
+                "gemini_model_name": "gemini-2.5-flash"
             }
             if self.config_dict["platform"] == "mastodon":
                 self.config_dict["api_base_url"] = config.API_BASE_URL
