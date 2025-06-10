@@ -349,9 +349,19 @@ class PromoteBlogPost():
         basis_text = f'📝 "{entry["title"]}"\n\n👤 {feed["name"]}'
         
         if self.config_dict["platform"] == "mastodon":
-            return self.build_post_mastodon(basis_text, platform_user_handle, tags, entry)
+            return self.build_post_mastodon(
+                basis_text,
+                platform_user_handle,
+                tags,
+                entry
+            )
         elif self.config_dict["platform"] == "bluesky":
-            return self.build_post_bluesky(basis_text, platform_user_handle, tags, entry)
+            return self.build_post_bluesky(
+                basis_text, 
+                platform_user_handle, 
+                tags, 
+                entry
+            )
 
     def send_post_to_mastodon(self, en, client, post_txt):
         if en['media_content']:
@@ -420,7 +430,7 @@ class PromoteBlogPost():
         result = None
         self.logger.info(f"Preparing the post on {self.config_dict['client_name']} ({self.config_dict['platform']}) ...")
         
-        post_txt = self.build_post(en, feed, self.config_dict)    
+        post_txt = self.build_post(en, feed)    
         if self.config_dict["platform"] == "mastodon":
             result = self.send_post_to_mastodon(en, client, post_txt)
         elif self.config_dict["platform"] == "bluesky":
