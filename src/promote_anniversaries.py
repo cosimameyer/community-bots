@@ -122,7 +122,7 @@ class PromoteAnniversary():
         Returns:
             str: String with toot text
         """
-        tags = f"\n\n#amazingwomenintech #womenalsoknow #impactthefuture"
+        tags = "\n\n#amazingwomenintech #womenalsoknow #impactthefuture"
 
         if self.config_dict["platform"] == "mastodon":
             toot_str = ""
@@ -133,7 +133,7 @@ class PromoteAnniversary():
             text_builder = client_utils.TextBuilder()
             if event["bluesky"]:
                 did = self.get_bluesky_did(event["bluesky"])
-                text_builder.text(f"Let's meet ")
+                text_builder.text("Let's meet ")
                 text_builder.mention(f"{event['bluesky']}", did)
                 text_builder.text(" ⭐️\n\n")
             else:
