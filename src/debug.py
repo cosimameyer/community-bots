@@ -1,7 +1,7 @@
 """ This script aims at making debugging easier """
 import os
 from promote_blog_post import PromoteBlogPost
-from get_rss_data import get_rss_data
+from get_rss_data import RSSData
 from boost_tags import boost_tags
 from promote_anniversaries import PromoteAnniversary
 
@@ -28,7 +28,8 @@ class DebugBots():
 
         elif self.what_to_debug == 'rss':
             config_dict = self.get_config_rss()
-            get_rss_data(config_dict, self.no_dry_run)
+            rss_data_handler = RSSData(config_dict, self.no_dry_run)
+            rss_data_handler.get_rss_data()
             
         elif self.what_to_debug == 'boost':
             config_dict = self.get_config_boost()

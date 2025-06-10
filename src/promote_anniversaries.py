@@ -17,8 +17,8 @@ class PromoteAnniversary():
         self.logger = logging.getLogger(__name__)
         logging.basicConfig(level=logging.INFO)
         
-        self.config_dict=config_dict
-        self.no_dry_run=no_dry_run
+        self.config_dict = config_dict
+        self.no_dry_run = no_dry_run
 
     def promote_anniversary(self):
         if (self.config_dict is None) and (self.no_dry_run):
