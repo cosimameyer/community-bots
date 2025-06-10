@@ -2,8 +2,10 @@
 import json
 import sys
 
-# Function to load JSON data from a file
 def load_json(filename):
+    """
+    Function to load JSON data from a file.
+    """
     try:
         with open(filename, 'r') as file:
             return json.load(file)
@@ -14,8 +16,10 @@ def load_json(filename):
         print(f"Error: The file '{filename}' contains invalid JSON.")
         return None
 
-# Function to check if the combined length of name, description, and wiki_link exceeds 500 characters
 def check_entries(data):
+    """
+    Function to check if the combined length of name, description, and wiki_link exceeds 500 characters
+    """
     if not data:
         return
     
