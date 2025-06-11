@@ -28,7 +28,9 @@ class BoostTags():
         """
         for tag in self.config_dict["tags"]:
             tag = tag.lower().strip("# ")
-            self.logger(f" > Reading timeline for new toots tagged #{tag}")
+            self.logger.info(
+                f" > Reading timeline for new toots tagged #{tag}"
+            )
 
             try:
                 statuses = client.timeline_hashtag(
@@ -36,7 +38,7 @@ class BoostTags():
                     limit=self.config_dict["timeline_depth_limit"]
                 )
             except Exception as e:
-                self.logger(
+                self.logger.info(
                     f"""
                     ! Network error while attempting to fetch statuses: {e}.
                     Trying again...
@@ -48,15 +50,17 @@ class BoostTags():
             # Sleep momentarily so we don't get rate limited.
             time.sleep(0.1)
 
-            self.logger(" > Reading statuses to identify tootable statuses")
+            self.logger.info(
+                " > Reading statuses to identify tootable statuses"
+            )
             for status in statuses:
                 domain = urlparse(status.url).netloc
                 if not status.favourited and \
                         status.account.acct != account.acct and \
                         domain not in config.IGNORE_SERVERS:
                     # Boost and favorite the new status
-                    self.logger(
-                        """
+                    self.logger.info(
+                        f"""
                         * Boosting new toot by {status.account.username}
                         using tag #{tag} viewable at: {status.url}
                         """
@@ -87,20 +91,20 @@ class BoostTags():
             else:
                 self.config_dict["api_base_url"] = "bluesky"
 
-        self.logger("")
+        self.logger.info("========")
         client_name = self.config_dict['client_name']
-        self.logger(f"Initializing {client_name} Bot")
-        self.logger("=================" + "="*len(client_name))
-        self.logger(f" > Connecting to {self.config_dict['api_base_url']}")
+        self.logger.info(f"Initializing {client_name} Bot")
+        self.logger.info("=================" + "="*len(client_name))
+        self.logger.info(f" > Connecting to {self.config_dict['api_base_url']}")
 
         if self.config_dict["platform"] == "mastodon":
             # # Commented because it wasn't fully working
 
             # account, client = login_mastodon(config_dict)
-            # self.logger(f" > Fetched account data for {account.acct}")
+            # self.logger.info(f" > Fetched account data for {account.acct}")
 
             # repost_tags_mastodon(client, config_dict)
-            self.logger(
+            self.logger.info(
                 """
                 This feature currently doesn't work for Mastodon.
                 It's deployed using AWS.
@@ -108,10 +112,10 @@ class BoostTags():
             )
         elif self.config_dict["platform"] == "bluesky":
             client = login_bluesky(self.config_dict)
-            self.logger(" > Fetched account data")
+            self.logger.info(" > Fetched account data")
 
-            self.logger(" > Beginning search-loop and repost posts")
-            self.logger("------------------------")
+            self.logger.info(" > Beginning search-loop and repost posts")
+            self.logger.info("------------------------")
 
             timeline = client.get_timeline(algorithm='reverse-chronological')
             cids = [post.post.cid for post in timeline.feed]
@@ -131,13 +135,13 @@ class BoostTags():
                         for tag in text.split()
                         if tag.startswith("#")
                     ]
-                    self.logger("---------------------")
+                    self.logger.info("---------------------")
                     self.logger(f"Repost post by {post.author.handle}")
-                    self.logger(post.record.text)
-                    self.logger(f"Tag list: {tags_list}")
+                    self.logger.info(post.record.text)
+                    self.logger.info(f"Tag list: {tags_list}")
                     if tag in tags_list and post.cid not in cids:
                         try:
-                            self.logger(
+                            self.logger.info(
                                 '   * Reposted post reference:',
                                 client.repost(
                                     uri=post.uri,
@@ -145,7 +149,7 @@ class BoostTags():
                                 )
                             )
                         except Exception as e:
-                            self.logger(
+                            self.logger.info(
                                 f"""
                                    * Reposting new post with URI {post.uri}
                                 and CID {post.cid} did not work because of {e}
@@ -153,7 +157,7 @@ class BoostTags():
                                 """
                             )
                         time.sleep(0.1)
-            self.logger('Successfully process notification.')
+            self.logger.info('Successfully process notification.')
 
 
 if __name__ == "__main__":
