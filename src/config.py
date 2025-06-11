@@ -1,6 +1,4 @@
-##########################################################
-# Config file
-##########################################################
+"""Config file for community bots"""
 
 # The URL of the mastodon instance your bot is on
 API_BASE_URL = 'https://botsin.space'
@@ -9,12 +7,12 @@ API_BASE_URL = 'https://botsin.space'
 TAGS = ['rladies']
 
 # If the author is on one of these servers, ignore the post
-IGNORE_SERVERS = [] #['botsin.space', ]
+IGNORE_SERVERS = []  # ['botsin.space', ]
 
-#CLIENT_NAME = 'rladies_bot'
+# CLIENT_NAME = 'rladies_bot'
 
-#USERNAME = 'contact@cosimameyer.com'
+# USERNAME = 'contact@cosimameyer.com'
 
 MASTODON_VISIBILITY = 'public'
 
-#ARCHIVE = 'archive_directory'
+# ARCHIVE = 'archive_directory'

@@ -1,15 +1,14 @@
 import time
 import os
-from urllib.parse import urlparse
 import logging
-
-import config
-from helper.login_mastodon import login_mastodon
-from helper.login_bluesky import login_bluesky
-
+from urllib.parse import urlparse
 from dotenv import load_dotenv
 
+import config
+from helper.login_bluesky import login_bluesky
+
 load_dotenv()
+
 
 class BoostTags():
     def __init__(self, config_dict=None, no_dry_run=True):
@@ -31,8 +30,10 @@ class BoostTags():
                 )
             except Exception as e:
                 self.logger(
-                    f" ! Network error while attempting to fetch statuses: {e}."
-                    "Trying again..."
+                    f"""
+                    ! Network error while attempting to fetch statuses: {e}.
+                    Trying again...
+                    """
                 )
                 time.sleep(30)
                 continue
