@@ -29,7 +29,8 @@ class BoostTags():
         for tag in self.config_dict["tags"]:
             tag = tag.lower().strip("# ")
             self.logger.info(
-                f" > Reading timeline for new toots tagged #{tag}"
+                " > Reading timeline for new toots tagged #%s",
+                tag
             )
 
             try:
@@ -39,10 +40,9 @@ class BoostTags():
                 )
             except Exception as e:
                 self.logger.info(
-                    f"""
-                    ! Network error while attempting to fetch statuses: {e}.
-                    Trying again...
-                    """
+                    "! Network error while attempting to fetch statuses: %s. "
+                    "Trying again...",
+                    e,
                 )
                 time.sleep(30)
                 continue
@@ -60,10 +60,11 @@ class BoostTags():
                         domain not in config.IGNORE_SERVERS:
                     # Boost and favorite the new status
                     self.logger.info(
-                        f"""
-                        * Boosting new toot by {status.account.username}
-                        using tag #{tag} viewable at: {status.url}
-                        """
+                        "* Boosting new toot by %s using tag #%s "
+                        "viewable at: %s",
+                        status.account.username,
+                        tag,
+                        status.url,
                     )
                     client.status_reblog(status.id)
                     client.status_favourite(status.id)
@@ -93,9 +94,12 @@ class BoostTags():
 
         self.logger.info("========")
         client_name = self.config_dict['client_name']
-        self.logger.info(f"Initializing {client_name} Bot")
-        self.logger.info("=================" + "="*len(client_name))
-        self.logger.info(f" > Connecting to {self.config_dict['api_base_url']}")
+        self.logger.info("Initializing %s Bot", client_name)
+        separator = "=================" + "=" * len(client_name)
+        self.logger.info(separator)
+        self.logger.info(
+            " > Connecting to %s", self.config_dict['api_base_url']
+        )
 
         if self.config_dict["platform"] == "mastodon":
             # # Commented because it wasn't fully working
@@ -136,25 +140,23 @@ class BoostTags():
                         if tag.startswith("#")
                     ]
                     self.logger.info("---------------------")
-                    self.logger(f"Repost post by {post.author.handle}")
+                    self.logger("Repost post by %s", post.author.handle)
                     self.logger.info(post.record.text)
-                    self.logger.info(f"Tag list: {tags_list}")
+                    self.logger.info("Tag list: %s", tags_list)
                     if tag in tags_list and post.cid not in cids:
                         try:
+                            result = client.repost(uri=post.uri, cid=post.cid)
                             self.logger.info(
-                                '   * Reposted post reference:',
-                                client.repost(
-                                    uri=post.uri,
-                                    cid=post.cid
-                                )
+                                "   * Reposted post reference: %s", result
                             )
                         except Exception as e:
                             self.logger.info(
-                                f"""
-                                   * Reposting new post with URI {post.uri}
-                                and CID {post.cid} did not work because of {e}
-                                - going to the next post.
-                                """
+                                "* Reposting new post with URI %s and CID %s "
+                                "did not work because of %s "
+                                "- going to the next post.",
+                                post.uri,
+                                post.cid,
+                                e,
                             )
                         time.sleep(0.1)
             self.logger.info('Successfully process notification.')
