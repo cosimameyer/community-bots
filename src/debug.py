@@ -143,7 +143,7 @@ class DebugBots():
                         "self.platform": self.platform}
             return {'client_name': 'pyladies_self.bot',
                     'mastodon': None}
-        elif self.bot == 'rladies':
+        if self.bot == 'rladies':
             if self.platform == "bluesky":
                 return {"client_name": "rladies_self.bot",
                         "api_base_url": self.platform,
