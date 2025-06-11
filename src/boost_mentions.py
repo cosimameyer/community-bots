@@ -1,25 +1,34 @@
+"""Module to boost mentions that tag the community bots"""
+
 import os
 import logging
+from dotenv import load_dotenv
+
 import config
 from helper.login_mastodon import login_mastodon
 from helper.login_bluesky import login_bluesky
 
-from dotenv import load_dotenv
-
 load_dotenv()
 
+
 class BoostMentions():
+    """
+    Class to handle boosting mentions of the community bots.
+    """
     def __init__(self, config_dict=None, no_dry_run=True):
         self.logger = logging.getLogger(__name__)
         logging.basicConfig(level=logging.INFO)
-        
+
         self.process_images = False
         self.no_dry_run = no_dry_run
         self.config_dict = config_dict
-            
+
     def boost_mentions(self):
+        """
+        Method to boost mentions on social media platforms.
+        """
         self.set_up_config_dict()
-        
+
         self.logger("==========================")
         client_name = self.config_dict.get("client_name")
         self.logger(f"Initializing {client_name} Bot")
@@ -74,20 +83,30 @@ class BoostMentions():
                     try:
                         self.logger(
                             '   * Reposted post reference:',
-                            client.repost(uri=notification.uri,
-                            cid=notification.cid)
+                            client.repost(
+                                uri=notification.uri,
+                                cid=notification.cid
+                            )
                         )
                     except Exception as e:
                         self.logger(
-                            f"   * Reposting new post with URI {notification.uri}"
-                            f" and CID {notification.cid} did not work because "
-                            f"of {e} - going to the next post."
+                            f"""
+                               * Reposting new post with URI {notification.uri}
+                            and CID {notification.cid} did not work because
+                            of {e} - going to the next post.
+                            """
                         )
 
             client.app.bsky.notification.update_seen({'seen_at': last_seen_at})
-            self.logger('Successfully process notification. Last seen at:', last_seen_at)
-    
+            self.logger(
+                'Successfully process notification. Last seen at:',
+                last_seen_at
+            )
+
     def set_up_config_dict(self):
+        """
+        Method to set up the config dictionary with the required parameters
+        """
         self.config_dict = {
             "platform": os.getenv("PLATFORM"),
             "password": os.getenv("PASSWORD"),
@@ -98,13 +117,14 @@ class BoostMentions():
             self.config_dict["mastodon_visiblity"] = config.MASTODON_VISIBILITY
             self.config_dict["api_base_url"] = config.API_BASE_URL
             self.config_dict["access_token"] = os.getenv("ACCESS_TOKEN")
-            self.config_dict["client_cred_file"] = os.getenv('BOT_CLIENTCRED_SECRET')
+            self.config_dict["client_cred_file"] = os.getenv(
+                'BOT_CLIENTCRED_SECRET'
+            )
             self.config_dict["timeline_depth_limit"] = 40
         else:
             self.config_dict["api_base_url"] = "bluesky"
-            
+
+
 if __name__ == "__main__":
     boost_mentions_handler = BoostMentions(config_dict=None, no_dry_run=True)
     boost_mentions_handler.boost_mentions()
-    
-
