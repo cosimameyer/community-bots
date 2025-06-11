@@ -117,13 +117,13 @@ class BoostTags():
             cids = [post.post.cid for post in timeline.feed]
             for tag in [self.config_dict['tags']]:
                 r = client.app.bsky.feed.search_posts(
-                    params=dict(
-                        q=tag,
-                        tag=[tag],
-                        sort="top",
-                        limit=50
-                        )
-                    )
+                    params={
+                        "q": tag,
+                        "tag": [tag],
+                        "sort": 'top',
+                        "limit": 50
+                    }
+                )
                 for post in r.posts:
                     text = post.record.text
                     tags_list = [
