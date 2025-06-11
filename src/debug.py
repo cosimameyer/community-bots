@@ -84,7 +84,7 @@ class DebugBots():
                     "pickle_file": "pyladies_meta_data.pkl",
                     "client_name": "pyladies_self.bot",
                     "mastodon": None}
-        elif self.bot == 'rladies':
+        if self.bot == 'rladies':
             if self.platform == "bluesky":
                 return {"archive": "rladies_archive_directory_bluesky",
                         "counter": "rladies_counter_bluesky.txt",
@@ -102,7 +102,7 @@ class DebugBots():
         if self.bot == 'pyladies':
             return {"client_name": "pyladies_self.bot",
                     "mastodon": None}
-        elif self.bot == 'rladies':
+        if self.bot == 'rladies':
             if self.platform == "bluesky":
                 return {"client_name": "rladies_self.bot",
                         "api_base_url": self.platform,
@@ -120,7 +120,7 @@ class DebugBots():
                 "github_raw_url": "https://raw.githubusercontent.com/cosimameyer/awesome-pyladies-blogs/main/blogs",
                 "pickle_file": "pyladies_meta_data.pkl"
             }
-        elif self.bot == 'rladies':
+        if self.bot == 'rladies':
             return {
                 "api_base_url": "https://github.com/rladies/awesome-rladies-blogs/tree/main/blogs",
                 "github_raw_url": "https://raw.githubusercontent.com/rladies/awesome-rladies-blogs/main/blogs",
