@@ -21,14 +21,17 @@ import config
 
 
 class PromoteBlogPost():
+    """
+    Class to handle promoting blog posts by the community bots.
+    """
     def __init__(self, config_dict=None, no_dry_run=True):
         self.logger = logging.getLogger(__name__)
         logging.basicConfig(level=logging.INFO)
-        
+
         self.process_images = False
         self.no_dry_run = no_dry_run
         self.config_dict = config_dict
-    
+
     def promote_blog_post(self):
         """Core method to promote blog post"""
 
@@ -52,19 +55,28 @@ class PromoteBlogPost():
                 self.config_dict["client_id"] = os.getenv("CLIENT_ID")
                 self.config_dict["client_secret"] = os.getenv("CLIENT_SECRET")
                 self.config_dict["access_token"] = os.getenv("ACCESS_TOKEN")
-                self.config_dict["client_cred_file"] = os.getenv('BOT_CLIENTCRED_SECRET')
+                self.config_dict["client_cred_file"] = os.getenv(
+                    'BOT_CLIENTCRED_SECRET'
+                )
             else:
                 self.config_dict["api_base_url"] = "bluesky"
-            
+
             if self.config_dict["gen_ai_support"]:
                 genai.configure(api_key=self.config_dict["gemini_api_key"])
-            
+
         if self.no_dry_run:
             self.logger.info("")
-            self.logger.info("Initializing %s Bot", self.config_dict["client_name"])
-            self.logger.info("%s", "=" * (len(self.config_dict["client_name"]) + 17))
-            self.logger.info(" > Connecting to %s", self.config_dict["api_base_url"])
-            
+            self.logger.info(
+                "Initializing %s Bot",
+                self.config_dict["client_name"]
+            )
+            separator = "%s", "=" * (len(self.config_dict["client_name"]) + 17)
+            self.logger.info(separator)
+            self.logger.info(
+                " > Connecting to %s",
+                self.config_dict["api_base_url"]
+            )
+
             if self.config_dict["platform"] == "mastodon":
                 _, client = login_mastodon(self.config_dict)
             elif self.config_dict["platform"] == "bluesky":
@@ -74,11 +86,13 @@ class PromoteBlogPost():
 
         with open(self.config_dict["pickle_file"], 'rb') as fp:
             self.logger.info(
-                "================================================================")
+                "============================================="
+            )
             FEEDS = pickle.load(fp)
             self.logger.info('Meta data was successfully loaded')
             self.logger.info(
-                "================================================================")
+                "============================================="
+            )
 
         # Initiate count to post a maximum of 2 posts per run
         count_post = 0
@@ -95,61 +109,75 @@ class PromoteBlogPost():
                     and (len(feed['rss_feed']) > 0)
                         and (feed['rss_feed'] != [None])):
                     if (count_post == 0) & (feed['name'] == FEEDS[-1]['name']):
-                        count_post = self.process_feed(feed,
-                                                count_post,
-                                                client)
+                        count_post = self.process_feed(
+                            feed,
+                            count_post,
+                            client
+                        )
 
                         # Add the feed_name
                         if feed['name'] == FEEDS[-1]['name']:
                             new_feed = FEEDS[0]
-                            count_post = self.process_feed(new_feed,
-                                                    count_post,
-                                                    client)
+                            count_post = self.process_feed(
+                                new_feed,
+                                count_post,
+                                client
+                            )
 
                             self.logger.info(
                                 "Successfully promoted blog posts. "
                                 "Thank you and see you next time!")
                             feed_name = FEEDS[1]['name']
-                            with open(self.config_dict["counter"], 'w') as txt_file:
+                            with open(
+                                self.config_dict["counter"], 'w'
+                            ) as txt_file:
                                 txt_file.write(feed_name)
                             self.logger.info(
-                                "================================================")
+                                "=====================================")
                             break
 
                     elif count_post < 2:
-                        count_post = self.process_feed(feed,
-                                                count_post,
-                                                client)
+                        count_post = self.process_feed(
+                            feed,
+                            count_post,
+                            client
+                        )
 
                         # Add the feed_name
                         feed_name = ''
                         if feed['name'] == FEEDS[-1]['name']:
-                            with open(self.config_dict["counter"], 'w') as txt_file:
+                            with open(
+                                self.config_dict["counter"], 'w'
+                            ) as txt_file:
                                 txt_file.write(feed['name'])
                         self.logger.info(
-                            "=================================================================")
+                            "=========================================")
 
                     else:
                         self.logger.info(
                             "Successfully promoted blog posts. "
                             "Thank you and see you next time!")
                         feed_name = feed['name']
-                        with open(self.config_dict["counter"], 'w') as txt_file:
+                        with open(
+                            self.config_dict["counter"], 'w'
+                        ) as txt_file:
                             txt_file.write(feed_name)
                         break
         else:
             for feed in FEEDS:
-                count_post = self.process_feed(feed,
-                                        count_post,
-                                        client)
+                count_post = self.process_feed(
+                    feed,
+                    count_post,
+                    client
+                )
 
-        
-    def download_image(self, url: str) -> str:
+    def download_image(self, url: str):
         """
-        Downloads an image from the given URL and saves it locally, 
+        Downloads an image from the given URL and saves it locally,
         organizing files by domain name.
         """
         try:
+            filename = ''
             # Parse the URL components
             if self.config_dict["platform"] == "bluesky":
                 domain = urlsplit(url).path
@@ -176,7 +204,12 @@ class PromoteBlogPost():
 
             # Download the image
             self.logger.info("Downloading image from %s...", url)
-            response = requests.get(url, headers=headers, stream=True, timeout=15)
+            response = requests.get(
+                url,
+                headers=headers,
+                stream=True,
+                timeout=15
+            )
             response.raise_for_status()  # Raises an exception for HTTP errors
 
             # Save the image to the designated path
@@ -195,7 +228,6 @@ class PromoteBlogPost():
         finally:
             response.close() if 'response' in locals() else None
 
-
     def parse_pub_date(self, entry):
         """Method to parse the publication date"""
         date_formats = [
@@ -213,13 +245,21 @@ class PromoteBlogPost():
                     pub_date_str, date_format).replace(tzinfo=None)
                 return pub_date  # Return as soon as a valid format is found
             except ValueError:
-                self.logger.info("Failed to parse date with format: %s", date_format)
+                self.logger.info(
+                    "Failed to parse date with format: %s",
+                    date_format
+                )
 
         # If none of the formats match, use the current date as a fallback
-        self.logger.warning("No matching date format found. Using current date.")
+        self.logger.warning(
+            "No matching date format found. Using current date."
+        )
         return datetime.now()  # Fallback value
 
     def define_tags(self, entry):
+        """
+        Define tags that will be posted along the posts.
+        """
         if self.config_dict["client_name"] == 'pyladies_bot':
             tags = '#pyladies #python '
         elif self.config_dict["client_name"] == 'rladies_bot':
@@ -227,7 +267,7 @@ class PromoteBlogPost():
         else:
             self.logger.info("Bot name not found")
             tags = ''
-        
+
         pub_date = self.parse_pub_date(entry)
 
         age_of_post = datetime.now() - pub_date
@@ -240,42 +280,56 @@ class PromoteBlogPost():
                 if tag.lower() in ['pyladies', 'python', 'rstats', 'rladies']:
                     pass
                 else:
-                    tags += f'#{tag.replace(" ", "").replace("-", "").lower()} '
+                    tags += (
+                        f"#{tag.replace(' ', '').replace('-', '').lower()} "
+                    )
 
         return tags
-        
+
     def get_bluesky_did(self, platform_user_handle):
-        
+        """
+        Method to get Bluesky DID to uniquely identify (and tag) user.
+        """
         url = f"https://bsky.social/xrpc/com.atproto.identity.resolveHandle?handle={platform_user_handle.lstrip('@')}"
         try:
             response = requests.get(url)
-            
+
             if response.status_code == 200:
                 data = response.json()
                 did = data.get("did")
-                
+
                 if did:
                     return did
                 else:
-                    self.logger.info("The 'did' field was not found in the response.")
+                    self.logger.info(
+                        "The 'did' field was not found in the response."
+                    )
             else:
-                self.logger.info(f"Failed to retrieve data. Status code: {response.status_code}")
+                self.logger.info(
+                    "Failed to retrieve data. Status code: %s",
+                    response.status_code
+                )
 
         except requests.RequestException as e:
-            self.logger.info("An error occurred:", e)
-            
-    def build_post_mastodon(self, basis_text, platform_user_handle, tags, entry):
+            self.logger.info("An error occurred: %s", e)
+
+    def build_post_mastodon(
+        self, basis_text, platform_user_handle, tags, entry
+    ):
+        """
+        Build Mastodon post.
+        """
         platform_user_handle = self.check_platform_handle(platform_user_handle)
-        
+
         if platform_user_handle:
             basis_text += f" ({platform_user_handle}) "
         if self.config_dict["gen_ai_support"]:
             summarized_blog_post = self.summarize_text(entry)
             if summarized_blog_post:
                 basis_text.text('\n\n📖 ')
-                basis_text.text(summarized_blog_post)    
+                basis_text.text(summarized_blog_post)
         basis_text += f'\n\n🔗 {entry["link"]}\n\n{tags}'
-        
+
         self.logger.info("*****************************")
         self.logger.info(basis_text)
         self.logger.info("*****************************")
@@ -284,44 +338,68 @@ class PromoteBlogPost():
 
     @staticmethod
     def generate_text_to_summarize(entry):
+        """
+        Generate text to summarize.
+        """
         text = f"Title: {entry['title']}\nSummary: {entry['summary']}"
-        if len(text.split())>700:
+        if len(text.split()) > 700:
             words = text.split()[:700]
             return ' '.join(words)
-        return text 
+        return text
 
     @staticmethod
     def clean_response(response):
+        """
+        Clean response.
+        """
         return ' '.join(response.text.replace("\n", " ").split())
 
-
     def summarize_text(self, entry):
+        """
+        Summarize text using LLMs.
+        """
         text = self.generate_text_to_summarize(entry)
         model = genai.GenerativeModel(self.config_dict["gemini_model_name"])
-        prompt_parts = ["Summarize the content of the post in maximum 60 characters.",
-                        "Be as concise as possible and be engaging.",
-                        "Don't repeat the title.",
-                        text]
+        prompt_parts = [
+            "Summarize the content of the post in maximum 60 characters.",
+            "Be as concise as possible and be engaging.",
+            "Don't repeat the title.",
+            text
+        ]
         response = model.generate_content(prompt_parts)
         response_cleaned = self.clean_response(response)
         safety_ratings = response.candidates[0].safety_ratings
-        if all(rating.probability.name == "NEGLIGIBLE" for rating in safety_ratings):
+        if all(
+            rating.probability.name == "NEGLIGIBLE"
+            for rating in safety_ratings
+        ):
             return response_cleaned
         return ''
 
     @staticmethod
     def check_platform_handle(platform_user_handle):
-        if len(platform_user_handle)>1 and not platform_user_handle.startswith('@'):
+        """
+        Check platform handle.
+        """
+        if len(platform_user_handle) > 1 and not platform_user_handle.startswith('@'):
             return f"@{platform_user_handle}"
         return platform_user_handle
-        
-    def build_post_bluesky(self, basis_text, platform_user_handle, tags, entry):
-        
+
+    def build_post_bluesky(
+        self,
+        basis_text,
+        platform_user_handle,
+        tags,
+        entry
+    ):
+        """
+        Build post for Bluesky.
+        """
         text_builder = client_utils.TextBuilder()
         text_builder.text(basis_text)
-        
+
         platform_user_handle = self.check_platform_handle(platform_user_handle)
-        
+
         if platform_user_handle:
             did = self.get_bluesky_did(platform_user_handle)
             text_builder.mention(f" ({platform_user_handle})", did)
@@ -329,7 +407,7 @@ class PromoteBlogPost():
             summarized_blog_post = self.summarize_text(entry)
             if summarized_blog_post:
                 text_builder.text('\n\n📖 ')
-                text_builder.text(summarized_blog_post)    
+                text_builder.text(summarized_blog_post)
         text_builder.text('\n\n🔗 ')
         text_builder.link(entry["link"], entry["link"])
         text_builder.text('\n\n')
@@ -341,13 +419,13 @@ class PromoteBlogPost():
 
     def build_post(self, entry, feed):
         """Take the entry dict and build a post"""
-        
+
         tags = self.define_tags(entry)
         platform = self.config_dict.get("platform")
         platform_user_handle = feed.get(platform)
-        
+
         basis_text = f'📝 "{entry["title"]}"\n\n👤 {feed["name"]}'
-        
+
         if self.config_dict["platform"] == "mastodon":
             return self.build_post_mastodon(
                 basis_text,
@@ -357,13 +435,16 @@ class PromoteBlogPost():
             )
         elif self.config_dict["platform"] == "bluesky":
             return self.build_post_bluesky(
-                basis_text, 
-                platform_user_handle, 
-                tags, 
+                basis_text,
+                platform_user_handle,
+                tags,
                 entry
             )
 
     def send_post_to_mastodon(self, en, client, post_txt):
+        """
+        Send post to Mastodon.
+        """
         if en['media_content']:
             try:
                 self.logger.info("Uploading media to mastodon")
@@ -392,10 +473,17 @@ class PromoteBlogPost():
                 self.logger.info("Posted 🎉")
                 return 'success'
             except Exception as e:
-                self.logger.exception("Urg, exception %s for %s", e, en['link'])
+                self.logger.exception(
+                    "Urg, exception %s for %s",
+                    e,
+                    en['link']
+                )
                 return 'failed'
 
     def send_post_to_bluesky(self, en, client, post_txt, embed_external):
+        """
+        Send post to Bluesky.
+        """
         try:
             if embed_external:
                 client.send_post(text=post_txt, embed=embed_external)
@@ -408,6 +496,9 @@ class PromoteBlogPost():
             return 'failed'
 
     def build_embed_external(self, en, client):
+        """
+        Build embed external. This is a speciality of Bluesky's protocol.
+        """
         if en['media_content']:
             filename = self.download_image(en['media_content'])
             with open(filename, 'rb') as f:
@@ -428,14 +519,34 @@ class PromoteBlogPost():
     def send_post(self, en, feed, client):
         """Turn the dict into post text and send the post"""
         result = None
-        self.logger.info(f"Preparing the post on {self.config_dict['client_name']} ({self.config_dict['platform']}) ...")
-        
-        post_txt = self.build_post(en, feed)    
+        self.logger.info(
+            "Preparing the post on %s "
+            "(%s) ...",
+            self.config_dict['client_name'],
+            {self.config_dict['platform']}
+        )
+
+        post_txt = self.build_post(
+            en,
+            feed
+        )
         if self.config_dict["platform"] == "mastodon":
-            result = self.send_post_to_mastodon(en, client, post_txt)
+            result = self.send_post_to_mastodon(
+                en,
+                client,
+                post_txt
+            )
         elif self.config_dict["platform"] == "bluesky":
-            embed_external = self.build_embed_external(en, client)
-            result = self.send_post_to_bluesky(en, client, post_txt, embed_external)
+            embed_external = self.build_embed_external(
+                en,
+                client
+            )
+            result = self.send_post_to_bluesky(
+                en,
+                client,
+                post_txt,
+                embed_external
+            )
         return result
 
     @staticmethod
@@ -468,27 +579,35 @@ class PromoteBlogPost():
 
     @staticmethod
     def get_number_of_archive_entries(d, rss_feed_archive):
-        """ 
-        Calculate the number of entries in the feed and archive, ensuring archive 
-        structure is correct.
+        """
+        Calculate the number of entries in the feed and archive,
+        ensuring archive structure is correct.
         """
         number_of_entries_feed = len(d)
 
-        if 'link' in rss_feed_archive and isinstance(rss_feed_archive['link'], list):
+        if 'link' in rss_feed_archive and isinstance(
+            rss_feed_archive['link'],
+            list
+        ):
             number_of_entries_archive = len(set(rss_feed_archive['link']))
         else:
             # Fix the archive structure if 'link' key is missing or incorrect
             rss_feed_archive = {'link': list(set(rss_feed_archive))}
             number_of_entries_archive = len(rss_feed_archive['link'])
 
-        return rss_feed_archive, number_of_entries_archive, number_of_entries_feed
+        return (
+            rss_feed_archive,
+            number_of_entries_archive,
+            number_of_entries_feed,
+        )
 
     def get_folder_path(self, feed):
         """Method to identify folder path"""
 
         def adjust_archive_path(base_path, domain, feed_name):
             """
-            Helper function to clean up path construction for YouTube and Medium
+            Helper function to clean up path construction for
+            YouTube and Medium
             """
             feed_name_slug = feed_name.lower().replace(' ', '-')
             if "www.youtube.com" in domain or "medium.com" in domain:
@@ -507,21 +626,27 @@ class PromoteBlogPost():
         elif len(rss_feeds) == 1:
             domain = urlsplit(rss_feeds[0]).netloc
             folder_path = Path(self.config_dict["archive"]) / domain
-            folder_path = adjust_archive_path(folder_path, domain, feed['name'])
+            folder_path = adjust_archive_path(
+                folder_path,
+                domain,
+                feed['name']
+            )
             archive_paths.append(str(folder_path))
 
         feed['ARCHIVE'] = archive_paths
         return feed
 
-
     def process_feed(self, feed, count_post, client):
         """
-        Process the RSS feed and generate a post for any entry 
+        Process the RSS feed and generate a post for any entry
         we haven't yet seen.
         """
-        self.logger.info("====================================================")
-        self.logger.info("Begin processing of feeds from %s (%s)",
-                    feed['name'], feed['rss_feed'])
+        self.logger.info("=========================================")
+        self.logger.info(
+            "Begin processing of feeds from %s (%s)",
+            feed['name'],
+            feed['rss_feed']
+        )
 
         feed = self.get_folder_path(feed)
 
@@ -557,15 +682,20 @@ class PromoteBlogPost():
                         count_post,
                         feed_config
                     )
-                    self.logger.info("New RSS feeds are successfully loaded and "
-                                "processed.")
+                    self.logger.info(
+                        "New RSS feeds are successfully loaded and "
+                        "processed."
+                    )
                     return count_post
                 self.logger.info("Maximum number of posts is already posted.")
                 return count_post
             except Exception as e:
-                self.logger.info("🚨 Feed for %s not available because %s", feed_path, e)
+                self.logger.info(
+                    "🚨 Feed for %s not available because %s",
+                    feed_path,
+                    e
+                )
                 return count_post
-
 
     def _save_rss_feed_archive(self, feed, rss_feed_archive):
         """ Save RSS feed archive to a file """
@@ -584,21 +714,28 @@ class PromoteBlogPost():
             en['media_content'] = entry.media_content[0]['url']
         else:
             soup = BeautifulSoup(entry.summary, "html.parser")
-            img_url = [img['src']
-                    for img in soup.find_all('img') if img.has_attr('src')]
-            alt_text = [img['alt']
-                        for img in soup.find_all('img') if img.has_attr('alt')]
+            img_url = [
+                img['src']
+                for img in soup.find_all('img')
+                if img.has_attr('src')
+            ]
+            alt_text = [
+                img['alt']
+                for img in soup.find_all('img')
+                if img.has_attr('alt')
+            ]
             if img_url:
                 en['media_content'] = img_url[0]
             if alt_text:
                 en['alt_text'] = alt_text[0] if alt_text else ''
         return en
 
-
-    def _process_feed(self,
-                    client,
-                    count_post,
-                    feed_config):
+    def _process_feed(
+        self,
+        client,
+        count_post,
+        feed_config
+    ):
         """ Process RSS feed entries and send posts """
         count = 0
         count_fails = 0
@@ -628,21 +765,27 @@ class PromoteBlogPost():
                 feed_config['rss_feed_archive']['link'].append(en['link'])
                 if self.no_dry_run:
                     result = self.send_post(en, feed_config['feed'], client)
-                if result=='success':
+                if result == 'success':
                     count_post += 1
                     count += 1
                     time.sleep(1)
-                elif result=='failed':
+                elif result == 'failed':
                     count_fails += 1
                     time.sleep(1)
 
         if self.no_dry_run:
-            if result=='success':
-                self._save_rss_feed_archive(feed_config['feed'],
-                                    feed_config['rss_feed_archive'])
+            if result == 'success':
+                self._save_rss_feed_archive(
+                    feed_config['feed'],
+                    feed_config['rss_feed_archive']
+                )
 
         return count_post
 
+
 if __name__ == "__main__":
-    promote_blog_post_handler = PromoteBlogPost(config_dict=None, no_dry_run=True)
+    promote_blog_post_handler = PromoteBlogPost(
+        config_dict=None,
+        no_dry_run=True
+    )
     promote_blog_post_handler.promote_blog_post()
