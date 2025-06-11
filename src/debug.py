@@ -4,6 +4,7 @@ from promote_blog_post import PromoteBlogPost
 from get_rss_data import RSSData
 from boost_tags import BoostTags
 from promote_anniversaries import PromoteAnniversary
+from boost_mentions import BoostMentions
 
 from dotenv import load_dotenv
 
@@ -12,7 +13,7 @@ load_dotenv()
 class DebugBots():
     def __init__(self):
         self.bot = 'pyladies' # 'pyladies' or 'rladies'
-        self.what_to_debug = 'blog' # 'blog' or 'boost' or 'rss' or 'anniversary
+        self.what_to_debug = 'blog' # 'blog' or 'boost_tags' or 'rss' or 'anniversary
         self.platform = 'bluesky' # 'bluesky' or 'mastodon'
         self.no_dry_run = True
         
@@ -34,13 +35,21 @@ class DebugBots():
             )
             rss_data_handler.get_rss_data()
             
-        elif self.what_to_debug == 'boost':
+        elif self.what_to_debug == 'boost_tags':
             config_dict = self.get_config_boost()
             boost_tags_handler = BoostTags(
-                config_dict=None, 
-                self.no_dry_run=True
+                config_dict, 
+                self.no_dry_run
             )
             boost_tags_handler.boost_tags()
+            
+        elif self.what_to_debug == 'boost_mentions':
+            config_dict = self.get_config_boost()
+            boost_tags_handler = BoostMentions(
+                config_dict, 
+                self.no_dry_run
+            )
+            boost_tags_handler.boost_mentions()
         
         elif self.what_to_debug == 'anniversary':
             config_dict = self.get_config_anniversary()
