@@ -10,6 +10,7 @@ repos:
         verbose: true
         args:
         - --fail-under=4
+    stages: [push]
   - repo: https://github.com/pdm-project/pdm
     rev: 2.24.1
     hooks:
