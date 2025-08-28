@@ -32,7 +32,7 @@ class BoostMentions():
         self.logger.info("==========================")
         client_name = self.config_dict.get("client_name")
         self.logger.info('Initializing %s Bot', client_name)
-        self.logger.info('=================' + '=' * len(client_name or ''))
+        self.logger.info("=================%s", "=" * len(client_name or ""))
         self.logger.info(' > Connecting to %s',
                          self.config_dict['api_base_url'])
 
