@@ -21,26 +21,26 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Execute Python script on Mastodon 🦣
-        continue-on-error: true
-        env:
-          IMAGES: "anniversary_images"
-          CLIENT_NAME: "pyladies_bot"
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN_PYLADIES }}
-          CLIENT_ID: ${{ secrets.CLIENT_ID_PYLADIES }}
-          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET_PYLADIES }}
-          PASSWORD: ${{ secrets.PASSWORD_PYLADIES }}
-          USERNAME: ${{ secrets.USERNAME_PYLADIES }}
-          BOT_CLIENTCRED_SECRET: ${{ secrets.PYLADIES_BOT_CLIENTCRED_SECRET }}
-        run: python src/promote_anniversaries.py
+      # - name: Execute Python script on Mastodon 🦣
+      #   continue-on-error: true
+      #   env:
+      #     IMAGES: "anniversary_images"
+      #     CLIENT_NAME: "pyladies_bot"
+      #     ACCESS_TOKEN: ${{ secrets.PYLADIES_MASTODON_ACCESS_TOKEN }}
+      #     CLIENT_ID: ${{ secrets.PYLADIES_MASTODON_CLIENT_ID }}
+      #     CLIENT_SECRET: ${{ secrets.PYLADIES_MASTODON_CLIENT_SECRET }}
+      #     PASSWORD: ${{ secrets.PYLADIES_MASTODON_PASSWORD }}
+      #     USERNAME: ${{ secrets.PYLADIES_MASTODON_USERNAME }}
+      #     BOT_CLIENTCRED_SECRET: ${{ secrets.PYLADIES_MASTODON_CLIENTCRED_SECRET }}
+      #   run: python src/promote_anniversaries.py
 
       - name: Execute Python script on Bluesky 🦋
         env:
           IMAGES: "anniversary_images"
           CLIENT_NAME: "pyladies_bot"
           PLATFORM: "bluesky"
-          PASSWORD: ${{ secrets.BSKY_PYLADIES }}
-          USERNAME: ${{ secrets.BSKY_USERNAME_PYLADIES }}
+          PASSWORD: ${{ secrets.PYLADIES_BSKY_PASSWORD }}
+          USERNAME: ${{ secrets.PYLADIES_BSKY_USERNAME }}
         run: python src/promote_anniversaries.py
 
       - name: Commit files
