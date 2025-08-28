@@ -1,0 +1,24 @@
+{
+    "link": [
+        "https://jhylin.github.io/Data_in_life_blog/posts/11_ML3_Small_molecules_in_ChEMBL_database/ML3_chembl_cpds.html",
+        "https://jhylin.github.io/Data_in_life_blog/posts/13_Shiny_app_python/ShinyAppPy_PC_Cov19_app_embed_pyodide_http.html",
+        "https://jhylin.github.io/Data_in_life_blog/posts/13_Shiny_app_python/ShinyAppPy_PC_Cov19_app_embed.html",
+        "https://jhylin.github.io/Data_in_life_blog/posts/13_Shiny_app_python/ShinyAppPy_PC_Cov19_data_prep.html",
+        "https://jhylin.github.io/Data_in_life_blog/posts/10_ML2_Small_molecules_in_ChEMBL_database/ML2_chembl_cpds.html",
+        "https://jhylin.github.io/Data_in_life_blog/posts/14_Scaffolds_in_small_molecules/chembl_anti-inf_data_prep_current.html",
+        "https://jhylin.github.io/Data_in_life_blog/posts/09_Pills/Rust_polars_pills_df.html",
+        "https://jhylin.github.io/Data_in_life_blog/posts/09_Pills/Rust_polars_pills_ws.html",
+        "https://jhylin.github.io/Data_in_life_blog/posts/08_ML1_Small_molecules_in_ChEMBL_database/ML1_chembl_cpds.html",
+        "https://jhylin.github.io/Data_in_life_blog/posts/15_Molviz/Molviz.html",
+        "https://jhylin.github.io/Data_in_life_blog/posts/15_Molviz/itables.html",
+        "https://jhylin.github.io/Data_in_life_blog/posts/11_ML1-3_Small_molecules_in_ChEMBL_database/ML1-3_chembl_cpds.html",
+        "https://jhylin.github.io/Data_in_life_blog/posts/10_ML1-2_Small_molecules_in_ChEMBL_database/ML1-2_chembl_cpds.html",
+        "https://jhylin.github.io/Data_in_life_blog/posts/08_ML1-1_Small_molecules_in_ChEMBL_database/ML1-1_chembl_cpds.html",
+        "https://jhylin.github.io/Data_in_life_blog/posts/16_ML2-1_Decision_tree/1_data_col_prep.html",
+        "https://jhylin.github.io/Data_in_life_blog/posts/16_ML2-1_Decision_tree/2_data_prep_tran.html",
+        "https://jhylin.github.io/Data_in_life_blog/posts/16_ML2-1_Decision_tree/3_model_build.html",
+        "https://jhylin.github.io/Data_in_life_blog/posts/07_Molecular_similarities_in_COVID-19_antivirals/Mol_sim_covid.html",
+        "https://jhylin.github.io/Data_in_life_blog/posts/06_Long_COVID_update/Long_COVID_update.html",
+        "https://jhylin.github.io/Data_in_life_blog/posts/06_Long_COVID_update/ExtractTableFromPDF.html"
+    ]
+}

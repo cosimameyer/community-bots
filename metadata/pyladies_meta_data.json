@@ -1,5 +1,11 @@
 [
     {
+        "name": "Anja Pilz",
+        "rss_feed": "",
+        "mastodon": "",
+        "bluesky": ""
+    },
+    {
         "name": "Bilge Yucel",
         "rss_feed": [
             "https://medium.com/feed/@bilgeycl"
@@ -102,6 +108,20 @@
         "bluesky": "@jhylin.bsky.social"
     },
     {
+        "name": "Jess Temporal",
+        "rss_feed": "",
+        "mastodon": "@jesstemporal@mastodon.online",
+        "bluesky": ""
+    },
+    {
+        "name": "Anastasia Karavdina",
+        "rss_feed": [
+            "https://www.karavdina.com/blog/blog-feed.xml"
+        ],
+        "mastodon": "",
+        "bluesky": ""
+    },
+    {
         "name": "Karina Bartolome",
         "rss_feed": [
             "https://karbartolome-blog.netlify.app/categories/python/index.xml"
@@ -142,9 +162,25 @@
         "bluesky": ""
     },
     {
+        "name": "PyLadies Berlin",
+        "rss_feed": [
+            "https://www.youtube.com/feeds/videos.xml?channel_id=UCVlzy-BMSYReFD0YnTzoh7w"
+        ],
+        "mastodon": "",
+        "bluesky": ""
+    },
+    {
         "name": "PyLadies Bengaluru",
         "rss_feed": [
             "https://www.youtube.com/feeds/videos.xml?channel_id=UCRF8Cf4Ppe4OFed4zbgujjg"
+        ],
+        "mastodon": "",
+        "bluesky": ""
+    },
+    {
+        "name": "PyLadies Hamburg",
+        "rss_feed": [
+            "https://www.youtube.com/feeds/videos.xml?channel_id=UC3RXyjipkLNG8HhVAzpZBCg"
         ],
         "mastodon": "",
         "bluesky": ""

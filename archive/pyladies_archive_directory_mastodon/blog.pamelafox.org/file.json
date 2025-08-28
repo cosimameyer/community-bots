@@ -1,0 +1,29 @@
+{
+    "link": [
+        "http://blog.pamelafox.org/2023/04/converting-spreadsheet-to-json-with.html",
+        "http://blog.pamelafox.org/2023/05/streaming-chatgpt-with-server-sent.html",
+        "http://blog.pamelafox.org/2023/06/providing-feedback-on-vs-code-python.html",
+        "http://blog.pamelafox.org/2023/05/a-dev-container-for-sqlalchemy-with.html",
+        "http://blog.pamelafox.org/2023/06/best-practices-for-prompting-github.html",
+        "http://blog.pamelafox.org/2023/06/tips-for-debugging-flask-deployments-to.html",
+        "http://blog.pamelafox.org/2023/03/adding-microsoft-graph-authentication.html",
+        "http://blog.pamelafox.org/2023/07/automated-accessibility-audits-for.html",
+        "http://blog.pamelafox.org/2023/08/accessibility-snapshot-testing-for.html",
+        "http://blog.pamelafox.org/2023/08/fetching-json-over-streaming-http.html",
+        "http://blog.pamelafox.org/2023/03/deploying-containerized-fastapi-app-to.html",
+        "http://blog.pamelafox.org/2023/03/rendering-matplotlib-charts-in-flask.html",
+        "http://blog.pamelafox.org/2023/03/fast-loading-python-dev-containers.html",
+        "http://blog.pamelafox.org/2023/09/best-practices-for-openai-chat-apps_16.html",
+        "http://blog.pamelafox.org/2023/09/best-practices-for-openai-chat-apps.html",
+        "http://blog.pamelafox.org/2023/09/using-sqlalchemy-20-in-flask.html",
+        "http://blog.pamelafox.org/2023/09/best-practices-for-openai-chat-apps-go.html",
+        "http://blog.pamelafox.org/2023/09/mocking-async-openai-package-calls-with.html",
+        "http://blog.pamelafox.org/2023/10/strategies-for-managing-dependencies.html",
+        "http://blog.pamelafox.org/2023/03/hosting-python-web-apps-on-azure-price.html",
+        "http://blog.pamelafox.org/2023/02/testing-apiflask-with-schemathesis.html",
+        "http://blog.pamelafox.org/2023/02/managing-python-dependency-versions-for.html",
+        "http://blog.pamelafox.org/2023/02/loading-multiple-python-versions-with.html",
+        "http://blog.pamelafox.org/2023/02/dis-this-disassemble-python-code-online.html",
+        "http://blog.pamelafox.org/2023/02/writing-static-maps-api-with-fastapi.html"
+    ]
+}
