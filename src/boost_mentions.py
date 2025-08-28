@@ -45,24 +45,24 @@ class BoostMentions():
             self.logger.info(' > Beginning search-loop and toot and boost toots')
             self.logger.info('------------------------')
 
-            self.logger.info(" > Reading statuses to identify tootable statuses")
+            self.logger.info(" > Reading statuses to identify tootable status")
             for notification in notifications:
                 if not notification.status.favourited and \
                         notification.status.account.acct != account.acct:
                     # Boost and favorite the new status
                     try:
                         self.logger.info(
-                            f"   * Boosting new toot by "
-                            f"{notification.account.username} "
-                            f"viewable at: {notification.status.url}"
+                            "   * Boosting new toot by %s viewable at: %s",
+                            notification.account.username,
+                            notification.status.url,
                         )
                         client.status_reblog(notification.status.id)
                         client.status_favourite(notification.status.id)
                     except Exception as e:
                         self.logger.info(
-                            f"   * Boosting new toot by "
-                            f" {notification.account.username} did not work "
-                            f"because {e}- going to the next toot."
+                            "   * Boosting new toot by %s did not work because %s - going to the next toot.",
+                            notification.account.username,
+                            e,
                         )
         elif self.config_dict["platform"] == "bluesky":
             client = login_bluesky(self.config_dict)
@@ -84,7 +84,7 @@ class BoostMentions():
                 ):
                     try:
                         self.logger.info(
-                            '   * Reposted post reference:',
+                            "   * Reposted post reference: %s",
                             client.repost(
                                 uri=notification.uri,
                                 cid=notification.cid
@@ -92,16 +92,19 @@ class BoostMentions():
                         )
                     except Exception as e:
                         self.logger.info(
-                            f"""
-                               * Reposting new post with URI {notification.uri}
-                            and CID {notification.cid} did not work because
-                            of {e} - going to the next post.
                             """
+                            * Reposting new post with URI %s
+                            and CID %s did not work because of %s - 
+                            going to the next post.
+                            """,
+                            notification.uri,
+                            notification.cid,
+                            e,
                         )
 
             client.app.bsky.notification.update_seen({'seen_at': last_seen_at})
             self.logger.info(
-                'Successfully process notification. Last seen at:',
+                'Successfully process notification. Last seen at: %s',
                 last_seen_at
             )
 
