@@ -1,4 +1,10 @@
+"""Module to log into Mastodon"""
+
+import logging
 from mastodon import Mastodon
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 def login_mastodon(config_dict):
     client_id, client_secret = Mastodon.create_app(
@@ -11,7 +17,10 @@ def login_mastodon(config_dict):
         client_secret=client_secret,
         api_base_url=config_dict["api_base_url"],
     )
-    print(f" > Logging in as {config_dict['username']} with password <TRUNCATED>")
+    logger.info(
+        ' > Logging in as %s with password <TRUNCATED>',
+        config_dict['username']
+        )
 
     client.log_in(
         config_dict["username"],
@@ -19,6 +28,6 @@ def login_mastodon(config_dict):
     )
     account = client.me()
     
-    print(" > Successfully logged in")
+    logger.info(' > Successfully logged in')
 
     return account, client

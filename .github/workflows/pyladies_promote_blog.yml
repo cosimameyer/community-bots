@@ -1,0 +1,73 @@
+name: Promote PyLadies' blog posts
+
+on:
+  schedule:
+    - cron: '0 7 1-31/2 * *' # will only run on odd days #'0 7 */3 * *' # '0 7 */3 * *' #'0 0 1 * *'  # "At 07:00 UTC every third day (which is 10 CET)"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo content
+        uses: actions/checkout@v2 # checkout the repository content
+
+      - name: setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9.16' # install the python version needed
+
+      - name: install python packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Execute py script for Mastodon 🦣
+        continue-on-error: true
+        env:
+          PLATFORM: "mastodon"
+          COUNTER: "pyladies_counter_mastodon.txt"
+          ARCHIVE_DIRECTORY: "pyladies_archive_directory_mastodon"
+          IMAGES: "pyladies_images"
+          JSON_FILE: "pyladies_meta_data.json"
+          CLIENT_NAME: "pyladies_bot"
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN_PYLADIES }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID_PYLADIES }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET_PYLADIES }}
+          PASSWORD: ${{ secrets.PASSWORD_PYLADIES }}
+          USERNAME: ${{ secrets.USERNAME_PYLADIES }}
+          RLADIES_BOT_CLIENTCRED_SECRET: ${{ secrets.PYLADIES_BOT_CLIENTCRED_SECRET }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python src/promote_blog_post.py
+
+      - name: Execute py script for Bluesky 🦋
+        env:
+          PLATFORM: "bluesky"
+          COUNTER: "pyladies_counter_bluesky.txt"
+          ARCHIVE_DIRECTORY: "pyladies_archive_directory_bluesky"
+          IMAGES: "pyladies_images"
+          JSON_FILE: "pyladies_meta_data.json"
+          CLIENT_NAME: "pyladies_bot"
+          PASSWORD: ${{ secrets.BSKY_PYLADIES }}
+          USERNAME: ${{ secrets.BSKY_USERNAME_PYLADIES }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python src/promote_blog_post.py
+  
+      - name: Commit files
+        id: commit
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "github-actions"
+          git add --all
+          if [-z "$(git status --porcelain)"]; then
+            echo "::set-output name=push::false"
+          else
+            git commit -m "Add changes" -a
+            echo "::set-output name=push::true"
+          fi
+        shell: bash
+          
+      - name: Push changes
+        if: steps.commit.outputs.push == 'true'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.SECRET_WRITE }}

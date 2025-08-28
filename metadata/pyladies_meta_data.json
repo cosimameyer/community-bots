@@ -1,0 +1,260 @@
+[
+    {
+        "name": "Anja Pilz",
+        "rss_feed": "",
+        "mastodon": "",
+        "bluesky": ""
+    },
+    {
+        "name": "Bilge Yucel",
+        "rss_feed": [
+            "https://medium.com/feed/@bilgeycl"
+        ],
+        "mastodon": "@bilgeyucel@sigmoid.social",
+        "bluesky": ""
+    },
+    {
+        "name": "Victoria Slocum",
+        "rss_feed": "",
+        "mastodon": "@victorialslocum@sigmoid.social",
+        "bluesky": "@victorialslocum.bsky.social"
+    },
+    {
+        "name": "Cheuk Ting Ho",
+        "rss_feed": [
+            "https://cheuk.dev/index.xml"
+        ],
+        "mastodon": "@cheukting_ho@fosstodon.org",
+        "bluesky": "@cheukting.bsky.social"
+    },
+    {
+        "name": "Christy Heaton",
+        "rss_feed": [
+            "https://christyheaton.github.io/feed.xml"
+        ],
+        "mastodon": "@christyheaton@mas.to",
+        "bluesky": ""
+    },
+    {
+        "name": "Corrie Bartelheimer",
+        "rss_feed": [
+            "https://www.samples-of-thoughts.com/tags/python/index.xml"
+        ],
+        "mastodon": "@corrieaar@ohai.social",
+        "bluesky": ""
+    },
+    {
+        "name": "Cosima Meyer",
+        "rss_feed": [
+            "https://cosimameyer.com/category/python-post/index.xml"
+        ],
+        "mastodon": "@cosima_meyer@mas.to",
+        "bluesky": "@cosima.bsky.social"
+    },
+    {
+        "name": "D\u00e9borah Mesquita",
+        "rss_feed": [
+            "https://medium.com/feed/@dehhmesquita"
+        ],
+        "mastodon": "",
+        "bluesky": ""
+    },
+    {
+        "name": "Ellen Schwartau",
+        "rss_feed": [
+            "http://ellenschwartau.com/feed/"
+        ],
+        "mastodon": "",
+        "bluesky": ""
+    },
+    {
+        "name": "Emily Riederer",
+        "rss_feed": [
+            "https://www.emilyriederer.com/tags/python/index.xml"
+        ],
+        "mastodon": "@emilyriederer@mastodon.social",
+        "bluesky": "@emilyriederer.bsky.social"
+    },
+    {
+        "name": "Ines Montani",
+        "rss_feed": [
+            "https://ines.io/feed"
+        ],
+        "mastodon": "@ines@sigmoid.social",
+        "bluesky": ""
+    },
+    {
+        "name": "Isabel Zimmerman",
+        "rss_feed": [
+            "https://isabelizimm.github.io/blog-python.xml"
+        ],
+        "mastodon": "@isabelizimm@fosstodon.org",
+        "bluesky": "@isabelizimm.bsky.social"
+    },
+    {
+        "name": "Jessica Greene",
+        "rss_feed": [
+            "https://medium.com/feed/@jessica0greene"
+        ],
+        "mastodon": "@sleepypioneer@mastodon.social",
+        "bluesky": ""
+    },
+    {
+        "name": "Jennifer HY Lin",
+        "rss_feed": [
+            "https://jhylin.github.io/Data_in_life_blog/index-python.xml"
+        ],
+        "mastodon": "@jhylin@fosstodon.org",
+        "bluesky": "@jhylin.bsky.social"
+    },
+    {
+        "name": "Jess Temporal",
+        "rss_feed": "",
+        "mastodon": "@jesstemporal@mastodon.online",
+        "bluesky": ""
+    },
+    {
+        "name": "Anastasia Karavdina",
+        "rss_feed": [
+            "https://www.karavdina.com/blog/blog-feed.xml"
+        ],
+        "mastodon": "",
+        "bluesky": ""
+    },
+    {
+        "name": "Karina Bartolome",
+        "rss_feed": [
+            "https://karbartolome-blog.netlify.app/categories/python/index.xml"
+        ],
+        "mastodon": "@karbartolome@mastodon.social",
+        "bluesky": ""
+    },
+    {
+        "name": "Lacey Henschel",
+        "rss_feed": [
+            "http://feeds.feedburner.com/LaceyWilliamsHenschel"
+        ],
+        "mastodon": "",
+        "bluesky": ""
+    },
+    {
+        "name": "Maren Westermann",
+        "rss_feed": [
+            "https://marenwestermann.github.io/feed.xml"
+        ],
+        "mastodon": "@maren@fosstodon.org",
+        "bluesky": ""
+    },
+    {
+        "name": "Mariatta",
+        "rss_feed": [
+            "https://mariatta.ca/index.xml"
+        ],
+        "mastodon": "@mariatta@fosstodon.org",
+        "bluesky": "@mariatta.ca"
+    },
+    {
+        "name": "Pamela Fox",
+        "rss_feed": [
+            "http://blog.pamelafox.org/feeds/posts/default/?q=label:python"
+        ],
+        "mastodon": "@pamelafox@fosstodon.org",
+        "bluesky": ""
+    },
+    {
+        "name": "PyLadies Berlin",
+        "rss_feed": [
+            "https://www.youtube.com/feeds/videos.xml?channel_id=UCVlzy-BMSYReFD0YnTzoh7w"
+        ],
+        "mastodon": "",
+        "bluesky": ""
+    },
+    {
+        "name": "PyLadies Bengaluru",
+        "rss_feed": [
+            "https://www.youtube.com/feeds/videos.xml?channel_id=UCRF8Cf4Ppe4OFed4zbgujjg"
+        ],
+        "mastodon": "",
+        "bluesky": ""
+    },
+    {
+        "name": "PyLadies Hamburg",
+        "rss_feed": [
+            "https://www.youtube.com/feeds/videos.xml?channel_id=UC3RXyjipkLNG8HhVAzpZBCg"
+        ],
+        "mastodon": "",
+        "bluesky": ""
+    },
+    {
+        "name": "PyLadies London",
+        "rss_feed": [
+            "https://www.youtube.com/feeds/videos.xml?channel_id=UCyyvi0HywaHZHafPUdQB38g"
+        ],
+        "mastodon": "",
+        "bluesky": ""
+    },
+    {
+        "name": "PyLadies SoFlo",
+        "rss_feed": [
+            "https://www.youtube.com/feeds/videos.xml?channel_id=UCUPLdokEtQlQmbaW9UkJEVQ"
+        ],
+        "mastodon": "",
+        "bluesky": ""
+    },
+    {
+        "name": "Lynn Root",
+        "rss_feed": [
+            "https://www.roguelynn.com/index.xml"
+        ],
+        "mastodon": "@roguelynn@mastodon.online",
+        "bluesky": ""
+    },
+    {
+        "name": "Sabrine Bendimerad",
+        "rss_feed": [
+            "https://medium.com/feed/@sabrine.bendimerad1"
+        ],
+        "mastodon": "",
+        "bluesky": ""
+    },
+    {
+        "name": "Stefanie Molin",
+        "rss_feed": [
+            "https://stefaniemolin.com/feeds/articles-rss.xml"
+        ],
+        "mastodon": "",
+        "bluesky": ""
+    },
+    {
+        "name": "Samantha Zeitlin",
+        "rss_feed": [
+            "https://szeitlin.github.io/index.xml"
+        ],
+        "mastodon": "",
+        "bluesky": ""
+    },
+    {
+        "name": "Tuana Celik",
+        "rss_feed": [
+            "https://medium.com/feed/@tuanacelik"
+        ],
+        "mastodon": "@tuana@sigmoid.social",
+        "bluesky": ""
+    },
+    {
+        "name": "Valery C. Briz",
+        "rss_feed": [
+            "https://dev.to/feed/valerybriz"
+        ],
+        "mastodon": "@valerybriz@fosstodon.org",
+        "bluesky": ""
+    },
+    {
+        "name": "Vicky Twomey-Lee",
+        "rss_feed": [
+            "https://dev.to/feed/whykay"
+        ],
+        "mastodon": "@whykay@mastodon.ie",
+        "bluesky": "@whykay.bsky.social"
+    }
+]

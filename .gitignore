@@ -96,3 +96,4 @@ celerybeat-s
 *.secret
 *.git
 .pdm-python
+.vscode/

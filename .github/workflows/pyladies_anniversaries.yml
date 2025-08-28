@@ -1,0 +1,64 @@
+name: Promote PyLadies' anniversaries
+
+on:
+  schedule:
+    - cron: '0 11 * * *' # will run every day at noon CET
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo content
+        uses: actions/checkout@v2 # checkout the repository content
+
+      - name: setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9.16' # install the python version needed
+
+      - name: install python packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Execute Python script on Mastodon 🦣
+        continue-on-error: true
+        env:
+          IMAGES: "anniversary_images"
+          CLIENT_NAME: "pyladies_bot"
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN_PYLADIES }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID_PYLADIES }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET_PYLADIES }}
+          PASSWORD: ${{ secrets.PASSWORD_PYLADIES }}
+          USERNAME: ${{ secrets.USERNAME_PYLADIES }}
+          BOT_CLIENTCRED_SECRET: ${{ secrets.PYLADIES_BOT_CLIENTCRED_SECRET }}
+        run: python src/promote_anniversaries.py
+
+      - name: Execute Python script on Bluesky 🦋
+        env:
+          IMAGES: "anniversary_images"
+          CLIENT_NAME: "pyladies_bot"
+          PLATFORM: "bluesky"
+          PASSWORD: ${{ secrets.BSKY_PYLADIES }}
+          USERNAME: ${{ secrets.BSKY_USERNAME_PYLADIES }}
+        run: python src/promote_anniversaries.py
+
+      - name: Commit files
+        id: commit
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "github-actions"
+          git add --all
+          if [-z "$(git status --porcelain)"]; then
+            echo "::set-output name=push::false"
+          else
+            git commit -m "Add changes" -a
+            echo "::set-output name=push::true"
+          fi
+        shell: bash
+        
+      - name: Push changes
+        if: steps.commit.outputs.push == 'true'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.SECRET_WRITE }}

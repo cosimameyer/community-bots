@@ -1,4 +1,13 @@
-[{"name":"Lynn Conway",
+[{"name":"Aishwarya Srinivasan",
+"date":"05-06",
+"bluesky": "",
+"description_bluesky": "Aishwarya\n✨ is Head of AI DevRel @ Fireworks AI\n✨ makes data science accessible as a content creator\n✨ is founder of Illuminate AI, a mentorship platform\n✨ is award-winning leader & community builder",
+"description_mastodon": "Aishwarya\n✨ is Head of AI Developer Relations @ Fireworks AI and content creator\n✨ makes complex data science topics accessible on social media\n✨ founded Illuminate AI, a mentorship platform to connect people\n✨ received multiple awards for her work\n✨ and much more!",
+"img":"aishwarya_srinivasan_small.png",
+"alt": "Image of Aishwarya Srinivasan (a dark-haired person with long hair, wearing earrings. The image has a darker background with nebula and angels.",
+"wiki_link":"https://www.youtube.com/@aishwaryasrinivasan"},
+
+{"name":"Lynn Conway",
 "date":"01-02",
 "bluesky": "",
 "description_bluesky": "Lynn\n✨ is a computer scientist and electrical engineer\n✨ a pioneer in microelectronics chip design, influencing chip design worldwide\n✨ is a transgender activist who paved the way for others",
@@ -327,6 +336,7 @@
 "description_mastodon": "Naomi\n✨ is a #Python instructor, speaker, and author\n✨ earned a PhD in Classics before transitioning to #Python 🐍\n✨ served as chair of the Python Software Foundation\n✨ received the PSF Distinguished Service Award 🏆\n✨ advocates for diversity in tech and founded Trans*Code Hackday\n✨ and much more!",
 "alt": "Image of Naomi Ceder (a blond-haired person wearing a blue sweater and glasses). The image has a darker background with nebula and Python symbols as well as '<Trans*Code/>'.",
 "wiki_link":"https://en.wikipedia.org/wiki/Naomi_Ceder"},
+
 
 {"name":"Joy Buolamwini",
 "date":"", 

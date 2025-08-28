@@ -8,6 +8,7 @@ repos:
         types: [python]
         files: \.py$
         verbose: true
+        stages: [push]
         args:
         - --fail-under=4
   - repo: https://github.com/pdm-project/pdm
