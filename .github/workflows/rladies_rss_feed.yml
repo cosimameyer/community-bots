@@ -1,0 +1,53 @@
+name: Update meta data for RSS feeds for R-Ladies
+
+on:
+  schedule:
+    - cron: '0 0 * * 2'  # "At 01:00 on day-of-month 1 and 15."
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo content
+        uses: actions/checkout@v2 # checkout the repository content
+
+      - name: setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9.16' # install the python version needed
+
+      - name: install python packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Execute py script # run get_rss_feed.py
+        env:
+          BASE_URL: "https://github.com/rladies/awesome-rladies-blogs/tree/main/blogs"
+          GITHUB_RAW_URL: "https://raw.githubusercontent.com/rladies/awesome-rladies-blogs/main/blogs"
+          JSON_FILE: "rladies_meta_data.json"
+        run: python src/get_rss_data.py
+
+      - name: Commit files
+        id: commit
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "github-actions"
+          git add --all
+          if ! git diff-index --quiet HEAD --; then 
+            git commit -m "Add changes" -a
+            echo "::set-output name=push::true"
+          fi
+#          if [-z "$(git status --porcelain)"]; then
+#            echo "::set-output name=push::false"
+#          else
+#            git commit -m "Add changes" -a
+#            echo "::set-output name=push::true"
+#          fi
+        shell: bash
+        
+      - name: Push changes
+        if: steps.commit.outputs.push == 'true'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.SECRET_WRITE }}

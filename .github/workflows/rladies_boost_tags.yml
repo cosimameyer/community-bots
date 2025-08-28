@@ -1,0 +1,44 @@
+name: Boost posts that the tag rladies
+
+on:
+    schedule:
+    - cron: '0 */6 * * *' #'5 */12 * * *'  
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+        - name: checkout repo content
+          uses: actions/checkout@v2 # checkout the repository content
+
+        - name: setup python
+          uses: actions/setup-python@v4
+          with:
+            python-version: '3.9.16' # install the python version needed
+
+        - name: install python packages
+          run: |
+            python -m pip install --upgrade pip
+            pip install -r requirements.txt
+
+        - name: Execute Python script for Mastodon 🦣
+          env:
+              PLATFORM: "mastodon"
+              CLIENT_NAME: "rladies_bot"
+              ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN_RLADIES }}
+              CLIENT_ID: ${{ secrets.CLIENT_ID_RLADIES }}
+              CLIENT_SECRET: ${{ secrets.CLIENT_SECRET_RLADIES }}
+              PASSWORD: ${{ secrets.PASSWORD_RLADIES }}
+              USERNAME: ${{ secrets.USERNAME_RLADIES }}
+              RLADIES_BOT_CLIENTCRED_SECRET: ${{ secrets.RLADIES_BOT_CLIENTCRED_SECRET }}
+              TAGS_TO_BOOST: "rladies"
+          run: python src/boost_tags.py
+          
+        - name: Execute Python script for Bluesky 🦋
+          env:
+              PLATFORM: "bluesky"
+              CLIENT_NAME: "rladies_bot"
+              PASSWORD: ${{ secrets.BSKY_RLADIES }}
+              USERNAME: ${{ secrets.BSKY_USERNAME_RLADIES }}
+              TAGS_TO_BOOST: "rladies"
+          run: python src/boost_tags.py
