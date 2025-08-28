@@ -1,7 +1,7 @@
 """Promote blog posts"""
 import logging
 import os
-import pickle
+import json
 import posixpath
 import shutil
 import time
@@ -47,8 +47,8 @@ class PromoteBlogPost():
                 "password": os.getenv("PASSWORD"),
                 "username": os.getenv("USERNAME"),
                 "client_name": os.getenv("CLIENT_NAME"),
-                "pickle_file": self._ensure_metadata_prefix(
-                    os.getenv("PICKLE_FILE", "")
+                "json_file": self._ensure_metadata_prefix(
+                    os.getenv("JSON_FILE", "")
                 ),
                 "gen_ai_support": True,
                 "gemini_api_key": os.getenv("GEMINI_API_KEY"),
@@ -71,8 +71,8 @@ class PromoteBlogPost():
             if self.config_dict["gen_ai_support"]:
                 genai.configure(api_key=self.config_dict["gemini_api_key"])
         else:
-            self.config_dict['pickle_file'] = self._ensure_metadata_prefix(
-                self.config_dict.get('pickle_file')
+            self.config_dict['json_file'] = self._ensure_metadata_prefix(
+                self.config_dict.get('json_file')
             )
             self.config_dict['counter'] = self._ensure_metadata_prefix(
                 self.config_dict.get('counter')
@@ -104,7 +104,7 @@ class PromoteBlogPost():
         else:
             client = None
             
-        feeds = self.read_metadata_pickle()
+        feeds = self.read_metadata_json()
         counter_name = self.read_counter_name()
 
         # Initiate count to post a maximum of 2 posts per run
@@ -194,15 +194,15 @@ class PromoteBlogPost():
         with open(self.config_dict["counter"], 'r', encoding='utf-8') as f:
             return f.read()
 
-    def read_metadata_pickle(self):
+    def read_metadata_json(self):
         """
-        Read metadata pickle file
+        Read metadata JSON file
         """
-        with open(self.config_dict["pickle_file"], 'rb') as fp:
+        with open(self.config_dict["json_file"], 'rb') as fp:
             self.logger.info(
                 "============================================="
             )
-            feeds = pickle.load(fp)
+            feeds = json.load(fp)
             self.logger.info('Meta data was successfully loaded')
             self.logger.info(
                 "============================================="
@@ -635,13 +635,13 @@ class PromoteBlogPost():
     def get_rss_feed_archive(feed):
         """Method to get RSS feed archive content"""
         archive_path = Path(feed['ARCHIVE'][0])
-        archive_file = archive_path / 'file.pkl'
+        archive_file = archive_path / 'file.json'
 
         if archive_path.exists():
             try:
                 with archive_file.open('rb') as fp:
-                    rss_feed_archive = pickle.load(fp)
-            except (FileNotFoundError, pickle.UnpicklingError):
+                    rss_feed_archive = json.load(fp)
+            except (FileNotFoundError, json.JSONDecodeError):
                 rss_feed_archive = {'link': []}
         else:
             if any(
@@ -782,9 +782,9 @@ class PromoteBlogPost():
 
     def _save_rss_feed_archive(self, feed, rss_feed_archive):
         """ Save RSS feed archive to a file """
-        archive_path = os.path.join(feed['ARCHIVE'][0], 'file.pkl')
+        archive_path = os.path.join(feed['ARCHIVE'][0], 'file.json')
         with open(archive_path, 'wb') as fp:
-            pickle.dump(rss_feed_archive, fp)
+            json.dump(rss_feed_archive, fp)
         self.logger.info("Archive for %s updated successfully.", feed['name'])
 
     @staticmethod

@@ -12,6 +12,7 @@ This projects marries multiple components:
 - Sharing Amazing Women in Tech
 
 Here are more posts about the project:
+
 - [Blog Post: Awesome PyLadies' Repository](https://cosimameyer.com/post/2023-04-25-building-mastodon-bots-and-promoting-the-community/)
 - [Blog Post: Building Mastodon Bots](https://cosimameyer.com/post/2023-09-17-building-mastodon-bots-and-promoting-the-community-part-2/)
 - [Blog Post: How to add Gemini to your Python project](https://cosimameyer.com/post/how-to-add-google-gemini-to-your-python-project-that-makes-use-of-github-actions/)

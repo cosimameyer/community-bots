@@ -115,51 +115,52 @@ class BoostTags():
                 """
             )
         elif self.config_dict["platform"] == "bluesky":
-            client = login_bluesky(self.config_dict)
-            self.logger.info(" > Fetched account data")
+            if self.no_dry_run:
+                client = login_bluesky(self.config_dict)
+                self.logger.info(" > Fetched account data")
 
-            self.logger.info(" > Beginning search-loop and repost posts")
-            self.logger.info("------------------------")
+                self.logger.info(" > Beginning search-loop and repost posts")
+                self.logger.info("------------------------")
 
-            timeline = client.get_timeline(algorithm='reverse-chronological')
-            cids = [post.post.cid for post in timeline.feed]
-            for tag in [self.config_dict['tags']]:
-                r = client.app.bsky.feed.search_posts(
-                    params={
-                        "q": tag,
-                        "tag": [tag],
-                        "sort": 'top',
-                        "limit": 50
-                    }
-                )
-                for post in r.posts:
-                    text = post.record.text
-                    tags_list = [
-                        tag.strip("#").lower()
-                        for tag in text.split()
-                        if tag.startswith("#")
-                    ]
-                    self.logger.info("---------------------")
-                    self.logger("Repost post by %s", post.author.handle)
-                    self.logger.info(post.record.text)
-                    self.logger.info("Tag list: %s", tags_list)
-                    if tag in tags_list and post.cid not in cids:
-                        try:
-                            result = client.repost(uri=post.uri, cid=post.cid)
-                            self.logger.info(
-                                "   * Reposted post reference: %s", result
-                            )
-                        except Exception as e:
-                            self.logger.info(
-                                "* Reposting new post with URI %s and CID %s "
-                                "did not work because of %s "
-                                "- going to the next post.",
-                                post.uri,
-                                post.cid,
-                                e,
-                            )
-                        time.sleep(0.1)
-            self.logger.info('Successfully process notification.')
+                timeline = client.get_timeline(algorithm='reverse-chronological')
+                cids = [post.post.cid for post in timeline.feed]
+                for tag in [self.config_dict['tags']]:
+                    r = client.app.bsky.feed.search_posts(
+                        params={
+                            "q": tag,
+                            "tag": [tag],
+                            "sort": 'top',
+                            "limit": 50
+                        }
+                    )
+                    for post in r.posts:
+                        text = post.record.text
+                        tags_list = [
+                            tag.strip("#").lower()
+                            for tag in text.split()
+                            if tag.startswith("#")
+                        ]
+                        self.logger.info("---------------------")
+                        self.logger("Repost post by %s", post.author.handle)
+                        self.logger.info(post.record.text)
+                        self.logger.info("Tag list: %s", tags_list)
+                        if tag in tags_list and post.cid not in cids:
+                            try:
+                                result = client.repost(uri=post.uri, cid=post.cid)
+                                self.logger.info(
+                                    "   * Reposted post reference: %s", result
+                                )
+                            except Exception as e:
+                                self.logger.info(
+                                    "* Reposting new post with URI %s and CID %s "
+                                    "did not work because of %s "
+                                    "- going to the next post.",
+                                    post.uri,
+                                    post.cid,
+                                    e,
+                                )
+                            time.sleep(0.1)
+                self.logger.info('Successfully process notification.')
 
 
 if __name__ == "__main__":

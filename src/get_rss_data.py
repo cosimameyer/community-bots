@@ -1,8 +1,7 @@
-"""Module to get RSS metadata from pkl files."""
+"""Module to get RSS metadata from JSON files."""
 import re
 import os
 import json
-import pickle
 import logging
 import requests
 from bs4 import BeautifulSoup
@@ -13,7 +12,7 @@ load_dotenv()
 
 class RSSData():
     """
-    Class to handle gathering RSS data from pkl files.
+    Class to handle gathering RSS data from JSON files.
     """
     def __init__(self, config_dict=None, no_dry_run=True):
         self.logger = logging.getLogger(__name__)
@@ -25,11 +24,11 @@ class RSSData():
         if self.no_dry_run:
             self.base_url = os.getenv("BASE_URL")
             self.github_raw_url = os.getenv("GITHUB_RAW_URL")
-            self.pickle_file = os.getenv("PICKLE_FILE")
+            self.json_file = os.getenv("JSON_FILE")
         else:
             self.base_url = self.config_dict["api_base_url"]
             self.github_raw_url = self.config_dict["github_raw_url"]
-            self.pickle_file = self.config_dict["pickle_file"]
+            self.json_file = self.config_dict["json_file"]
 
     def get_rss_data(self):
         """
@@ -39,12 +38,12 @@ class RSSData():
         meta_data = self.get_meta_data(contents_list)
 
         if self.no_dry_run:
-            with open(self.pickle_file, 'wb') as fp:
-                pickle.dump(meta_data, fp)
+            with open(self.json_file, 'wb') as fp:
+                json.dump(meta_data, fp)
 
             self.logger(
                 f"""
-                Meta data were saved successfully to file {self.pickle_file}
+                Meta data were saved successfully to file {self.json_file}
                 """
             )
 
@@ -53,7 +52,7 @@ class RSSData():
         """
         Method to extract elements.
         """
-        pattern = r'"((?!blog)[^"]*{})"'.format(suffix)
+        pattern = rf'"((?!blog)[^"]*{suffix})"'
         matches = re.findall(pattern, string)
         return matches
 
@@ -98,7 +97,7 @@ class RSSData():
     @staticmethod
     def extract_info(content):
         """
-        Extract metadata info from pkl file.
+        Extract metadata info from JSON file.
         """
 
         if 'rss_feed' in content:
@@ -136,7 +135,7 @@ class RSSData():
 
     def get_meta_data(self, contents_list):
         """
-        Method to get metadata based on pkl files.
+        Method to get metadata based on JSON files.
         """
         meta_data = []
         for content in contents_list:

@@ -58,7 +58,7 @@ class PromoteAnniversary():
         else:
             client = None
         
-        with open('events.json') as f:
+        with open('metadata/events.json') as f:
             events = json.load(f)
             
         if self.no_dry_run:
