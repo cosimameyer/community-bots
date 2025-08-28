@@ -32,17 +32,18 @@ class BoostMentions():
         self.logger.info("==========================")
         client_name = self.config_dict.get("client_name")
         self.logger.info('Initializing %s Bot', client_name)
-        self.logger.info("=================" + "=" * len(client_name or ""))
+        self.logger.info('=================' + '=' * len(client_name or ''))
         self.logger.info(' > Connecting to %s',
                          self.config_dict['api_base_url'])
 
         if self.config_dict["platform"] == "mastodon":
             account, client = login_mastodon(self.config_dict)
             notifications = client.notifications(types=['mention'])
-            self.logger.info(f" > Fetched account data for {account.acct}")
+            self.logger.info(' > Fetched account data for %s',
+                             account.acct)
 
-            self.logger.info(" > Beginning search-loop and toot and boost toots")
-            self.logger.info("------------------------")
+            self.logger.info(' > Beginning search-loop and toot and boost toots')
+            self.logger.info('------------------------')
 
             self.logger.info(" > Reading statuses to identify tootable statuses")
             for notification in notifications:
