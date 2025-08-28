@@ -26,10 +26,9 @@ The bots are currently live on Mastodon an Bluesky. I'd love to extend it to oth
 - [PyLadies Bot](https://bsky.app/profile/did:plc:cyhjdt4mp7h4c2ufw3nwcqqx)
 - [R-Ladies Bot]()
 
-#### Mastodon
+#### Mastodon 
 
-- [PyLadies Bot](https://botsin.space/@pyladies_bot)
-- [R-Ladies Bot]()
+> 👋 Those bots are currently looking for a new home (i.e., instance at Mastodon). If you know of something, please feel free to reach out!
 
 ### I have PyLadies/R-Ladies content (blog, YouTube channel, ...), how do I contribute it to the bot?
 

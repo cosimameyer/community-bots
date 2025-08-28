@@ -21,23 +21,23 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Execute py script for Mastodon 🦣
-        continue-on-error: true
-        env:
-          PLATFORM: "mastodon"
-          COUNTER: "rladies_counter_mastodon.txt"
-          ARCHIVE_DIRECTORY: "rladies_archive_directory_mastodon"
-          IMAGES: "rladies_images"
-          JSON_FILE: "rladies_meta_data.json"
-          CLIENT_NAME: "rladies_bot"
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN_RLADIES }}
-          CLIENT_ID: ${{ secrets.CLIENT_ID_RLADIES }}
-          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET_RLADIES }}
-          PASSWORD: ${{ secrets.PASSWORD_RLADIES }}
-          USERNAME: ${{ secrets.USERNAME_RLADIES }}
-          RLADIES_BOT_CLIENTCRED_SECRET: ${{ secrets.RLADIES_BOT_CLIENTCRED_SECRET }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: python src/promote_blog_post.py
+      # - name: Execute py script for Mastodon 🦣
+      #   continue-on-error: true
+      #   env:
+      #     PLATFORM: "mastodon"
+      #     COUNTER: "rladies_counter_mastodon.txt"
+      #     ARCHIVE_DIRECTORY: "rladies_archive_directory_mastodon"
+      #     IMAGES: "rladies_images"
+      #     JSON_FILE: "rladies_meta_data.json"
+      #     CLIENT_NAME: "rladies_bot"
+      #     ACCESS_TOKEN: ${{ secrets.RLADIES_MASTODON_ACCESS_TOKEN }}
+      #     CLIENT_ID: ${{ secrets.RLADIES_MASTODON_CLIENT_ID }}
+      #     CLIENT_SECRET: ${{ secrets.RLADIES_MASTODON_CLIENT_SECRET }}
+      #     PASSWORD: ${{ secrets.RLADIES_MASTODON_PASSWORD }}
+      #     USERNAME: ${{ secrets.RLADIES_MASTODON_USERNAME }}
+      #     RLADIES_MASTODON_CLIENTCRED_SECRET: ${{ secrets.RLADIES_MASTODON_CLIENTCRED_SECRET }}
+      #     GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      #   run: python src/promote_blog_post.py
 
       - name: Execute py script for Bluesky 🦋 # run get_rss_feed.py
         env:
@@ -47,8 +47,8 @@ jobs:
           IMAGES: "rladies_images"
           JSON_FILE: "rladies_meta_data.json"
           CLIENT_NAME: "rladies_bot"
-          PASSWORD: ${{ secrets.BSKY_RLADIES }}
-          USERNAME: ${{ secrets.BSKY_USERNAME_RLADIES }}
+          PASSWORD: ${{ secrets.RLADIES_BSKY_PASSWORD }}
+          USERNAME: ${{ secrets.RLADIES_BSKY_USERNAME }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python src/promote_blog_post.py
 
