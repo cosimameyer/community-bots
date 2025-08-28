@@ -696,7 +696,7 @@ class PromoteBlogPost():
 
         rss_feeds = feed.get('rss_feed', [])
         archive_paths = []
-        archive = self.config_dict.get('archive', '')
+        archive = f"archive/{self.config_dict.get('archive', '')}"
 
         if len(rss_feeds) > 1:
             for rss_feed in rss_feeds:
