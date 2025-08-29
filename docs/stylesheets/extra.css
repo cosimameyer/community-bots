@@ -1,5 +1,5 @@
 [data-md-color-scheme="bots"] {
-    --md-primary-fg-color: #2e739d;
+    --md-primary-fg-color: #74c1f1;
     --md-primary-fg-color--light: #A5D7F5;
     --md-primary-fg-color--dark: #A5D7F5;
     --md-accent-fg-color: #2e739d;
@@ -8,9 +8,9 @@
 }
 
 [data-md-color-scheme="slate"] {
-    --md-primary-fg-color: #2e739d;
+    --md-primary-fg-color: #74c1f1;
     --md-primary-fg-color--light: #A5D7F5;
-    --md-primary-fg-color--dark: #A5D7F5;
+    --md-primary-fg-color--dark: #85c3e9;
     --md-accent-fg-color: #2e739d;
     --md-hue: 210;
     --md-typeset-a-color: #506b7c;
