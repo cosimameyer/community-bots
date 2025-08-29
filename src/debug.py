@@ -1,4 +1,4 @@
-""" A script to make debugging easier for various social media bot modules. """
+""" This script aims at making debugging easier """
 import os
 from dotenv import load_dotenv
 
@@ -18,7 +18,8 @@ class DebugBots:
 
     Attributes:
         bot (str): The bot to debug ('rladies' or 'pyladies').
-        module_name (str): The module to debug ('blog', 'rss', 'boost_tags', 'boost_mentions', 'anniversary').
+        module_name (str): The module to debug ('blog', 'rss', 'boost_tags',
+                           'boost_mentions', 'anniversary').
         platform (str): The social media platform ('bluesky' or 'mastodon').
         no_dry_run (bool): If True, performs the action without a dry run.
     """
@@ -26,98 +27,105 @@ class DebugBots:
     def __init__(self):
         """Initializes DebugBots with default debugging parameters."""
         self.bot = 'rladies'  # 'pyladies' or 'rladies'
-        self.module_name = 'blog'  # 'blog' or 'boost_tags' or 'rss' or 'anniversary' or 'boost_mentions'
+        self.module_name = 'blog'  # 'blog', 'boost_tags', 'rss', 'anniversary', 'boost_mentions'
         self.platform = 'bluesky'  # 'bluesky' or 'mastodon'
         self.no_dry_run = False
 
-    def _get_config(self, module_type: str) -> dict:
+    def _get_config(self) -> dict:
         """
-        Generates a configuration dictionary based on bot, platform, and module type.
-
-        Args:
-            module_type (str): The type of module to get the config for.
+        Generates a configuration dictionary based on bot, platform,
+        and module type.
 
         Returns:
             dict: The configuration dictionary for the specified bot and module.
-
-        Raises:
-            ValueError: If an invalid bot or platform is specified.
         """
-        base_configs = {
+        # Centralized configuration data
+        config_data = {
             'pyladies': {
-                'client_name': 'pyladies_self.bot',
-                'mastodon': None,
-            },
-            'rladies': {
-                'client_name': 'rladies_self.bot',
-                'mastodon': None,
-            },
-        }
-
-        platform_configs = {
-            'bluesky': {
-                'pyladies': {
-                    'password': os.getenv('PYLADIES_BSKY_PASSWORD'),
-                    'username': os.getenv('PYLADIES_BSKY_USERNAME'),
+                'bluesky': {
+                    'blog': {
+                        'archive': 'pyladies_archive_directory_bluesky',
+                        'counter': 'metadata/pyladies_counter_bluesky.txt',
+                        'json_file': 'metadata/pyladies_meta_data.json',
+                        'images': 'pyladies_images',
+                        'gen_ai_support': True,
+                        'gemini_model_name': 'gemini-2.5-flash',
+                        'password': os.getenv('PYLADIES_BSKY_PASSWORD'),
+                        'username': os.getenv('PYLADIES_BSKY_USERNAME'),
+                    },
+                    'anniversary': {
+                        'password': os.getenv('PYLADIES_BSKY_PASSWORD'),
+                        'username': os.getenv('PYLADIES_BSKY_USERNAME'),
+                        'images': 'anniversary_images',
+                    },
                 },
-                'rladies': {
-                    'password': os.getenv('RLADIES_BSKY_PASSWORD'),
-                    'username': os.getenv('RLADIES_BSKY_USERNAME'),
+                'mastodon': {
+                    'blog': {
+                        'archive': 'pyladies_archive_directory',
+                        'counter': 'pyladies_counter.txt',
+                        'json_file': 'metadata/pyladies_meta_data.json',
+                    },
                 },
-            }
-        }
-
-        module_configs = {
-            'blog': {
-                'pyladies': {
-                    'archive': 'pyladies_archive_directory_bluesky' if self.platform == 'bluesky' else 'pyladies_archive_directory',
-                    'counter': 'metadata/pyladies_counter_bluesky.txt' if self.platform == 'bluesky' else 'pyladies_counter.txt',
-                    'json_file': 'metadata/pyladies_meta_data.json',
-                    'images': 'pyladies_images',
-                    'gen_ai_support': True,
-                    'gemini_model_name': 'gemini-2.5-flash',
-                },
-                'rladies': {
-                    'archive': 'rladies_archive_directory_bluesky' if self.platform == 'bluesky' else 'rladies_archive_directory',
-                    'counter': '../metadata/rladies_counter_bluesky.txt' if self.platform == 'bluesky' else 'rladies_counter.txt',
-                    'json_file': '../metadata/rladies_meta_data.json',
-                    'images': 'rladies_images',
-                },
-            },
-            'boost_tags': {
-                'rladies': {
-                    'tags': 'rladies',
-                },
-            },
-            'rss': {
-                'pyladies': {
+                'rss': {
                     'api_base_url': 'https://github.com/cosimameyer/awesome-pyladies-blogs/tree/main/blogs',
                     'github_raw_url': 'https://raw.githubusercontent.com/cosimameyer/awesome-pyladies-blogs/main/blogs',
                     'json_file': 'pyladies_meta_data.json',
                 },
-                'rladies': {
+                'shared': {
+                    'client_name': 'pyladies_self.bot',
+                    'mastodon': None,
+                },
+            },
+            'rladies': {
+                'bluesky': {
+                    'blog': {
+                        'archive': 'rladies_archive_directory_bluesky',
+                        'counter': '../metadata/rladies_counter_bluesky.txt',
+                        'json_file': '../metadata/rladies_meta_data.json',
+                        'images': 'rladies_images',
+                        'password': os.getenv('RLADIES_BSKY_PASSWORD'),
+                        'username': os.getenv('RLADIES_BSKY_USERNAME'),
+                    },
+                    'boost_tags': {
+                        'password': os.getenv('RLADIES_BSKY_PASSWORD'),
+                        'username': os.getenv('RLADIES_BSKY_USERNAME'),
+                        'tags': 'rladies',
+                    },
+                    'boost_mentions': {
+                        'password': os.getenv('RLADIES_BSKY_PASSWORD'),
+                        'username': os.getenv('RLADIES_BSKY_USERNAME'),
+                        'tags': 'rladies',
+                    },
+                    'anniversary': {
+                        'password': os.getenv('RLADIES_BSKY_PASSWORD'),
+                        'username': os.getenv('RLADIES_BSKY_USERNAME'),
+                        'images': 'anniversary_images',
+                    },
+                },
+                'rss': {
                     'api_base_url': 'https://github.com/rladies/awesome-rladies-blogs/tree/main/blogs',
                     'github_raw_url': 'https://raw.githubusercontent.com/rladies/awesome-rladies-blogs/main/blogs',
                     'json_file': 'rladies_meta_data.json',
                 },
-            },
-            'anniversary': {
-                'pyladies': {
-                    'images': 'anniversary_images',
-                },
-                'rladies': {
-                    'images': 'anniversary_images',
+                'shared': {
+                    'client_name': 'rladies_self.bot',
+                    'mastodon': None,
                 },
             },
         }
 
-        config = base_configs.get(self.bot, {})
-        config.update(module_configs.get(module_type, {}).get(self.bot, {}))
+        # Initialize config with shared data
+        config = config_data.get(self.bot, {}).get('shared', {}).copy()
 
+        # Update with platform-specific and module-specific data
+        platform_data = config_data.get(self.bot, {}).get(self.platform, {})
+        config.update(platform_data.get(self.module_name, {}))
+        config.update(platform_data.get('shared', {}))
+
+        # Add platform if it's bluesky
         if self.platform == 'bluesky':
-            config.update({'api_base_url': self.platform, 'platform': self.platform})
-            platform_specifics = platform_configs.get(self.platform, {}).get(self.bot, {})
-            config.update(platform_specifics)
+            config['platform'] = self.platform
+            config['api_base_url'] = self.platform
 
         return config
 
@@ -136,14 +144,14 @@ class DebugBots:
             'anniversary': PromoteAnniversary,
         }
 
-        handler_class = handlers.get(self.module_name)
-        if not handler_class:
+        if self.module_name not in handlers:
             raise ValueError(f'Invalid module_name: {self.module_name}')
 
-        config_dict = self._get_config(self.module_name)
+        config_dict = self._get_config()
+        handler_class = handlers[self.module_name]
         handler = handler_class(config_dict, self.no_dry_run)
 
-        # Call the appropriate method based on the module name
+        # Map module names to their corresponding methods
         method_map = {
             'blog': handler.promote_blog_post,
             'rss': handler.get_rss_data,
@@ -154,7 +162,9 @@ class DebugBots:
 
         method_to_call = method_map.get(self.module_name)
         if not method_to_call:
-            raise NotImplementedError(f'Handler for {self.module_name} not implemented.')
+            raise NotImplementedError(
+                f'Handler for {self.module_name} not implemented.'
+            )
 
         method_to_call()
 
