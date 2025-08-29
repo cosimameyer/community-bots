@@ -249,10 +249,8 @@ class PromoteAnniversary:
                 # Output the 'did' field
                 if did:
                     return did
-                else:
-                    print("The 'did' field was not found in the response.")
-            else:
-                print(f"Failed to retrieve data. Status code: {response.status_code}")
+                print("The 'did' field was not found in the response.")
+            print(f"Failed to retrieve data. Status code: {response.status_code}")
 
         except requests.RequestException as e:
             print("An error occurred:", e)
