@@ -120,7 +120,7 @@ class PromoteAnniversary:
                 url,
                 headers=headers,
                 stream=True,
-                REQUEST_TIMEOUT
+                timeout=REQUEST_TIMEOUT
             )
 
             with open(file_path, 'wb') as out_file:
@@ -213,7 +213,7 @@ class PromoteAnniversary:
             # Send a GET request to the URL
             response = requests.get(
                 url,
-                REQUEST_TIMEOUT
+                timeout=REQUEST_TIMEOUT
             )
             
             # Check if the request was successful
