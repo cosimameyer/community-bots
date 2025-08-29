@@ -42,7 +42,9 @@ class BoostMentions():
             self.logger.info(' > Fetched account data for %s',
                              account.acct)
 
-            self.logger.info(' > Beginning search-loop and toot and boost toots')
+            self.logger.info(
+                ' > Beginning search-loop and toot and boost toots'
+            )
             self.logger.info('------------------------')
 
             self.logger.info(" > Reading statuses to identify tootable status")
@@ -60,7 +62,7 @@ class BoostMentions():
                         client.status_favourite(notification.status.id)
                     except Exception as e:
                         self.logger.info(
-                            "   * Boosting new toot by %s did not work because %s - going to the next toot.",
+                            "   * Boosting new toot by %s did not work: %s ",
                             notification.account.username,
                             e,
                         )
@@ -71,7 +73,9 @@ class BoostMentions():
             self.logger.info(" > Beginning search-loop and repost posts")
             self.logger.info("------------------------")
 
-            self.logger.info(" > Reading statuses to identify postable statuses")
+            self.logger.info(
+                " > Reading statuses to identify postable statuses"
+            )
             last_seen_at = client.get_current_time_iso()
             response = client.app.bsky.notification.list_notifications()
             timeline = client.get_timeline(algorithm='reverse-chronological')
@@ -94,7 +98,7 @@ class BoostMentions():
                         self.logger.info(
                             """
                             * Reposting new post with URI %s
-                            and CID %s did not work because of %s - 
+                            and CID %s did not work because of %s -
                             going to the next post.
                             """,
                             notification.uri,
