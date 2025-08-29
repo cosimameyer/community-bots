@@ -25,6 +25,7 @@ load_dotenv()
 
 REQUEST_TIMEOUT = 10  # seconds
 
+
 class PromoteAnniversary:
     """
     Handles fetching event data and posting anniversary messages
@@ -54,12 +55,21 @@ class PromoteAnniversary:
                 self.config_dict["client_cred_file"] = os.getenv('BOT_CLIENTCRED_SECRET')
             else:
                 self.config_dict["api_base_url"] = "bluesky"
-        
+
         if self.no_dry_run:
             self.logger.info("")
-            self.logger.info("Initializing %s Bot", self.config_dict["client_name"])
-            self.logger.info("%s", "=" * (len(self.config_dict["client_name"]) + 17))
-            self.logger.info(" > Connecting to %s",  self.config_dict["api_base_url"])
+            self.logger.info(
+                "Initializing %s Bot",
+                self.config_dict["client_name"]
+            )
+            self.logger.info(
+                "%s",
+                "=" * (len(self.config_dict["client_name"]) + 17)
+            )
+            self.logger.info(
+                " > Connecting to %s",
+                self.config_dict["api_base_url"]
+            )
 
             if self.config_dict["platform"] == "mastodon":
                 _, client = login_mastodon(self.config_dict)
@@ -86,7 +96,7 @@ class PromoteAnniversary:
     @staticmethod
     def is_matching_current_date(date_str: str, date_format='%m-%d') -> bool:
         """
-        Method to define if the event matches the current date and 
+        Method to define if the event matches the current date and
         should be posted.
 
         Args:
@@ -94,17 +104,22 @@ class PromoteAnniversary:
             format (str, optional): _description_. Defaults to '%m-%d'.
 
         Returns:
-            bool: Defines whether the date matches the current date 
+            bool: Defines whether the date matches the current date
                 (True if yes)
         """
         current_date = datetime.now().strftime(date_format)
         return date_str == current_date
 
-    def download_image(self, url):
+    def download_image(self, url: str) -> str:
         """
-        # Taken from here: https://github.com/zeratax/mastodon-img-bot/blob/master/bot.py
-        :param url: string with the url to the image
-        :return: string with the path to the saved image
+        # Taken from here: 
+        # https://github.com/zeratax/mastodon-img-bot/blob/master/bot.py
+
+        Args:
+            url: string with the url to the image
+
+        Returns:
+            string with the path to the saved image
         """
         path = urlsplit(url).path
         filename = posixpath.basename(path)
@@ -177,10 +192,16 @@ class PromoteAnniversary:
             return text_builder
 
     def send_post(self, event, client):
-        """Turn the dict into post text and send the post"""
+        """Send a post to the configured platform (Mastodon or Bluesky)."""
         
-        self.logger.info(f"Preparing the post on {self.config_dict['client_name']} ({self.config_dict['platform']}) ...")
-        
+        self.logger.info(
+            """
+            Preparing the post on %s (%s) ...
+            """,
+            self.config_dict['client_name'],
+            self.config_dict['platform']
+        )
+
         post_txt = self.build_post(event)    
         if self.config_dict["platform"] == "mastodon":
             self.send_post_to_mastodon(event, client, post_txt)
@@ -189,6 +210,7 @@ class PromoteAnniversary:
             self.send_post_to_bluesky(event, client, post_txt, embed_external)        
 
     def build_embed_external(self, event, client):
+        """Build external embed object for Bluesky posts."""
         base_path = "https://raw.githubusercontent.com/cosimameyer/illustrations/main/amazing-women"
         url = f"{base_path}/{event['img']}"
         filename = self.download_image(url)
@@ -236,7 +258,11 @@ class PromoteAnniversary:
             print("An error occurred:", e)
 
     def send_post_to_bluesky(self, event, client, post_txt, embed_external):
-        print(f"Preview your post...\n\n{post_txt._buffer.getvalue().decode('utf-8')}")  
+        """Send a post to Bluesky with optional media embed."""
+        self.logger.info(
+            'Preview your post...\n\n%s',
+            post_txt._buffer.getvalue().decode('utf-8')
+        )
         try:
             client.send_post(text=post_txt, embed=embed_external)
             self.logger.info("Posted 🎉")
@@ -250,10 +276,7 @@ class PromoteAnniversary:
         return text_chunk
 
     def send_post_to_mastodon(self, event, client, post_txt):
-        """
-        Turn the dict into toot text
-        and send the toot
-        """
+        """Send a post to Mastodon, with media if available."""
         if event['img']:
             try:
                 print("Uploading media to mastodon")
@@ -272,23 +295,39 @@ class PromoteAnniversary:
                                         description=str(event["name"]))
 
                 print("ready to post")
-                client.status_post(post_txt, 
-                                media_ids=media_upload_mastodon)
+                client.status_post(
+                    post_txt,
+                    media_ids=media_upload_mastodon
+                )
 
                 print("posted")
             except Exception as e:
-                print(f"Urg, media could not be printed.\n Exception {event['name']} because of {e}")
+                self.logger.info(
+                    """
+                    Urg, media could not be printed.\n
+                    Exception %s because of %s
+                    """,
+                    event['name'],
+                    e
+                )
                 client.status_post(post_txt)
-                print("Posted toot without image.")     
+                self.logger.info("Posted toot without image.")   
         else:
             try: 
                 client.status_post(post_txt)
-                print("posted")     
+                self.logger.info("posted")     
             except Exception as e:
-                print(f"Urg, exception {event['toot']}. The reason was {e}")    
+                self.logger.info(
+                    "Urg, exception %s. The reason was %s",
+                    event['toot'],
+                    e
+                )    
                     
 
               
 if __name__ == "__main__":
-    promote_anniversary_handler = PromoteAnniversary(config_dict=None, no_dry_run=True)
+    promote_anniversary_handler = PromoteAnniversary(
+        config_dict=None,
+        no_dry_run=True
+    )
     promote_anniversary_handler.promote_anniversary()
