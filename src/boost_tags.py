@@ -9,6 +9,23 @@ from dotenv import load_dotenv
 import config
 from helper.login_bluesky import login_bluesky
 
+# Try to import platform-specific exceptions; provide safe fallbacks if unavailable.
+try:
+    from mastodon import MastodonNetworkError, MastodonAPIError  # type: ignore
+except ImportError:  # pragma: no cover - optional dependency
+    class MastodonNetworkError(Exception):
+        """Fallback Mastodon network error."""
+
+    class MastodonAPIError(Exception):
+        """Fallback Mastodon API error."""
+
+try:
+    from atproto.exceptions import AtProtocolError  # type: ignore
+except ImportError:  # pragma: no cover - optional dependency
+    class AtProtocolError(Exception):
+        """Fallback Bluesky/AtProto error."""
+
+
 load_dotenv()
 
 
@@ -56,8 +73,18 @@ class BoostTags:
                     tag,
                     limit=self.config_dict.get("timeline_depth_limit", 40),
                 )
-            except Exception as e:  # TODO: Replace with specific Mastodon exception
-                self.logger.error("Network error while fetching statuses: %s. Retrying...", e)
+            except (
+                MastodonNetworkError,
+                MastodonAPIError,
+                ConnectionError,
+                TimeoutError
+            ) as e:
+                # NOTE: Replace/extend with library-specific 
+                # exceptions as needed.
+                self.logger.error(
+                    "Network/API error when fetching statuses: %s. Retrying...",
+                    e
+                )
                 time.sleep(30)
                 continue
 
@@ -65,11 +92,10 @@ class BoostTags:
 
             for status in statuses:
                 domain = urlparse(status.url).netloc
-                # BUG: `account` undefined since login_mastodon is commented out
                 if (
-                    not status.favourited
-                    and status.account.acct != account.acct  # <-- FIX NEEDED
+                    not getattr(status, "favourited", False)
                     and domain not in config.IGNORE_SERVERS
+                    and getattr(status.account, "acct", None) != self.config_dict.get("username")
                 ):
                     self.logger.info(
                         "Boosting toot by %s tagged #%s (%s)",
@@ -124,7 +150,7 @@ class BoostTags:
             })
         else:
             self.config_dict["api_base_url"] = "bluesky"
-            
+
     def _boost_tags_mastodon(self) -> None:
         """Handle reposting tags on Mastodon."""
         # # Commented because it wasn't fully working
@@ -171,7 +197,7 @@ class BoostTags:
                             "Reposted post by %s (ref: %s)",
                             post.author.handle, result
                         )
-                    except Exception as e:
+                    except AtProtocolError as e:
                         self.logger.error(
                             "Failed to repost URI %s, CID %s: %s",
                             post.uri,
