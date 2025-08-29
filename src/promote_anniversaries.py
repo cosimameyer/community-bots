@@ -180,7 +180,9 @@ class PromoteAnniversary:
                     if tag_clean:
                         text_builder.tag(f"#{tag_clean}", tag_clean)
                 else:
-                    text_chunk_clean = self.add_whitespace_if_needed(text_chunk)
+                    text_chunk_clean = self.add_whitespace_if_needed(
+                        text_chunk
+                    )
                     text_builder.text(text_chunk_clean)
             text_builder.text('\n\n🔗 ')
             text_builder.link(event["wiki_link"], event["wiki_link"])
