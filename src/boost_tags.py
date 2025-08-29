@@ -141,7 +141,7 @@ class BoostTags():
                             if tag.startswith("#")
                         ]
                         self.logger.info("---------------------")
-                        self.logger("Repost post by %s", post.author.handle)
+                        self.logger.info("Repost post by %s", post.author.handle)
                         self.logger.info(post.record.text)
                         self.logger.info("Tag list: %s", tags_list)
                         if tag in tags_list and post.cid not in cids:

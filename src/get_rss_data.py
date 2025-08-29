@@ -41,7 +41,7 @@ class RSSData():
             with open(self.json_file, 'wb') as fp:
                 json.dump(meta_data, fp)
 
-            self.logger(
+            self.logger.info(
                 f"""
                 Meta data were saved successfully to file {self.json_file}
                 """
@@ -91,7 +91,7 @@ class RSSData():
                     json_response = json.loads(response)
                     contents_list.append(json_response)
                 except Exception as e:
-                    self.logger(f"{json_file} could not be accessed. {e}")
+                    self.logger.info(f"{json_file} could not be accessed. {e}")
             return contents_list
 
     @staticmethod
