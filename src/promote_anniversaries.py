@@ -1,3 +1,8 @@
+"""
+Module to promote anniversaries on Mastodon and Bluesky.
+Handles fetching events, building posts, and posting to platforms.
+"""
+
 import json
 import logging
 import os
@@ -20,9 +25,8 @@ load_dotenv()
 
 class PromoteAnniversary:
     def __init__(self, config_dict=None, no_dry_run=True):
-        self.logger = logging.getLogger(__name__)
         logging.basicConfig(level=logging.INFO)
-        
+        self.logger = logging.getLogger(__name__)
         self.config_dict = config_dict
         self.no_dry_run = no_dry_run
 
@@ -50,17 +54,17 @@ class PromoteAnniversary:
             self.logger.info("Initializing %s Bot", self.config_dict["client_name"])
             self.logger.info("%s", "=" * (len(self.config_dict["client_name"]) + 17))
             self.logger.info(" > Connecting to %s",  self.config_dict["api_base_url"])
-            
+
             if self.config_dict["platform"] == "mastodon":
                 _, client = login_mastodon(self.config_dict)
             elif self.config_dict["platform"] == "bluesky":
                 client = login_bluesky(self.config_dict)
         else:
             client = None
-        
+
         with open('metadata/events.json') as f:
             events = json.load(f)
-            
+
         if self.no_dry_run:
             for event in events:
                 if self.is_matching_current_date(event["date"]):
@@ -271,4 +275,3 @@ class PromoteAnniversary:
 if __name__ == "__main__":
     promote_anniversary_handler = PromoteAnniversary(config_dict=None, no_dry_run=True)
     promote_anniversary_handler.promote_anniversary()
-
