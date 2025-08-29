@@ -1,0 +1,88 @@
+site_name: Community Bots
+site_url: https://cosimameyer.github.io/community-bots/
+repo_url: https://github.com/cosimameyer/community-bots
+repo_name: cosimameyer/community-bots
+
+theme:
+  name: "material"
+  icon:
+    logo: material/heart
+    repo: material/github
+  features:
+    - search.highlight
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: bots
+      primary: light blue
+      accent: light blue
+      toggle:
+        icon: material/lightbulb
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: light blue
+      accent: light blue
+      toggle:
+        icon: material/lightbulb-outline
+        name: Switch to light mode
+
+extra_css:
+  - stylesheets/extra.css
+  
+extra:
+  consent:
+    title: Cookie consent
+    description: >- 
+      I took great care to disable all third party cookies and scripts. However, there might be some cookies left which would like to be used. 
+    actions:
+      - accept
+      - reject
+      - manage   
+    cookies:
+      github:
+        name: GitHub
+        checked: false
+      analytics:
+        name: Google Analytics
+        checked: false
+
+copyright: >
+  Copyright &copy; 2023 –
+  <a href="#__consent">Change cookie settings</a>
+
+plugins:
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          options:
+            show_submodules: true
+            show_root_heading: false
+            show_root_toc_entry: false
+            show_root_full_path: false
+            heading_level: 3
+  - search:
+      lang: en
+
+markdown_extensions:
+  - md_in_html
+  - attr_list
+  - toc:
+      permalink: true
+  - markdown_include.include:
+      base_path: '.'
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+
+nav:
+  - Welcome:
+      - About the Project: index.md
+      - Amazing Women in Tech Gallery: https://gallery.cosimameyer.com/amazing-women-in-tech/
+      - Contribute: contribute.md
+  - API Reference: reference.md
+  - News: https://github.com/cosimameyer/community-bots/releases
