@@ -81,7 +81,8 @@ class RSSData:
 
         Raises:
             requests.HTTPError: If the request to `self.base_url` fails.
-            json.JSONDecodeError: If the embedded script cannot be parsed as JSON.
+            json.JSONDecodeError: If the embedded script cannot be parsed
+                                    as JSON.
             AttributeError: If the expected DOM structure is missing.
         """
         response = requests.get(self.base_url, timeout=REQUEST_TIMEOUT)
@@ -108,7 +109,8 @@ class RSSData:
 
         Raises:
             RuntimeError: If no JSON file URLs were found.
-            requests.HTTPError: If fetching a JSON file fails with an HTTP error.
+            requests.HTTPError: If fetching a JSON file fails with an HTTP
+                                error.
             json.JSONDecodeError: If a response is not valid JSON.
         """
         json_files = self.get_json_file_names()
