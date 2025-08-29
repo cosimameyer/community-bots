@@ -23,7 +23,13 @@ from helper.login_mastodon import login_mastodon
 
 load_dotenv()
 
+REQUEST_TIMEOUT = 10  # seconds
+
 class PromoteAnniversary:
+    """
+    Handles fetching event data and posting anniversary messages
+    to social platforms.
+    """
     def __init__(self, config_dict=None, no_dry_run=True):
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
@@ -62,7 +68,7 @@ class PromoteAnniversary:
         else:
             client = None
 
-        with open('metadata/events.json') as f:
+        with open('metadata/events.json', encoding='utf-8') as f:
             events = json.load(f)
 
         if self.no_dry_run:
@@ -78,17 +84,20 @@ class PromoteAnniversary:
                     #    continue
 
     @staticmethod
-    def is_matching_current_date(date_str: str, format='%m-%d') -> bool:
-        """Method to define if the event matches the current date and should be posted
+    def is_matching_current_date(date_str: str, date_format='%m-%d') -> bool:
+        """
+        Method to define if the event matches the current date and 
+        should be posted.
 
         Args:
             date_str (str): Date taken from event dictionary
             format (str, optional): _description_. Defaults to '%m-%d'.
 
         Returns:
-            bool: Defines whether the date matches the current date (True if yes)
+            bool: Defines whether the date matches the current date 
+                (True if yes)
         """
-        current_date = datetime.now().strftime(format)
+        current_date = datetime.now().strftime(date_format)
         return date_str == current_date
 
     def download_image(self, url):
@@ -107,7 +116,12 @@ class PromoteAnniversary:
 
             headers = {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:20.0) Gecko/20100101 Firefox/20.0'}
-            response = requests.get(url, headers=headers, stream=True)
+            response = requests.get(
+                url,
+                headers=headers,
+                stream=True,
+                REQUEST_TIMEOUT
+            )
 
             with open(file_path, 'wb') as out_file:
                 shutil.copyfileobj(
@@ -197,7 +211,10 @@ class PromoteAnniversary:
         url = f"https://bsky.social/xrpc/com.atproto.identity.resolveHandle?handle={platform_user_handle.lstrip('@')}"
         try:
             # Send a GET request to the URL
-            response = requests.get(url)
+            response = requests.get(
+                url,
+                REQUEST_TIMEOUT
+            )
             
             # Check if the request was successful
             if response.status_code == 200:
