@@ -38,6 +38,9 @@ class PromoteAnniversary:
         self.no_dry_run = no_dry_run
 
     def promote_anniversary(self):
+        """
+        Method to promote anniversaries on social media.
+        """
         if (self.config_dict is None) and (self.no_dry_run):
             self.config_dict = {
                 "platform": os.getenv("PLATFORM"),
@@ -48,11 +51,15 @@ class PromoteAnniversary:
             }
             if self.config_dict["platform"] == "mastodon":
                 self.config_dict["api_base_url"] = config.API_BASE_URL
-                self.config_dict["mastodon_visibility"] = config.MASTODON_VISIBILITY
+                self.config_dict[
+                    "mastodon_visibility"
+                ] = config.MASTODON_VISIBILITY
                 self.config_dict["client_id"] = os.getenv("CLIENT_ID")
                 self.config_dict["client_secret"] = os.getenv("CLIENT_SECRET")
                 self.config_dict["access_token"] = os.getenv("ACCESS_TOKEN")
-                self.config_dict["client_cred_file"] = os.getenv('BOT_CLIENTCRED_SECRET')
+                self.config_dict[
+                    "client_cred_file"
+                ] = os.getenv('BOT_CLIENTCRED_SECRET')
             else:
                 self.config_dict["api_base_url"] = "bluesky"
 
@@ -87,10 +94,18 @@ class PromoteAnniversary:
                     self.send_post(event, client)
                     continue
                     # if  self.config_dict["platform"] == "mastodon":
-                    #     send_post_to_mastodon(event,  self.config_dict, client)
+                    #     send_post_to_mastodon(
+                    #         event,
+                    #         self.config_dict,
+                    #         client
+                    #     )
                     #     continue
                     # elif  self.config_dict["platform"] == "bluesky":
-                    #     send_post_to_bluesky(event,  self.config_dict, client)
+                    #     send_post_to_bluesky(
+                    #         event,
+                    #         self.config_dict,
+                    #         client
+                    #     )
                     #    continue
 
     @staticmethod
@@ -112,8 +127,8 @@ class PromoteAnniversary:
 
     def download_image(self, url: str) -> str:
         """
-        # Taken from here: 
-        # https://github.com/zeratax/mastodon-img-bot/blob/master/bot.py
+        Method downloads images. It's heavily inspired by:
+        https://github.com/zeratax/mastodon-img-bot/blob/master/bot.py
 
         Args:
             url: string with the url to the image
@@ -130,7 +145,11 @@ class PromoteAnniversary:
                 os.makedirs(self.config_dict['images'])
 
             headers = {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:20.0) Gecko/20100101 Firefox/20.0'}
+                'User-Agent': (
+                    'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:20.0) '
+                    'Gecko/20100101 Firefox/20.0'
+                )
+            }
             response = requests.get(
                 url,
                 headers=headers,
@@ -159,7 +178,11 @@ class PromoteAnniversary:
 
         if self.config_dict["platform"] == "mastodon":
             toot_str = ""
-            toot_str += f"Let's meet {event['name']} ✨\n\n{event['description_mastodon']}\n\n🔗 {event['wiki_link']}"
+            toot_str += (
+                f"Let's meet {event['name']} ✨\n\n"
+                f"{event['description_mastodon']}\n\n"
+                f"🔗 {event['wiki_link']}"
+            )
             toot_str += tags
             return toot_str
         if self.config_dict["platform"] == "bluesky":
@@ -172,7 +195,11 @@ class PromoteAnniversary:
             else:
                 text_builder.text(f"Let's meet {event['name']} ⭐️\n\n")
             split_text = re.split(r'(#\w+)', event["description_bluesky"])
-            split_text = [item.rstrip(' ') for item in split_text if item.strip()]
+            split_text = [
+                item.rstrip(' ')
+                for item in split_text
+                if item.strip()
+            ]
             for text_chunk in split_text:
                 if text_chunk.startswith('#'):
                     for tag in text_chunk.split("#"):
@@ -195,7 +222,7 @@ class PromoteAnniversary:
 
     def send_post(self, event, client):
         """Send a post to the configured platform (Mastodon or Bluesky)."""
-        
+
         self.logger.info(
             """
             Preparing the post on %s (%s) ...
@@ -204,16 +231,19 @@ class PromoteAnniversary:
             self.config_dict['platform']
         )
 
-        post_txt = self.build_post(event)    
+        post_txt = self.build_post(event)
         if self.config_dict["platform"] == "mastodon":
             self.send_post_to_mastodon(event, client, post_txt)
         elif self.config_dict["platform"] == "bluesky":
             embed_external = self.build_embed_external(event, client)
-            self.send_post_to_bluesky(event, client, post_txt, embed_external)        
+            self.send_post_to_bluesky(event, client, post_txt, embed_external)
 
     def build_embed_external(self, event, client):
         """Build external embed object for Bluesky posts."""
-        base_path = "https://raw.githubusercontent.com/cosimameyer/illustrations/main/amazing-women"
+        repo_url = (
+            "https://raw.githubusercontent.com/cosimameyer/illustrations/main"
+        )
+        base_path = f"{repo_url}/amazing-women"
         url = f"{base_path}/{event['img']}"
         filename = self.download_image(url)
         with open(filename, 'rb') as f:
@@ -229,30 +259,39 @@ class PromoteAnniversary:
                 thumb=thumb.blob,
             )
         )
-        
+
     @staticmethod
-    def get_bluesky_did(platform_user_handle):
-        url = f"https://bsky.social/xrpc/com.atproto.identity.resolveHandle?handle={platform_user_handle.lstrip('@')}"
+    def get_bluesky_did(platform_user_handle: str):
+        """
+        Method to extract the Bluesky specific unique user ID (`did`).
+
+        Args:
+            platform_user_handle (str): User handle of bluesky
+
+        Returns:
+            str: did
+        """
+        url = (
+            f"https://bsky.social/xrpc/com.atproto.identity.resolveHandle?"
+            f"handle={platform_user_handle.lstrip('@')}"
+        )
         try:
-            # Send a GET request to the URL
             response = requests.get(
                 url,
                 timeout=REQUEST_TIMEOUT
             )
-            
-            # Check if the request was successful
+
             if response.status_code == 200:
-                # Parse the JSON response
                 data = response.json()
-                
-                # Extract the 'did' field
+
                 did = data.get("did")
-                
-                # Output the 'did' field
+
                 if did:
                     return did
                 print("The 'did' field was not found in the response.")
-            print(f"Failed to retrieve data. Status code: {response.status_code}")
+            print(
+                f"Failed to retrieve data. Status code: {response.status_code}"
+            )
 
         except requests.RequestException as e:
             print("An error occurred:", e)
@@ -280,12 +319,16 @@ class PromoteAnniversary:
         if event['img']:
             try:
                 print("Uploading media to mastodon")
-                base_path = "https://raw.githubusercontent.com/cosimameyer/illustrations/main/amazing-women"
+                base_path = (
+                    "https://raw.githubusercontent.com/"
+                    "cosimameyer/illustrations/main/"
+                    "amazing-women"
+                )
                 url = f"{base_path}/{event['img']}"
-                
+
                 filename = self.download_image(url)
                 media_upload_mastodon = client.media_post(filename)
-                
+
                 print("adding description")
                 if event["alt"]:
                     client.media_update(media_upload_mastodon,
@@ -311,20 +354,19 @@ class PromoteAnniversary:
                     e
                 )
                 client.status_post(post_txt)
-                self.logger.info("Posted toot without image.")   
+                self.logger.info("Posted toot without image.")
         else:
-            try: 
+            try:
                 client.status_post(post_txt)
-                self.logger.info("posted")     
+                self.logger.info("posted")
             except Exception as e:
                 self.logger.info(
                     "Urg, exception %s. The reason was %s",
                     event['toot'],
                     e
-                )    
-                    
+                )
 
-              
+
 if __name__ == "__main__":
     promote_anniversary_handler = PromoteAnniversary(
         config_dict=None,

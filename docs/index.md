@@ -6,12 +6,12 @@
 
 This project focuses on building community-driven bots for Bluesky and Mastodon to support and grow the Python, R, and data community. The bots help by 
 
-- boosting posts tagged with #pyladies or #rladies, 
-- sharing portraits of amazing women in tech, 
-- posting useful resources by PyLadies and R-Ladies, and 
-- celebrating community achievements. 
+- Boosting posts tagged with #pyladies or #rladies, 
+- Sharing portraits of amazing women in tech, 
+- Posting useful resources by PyLadies and R-Ladies, and 
+- Celebrating community achievements. 
 
-Wit these bots, I hope to give others an automated megaphone to increase visibility for underrepresented groups in the tech space.
+With these bots, I hope to give others an automated megaphone to increase visibility for underrepresented groups in the tech space.
 
 ![](img/pyladies_bot_megaphone.png)
 

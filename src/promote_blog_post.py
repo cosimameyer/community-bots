@@ -31,7 +31,7 @@ class PromoteBlogPost():
         self.process_images = False
         self.no_dry_run = no_dry_run
         self.config_dict = config_dict
-        
+
     def get_config(self):
         """
         Get config file
@@ -80,7 +80,7 @@ class PromoteBlogPost():
 
     def promote_blog_post(self):
         """Core method to promote blog post"""
-        
+
         self.get_config()
 
         if self.no_dry_run:
@@ -103,7 +103,7 @@ class PromoteBlogPost():
                 client = login_bluesky(self.config_dict)
         else:
             client = None
-            
+
         feeds = self.read_metadata_json()
         counter_name = self.read_counter_name()
 
@@ -122,7 +122,7 @@ class PromoteBlogPost():
                     count_post,
                     client
                 )
-                
+
     def process_feeds(self, feeds, counter_name, count_post, client):
         """
         Method to handle processing of all feeds.
@@ -132,7 +132,7 @@ class PromoteBlogPost():
                 continue
             if len(feed['rss_feed']) == 0 or feed['rss_feed'] == [None]:
                 continue
-            
+
             is_last_feed = feed['name'] == feeds[-1]['name']
 
             if count_post == 0 and is_last_feed:
@@ -186,7 +186,7 @@ class PromoteBlogPost():
             encoding='utf-8'
         ) as txt_file:
             txt_file.write(counter_name)
-        
+
     def read_counter_name(self):
         """
         Read counter name from txt file
@@ -496,7 +496,7 @@ class PromoteBlogPost():
 
         if name:
             basis_text += f"👤 {name}"
-            
+
         if self.config_dict.get('platform', '') == 'mastodon':
             return self.build_post_mastodon(
                 basis_text,
@@ -690,7 +690,7 @@ class PromoteBlogPost():
         if "www.youtube.com" in domain or "medium.com" in domain:
             return base_path / feed_name_slug / feed_name_slug
         return base_path
-    
+
     def get_folder_path(self, feed):
         """Method to identify folder path"""
 
