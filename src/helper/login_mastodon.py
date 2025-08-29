@@ -6,6 +6,7 @@ from mastodon import Mastodon
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
+
 def login_mastodon(config_dict):
     client_id, client_secret = Mastodon.create_app(
                     config_dict["client_name"],
@@ -27,7 +28,7 @@ def login_mastodon(config_dict):
         config_dict["password"],
     )
     account = client.me()
-    
+
     logger.info(' > Successfully logged in')
 
     return account, client
