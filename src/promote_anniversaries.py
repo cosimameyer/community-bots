@@ -18,7 +18,7 @@ from helper.login_mastodon import login_mastodon
 
 load_dotenv()
 
-class PromoteAnniversary():
+class PromoteAnniversary:
     def __init__(self, config_dict=None, no_dry_run=True):
         self.logger = logging.getLogger(__name__)
         logging.basicConfig(level=logging.INFO)
