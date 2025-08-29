@@ -162,7 +162,7 @@ class PromoteAnniversary:
             toot_str += f"Let's meet {event['name']} ✨\n\n{event['description_mastodon']}\n\n🔗 {event['wiki_link']}"
             toot_str += tags
             return toot_str
-        elif self.config_dict["platform"] == "bluesky":
+        if self.config_dict["platform"] == "bluesky":
             text_builder = client_utils.TextBuilder()
             if event["bluesky"]:
                 did = self.get_bluesky_did(event["bluesky"])
