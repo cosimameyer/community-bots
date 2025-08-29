@@ -103,15 +103,20 @@ class DebugBots:
                     "username": os.getenv("RLADIES_BSKY_USERNAME"),
                     "platform": self.platform,
                 }
-            return None  # Added to ensure consistent return
+            return {
+                "archive": "rladies_archive_directory",
+                "counter": "../metadata/rladies_counter.txt",
+                "json_file": "../metadata/rladies_meta_data.json",
+                "client_name": "rladies_self.bot",
+                "mastodon": None,
+            }
+
+        return None
 
     def get_config_boost(self):
         """Method to generate config for boosting tags"""
         if self.bot == 'pyladies':
-            return {
-                "client_name": "pyladies_self.bot",
-                "mastodon": None,
-            }
+            return {"client_name": "pyladies_self.bot", "mastodon": None}
 
         if self.bot == 'rladies':
             if self.platform == "bluesky":
@@ -124,12 +129,12 @@ class DebugBots:
                     "platform": self.platform,
                     "tags": "rladies",
                 }
-            return None  # Ensure consistent return
+            return {"client_name": "rladies_self.bot", "mastodon": None}
+
+        return None
 
     def get_config_anniversary(self):
-        """Method to get all required parameters for the config_dict for the
-        promote_anniversaries approach.
-        """
+        """Method to get config for promoting anniversaries"""
         if self.bot == 'pyladies':
             if self.platform == 'bluesky':
                 return {
@@ -154,7 +159,9 @@ class DebugBots:
                     'images': 'anniversary_images',
                     'platform': self.platform,
                 }
-            return None  # Ensure consistent return
+            return {'client_name': 'rladies_self.bot', 'mastodon': None}
+
+        return None
 
 if __name__ == '__main__':
     debug_bots = DebugBots()
