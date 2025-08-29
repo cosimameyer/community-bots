@@ -127,18 +127,18 @@ class BoostTags:
             
     def _boost_tags_mastodon(self) -> None:
         """Handle reposting tags on Mastodon."""
-            # # Commented because it wasn't fully working
+        # # Commented because it wasn't fully working
 
-            # account, client = login_mastodon(config_dict)
-            # self.logger.info(f" > Fetched account data for {account.acct}")
+        # account, client = login_mastodon(config_dict)
+        # self.logger.info(f" > Fetched account data for {account.acct}")
 
-            # repost_tags_mastodon(client, config_dict)
-            self.logger.info(
-                """
-                This feature currently doesn't work for Mastodon.
-                It's deployed using AWS.
-                """
-            )
+        # repost_tags_mastodon(client, config_dict)
+        self.logger.info(
+            """
+            This feature currently doesn't work for Mastodon.
+            It's deployed using AWS.
+            """
+        )
 
     def _boost_tags_bluesky(self) -> None:
         """Handle reposting tags on Bluesky."""
