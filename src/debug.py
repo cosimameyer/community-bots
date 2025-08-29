@@ -1,4 +1,4 @@
-""" This script aims at making debugging easier """
+""" A script to make debugging easier for various social media bot modules. """
 import os
 from dotenv import load_dotenv
 
@@ -11,152 +11,154 @@ from boost_mentions import BoostMentions
 load_dotenv()
 
 
-class DebugBots():
+class DebugBots:
     """
-    Class to handle debugging of all modules.
+    A class for debugging various social media bot modules by
+    centralizing configuration and execution logic.
+
+    Attributes:
+        bot (str): The bot to debug ('rladies' or 'pyladies').
+        module_name (str): The module to debug ('blog', 'rss', 'boost_tags', 'boost_mentions', 'anniversary').
+        platform (str): The social media platform ('bluesky' or 'mastodon').
+        no_dry_run (bool): If True, performs the action without a dry run.
     """
+
     def __init__(self):
+        """Initializes DebugBots with default debugging parameters."""
         self.bot = 'rladies'  # 'pyladies' or 'rladies'
-        self.what_to_debug = 'blog'  # 'blog' or 'boost_tags' or 'rss' or 'anniversary
+        self.module_name = 'blog'  # 'blog' or 'boost_tags' or 'rss' or 'anniversary' or 'boost_mentions'
         self.platform = 'bluesky'  # 'bluesky' or 'mastodon'
         self.no_dry_run = False
 
-    def start_debug(self):
-        """Start debugging."""
-        if self.what_to_debug == 'blog':
-            config_dict = self.get_config_blog()
-            promote_blog_post_handler = PromoteBlogPost(
-                config_dict,
-                self.no_dry_run
-            )
-            promote_blog_post_handler.promote_blog_post()
-
-        elif self.what_to_debug == 'rss':
-            config_dict = self.get_config_rss()
-            rss_data_handler = RSSData(
-                config_dict,
-                self.no_dry_run
-            )
-            rss_data_handler.get_rss_data()
-
-        elif self.what_to_debug == 'boost_tags':
-            config_dict = self.get_config_boost()
-            boost_tags_handler = BoostTags(
-                config_dict,
-                self.no_dry_run
-            )
-            boost_tags_handler.boost_tags()
-
-        elif self.what_to_debug == 'boost_mentions':
-            config_dict = self.get_config_boost()
-            boost_tags_handler = BoostMentions(
-                config_dict,
-                self.no_dry_run
-            )
-            boost_tags_handler.boost_mentions()
-
-        elif self.what_to_debug == 'anniversary':
-            config_dict = self.get_config_anniversary()
-            promote_anniversary_handler = PromoteAnniversary(
-                config_dict,
-                self.no_dry_run
-            )
-            promote_anniversary_handler.promote_anniversary()
-
-    def get_config_blog(self):
-        """Method to generate config for promoting blog posts"""
-        if self.bot == 'pyladies':
-            if self.platform == 'bluesky':
-                return {"archive": "pyladies_archive_directory_bluesky",
-                        "counter": "metadata/pyladies_counter_bluesky.txt",
-                        "json_file": "metadata/pyladies_meta_data.json",
-                        "client_name": "pyladies_self.bot",
-                        "images": "pyladies_images",
-                        "api_base_url": self.platform,
-                        "mastodon": None,
-                        "gen_ai_support": True,
-                        "gemini_model_name": "gemini-2.5-flash",
-                        "password": os.getenv("PYLADIES_BSKY_PASSWORD"),
-                        "username": os.getenv("PYLADIES_BSKY_USERNAME"),
-                        "platform": self.platform}
-            return {'archive': 'pyladies_archive_directory',
-                    'counter': 'pyladies_counter.txt',
-                    'json_file': 'metadata/pyladies_meta_data.json',
-                    'client_name': 'pyladies_self.bot',
-                    'mastodon': None}
-        if self.bot == 'rladies':
-            if self.platform == 'bluesky':
-                return {"archive": "rladies_archive_directory_bluesky",
-                        "counter": "../metadata/rladies_counter_bluesky.txt",
-                        "json_file": "../metadata/rladies_meta_data.json",
-                        "client_name": "rladies_self.bot",
-                        "images": "rladies_images",
-                        "api_base_url": self.platform,
-                        "mastodon": None,
-                        "password": os.getenv("RLADIES_BSKY_PASSWORD"),
-                        "username": os.getenv("RLADIES_BSKY_USERNAME"),
-                        "platform": self.platform}
-
-    def get_config_boost(self):
-        """Method to generate config for boosting tags"""
-        if self.bot == 'pyladies':
-            return {"client_name": "pyladies_self.bot",
-                    "mastodon": None}
-        if self.bot == 'rladies':
-            if self.platform == "bluesky":
-                return {"client_name": "rladies_self.bot",
-                        "api_base_url": self.platform,
-                        "mastodon": None,
-                        "password": os.getenv("PASSWORD"),
-                        "username": os.getenv("USERNAME"),
-                        "platform": self.platform,
-                        "tags": "rladies"
-                        }
-
-    def get_config_rss(self):
-        """Method for generating config for extracting RSS info"""
-        if self.bot == 'pyladies':
-            return {
-                "api_base_url": "https://github.com/cosimameyer/awesome-pyladies-blogs/tree/main/blogs",
-                "github_raw_url": "https://raw.githubusercontent.com/cosimameyer/awesome-pyladies-blogs/main/blogs",
-                "json_file": "pyladies_meta_data.json"
-            }
-        if self.bot == 'rladies':
-            return {
-                "api_base_url": "https://github.com/rladies/awesome-rladies-blogs/tree/main/blogs",
-                "github_raw_url": "https://raw.githubusercontent.com/rladies/awesome-rladies-blogs/main/blogs",
-                "json_file": "rladies_meta_data.json"
-            }
-
-    def get_config_anniversary(self):
+    def _get_config(self, module_type: str) -> dict:
         """
-        Method to get all required parameters for the config_dict for the
-        promote_anniversaries approach.
+        Generates a configuration dictionary based on bot, platform, and module type.
+
+        Args:
+            module_type (str): The type of module to get the config for.
+
+        Returns:
+            dict: The configuration dictionary for the specified bot and module.
+
+        Raises:
+            ValueError: If an invalid bot or platform is specified.
         """
-        if self.bot == 'pyladies':
-            if self.platform == 'bluesky':
-                return {'client_name': 'pyladies_self.bot',
-                        'api_base_url': self.platform,
-                        'mastodon': None,
-                        'password': os.getenv('PYLADIES_BSKY_PASSWORD'),
-                        'username': os.getenv('PYLADIES_BSKY_USERNAME'),
-                        'images': 'anniversary_images',
-                        'platform': self.platform}
-            return {'client_name': 'pyladies_self.bot',
-                    'mastodon': None}
-        if self.bot == 'rladies':
-            if self.platform == 'bluesky':
-                return {
-                    'client_name': 'rladies_self.bot',
-                    'api_base_url': self.platform,
-                    'mastodon': None,
+        base_configs = {
+            'pyladies': {
+                'client_name': 'pyladies_self.bot',
+                'mastodon': None,
+            },
+            'rladies': {
+                'client_name': 'rladies_self.bot',
+                'mastodon': None,
+            },
+        }
+
+        platform_configs = {
+            'bluesky': {
+                'pyladies': {
+                    'password': os.getenv('PYLADIES_BSKY_PASSWORD'),
+                    'username': os.getenv('PYLADIES_BSKY_USERNAME'),
+                },
+                'rladies': {
                     'password': os.getenv('RLADIES_BSKY_PASSWORD'),
                     'username': os.getenv('RLADIES_BSKY_USERNAME'),
+                },
+            }
+        }
+
+        module_configs = {
+            'blog': {
+                'pyladies': {
+                    'archive': 'pyladies_archive_directory_bluesky' if self.platform == 'bluesky' else 'pyladies_archive_directory',
+                    'counter': 'metadata/pyladies_counter_bluesky.txt' if self.platform == 'bluesky' else 'pyladies_counter.txt',
+                    'json_file': 'metadata/pyladies_meta_data.json',
+                    'images': 'pyladies_images',
+                    'gen_ai_support': True,
+                    'gemini_model_name': 'gemini-2.5-flash',
+                },
+                'rladies': {
+                    'archive': 'rladies_archive_directory_bluesky' if self.platform == 'bluesky' else 'rladies_archive_directory',
+                    'counter': '../metadata/rladies_counter_bluesky.txt' if self.platform == 'bluesky' else 'rladies_counter.txt',
+                    'json_file': '../metadata/rladies_meta_data.json',
+                    'images': 'rladies_images',
+                },
+            },
+            'boost_tags': {
+                'rladies': {
+                    'tags': 'rladies',
+                },
+            },
+            'rss': {
+                'pyladies': {
+                    'api_base_url': 'https://github.com/cosimameyer/awesome-pyladies-blogs/tree/main/blogs',
+                    'github_raw_url': 'https://raw.githubusercontent.com/cosimameyer/awesome-pyladies-blogs/main/blogs',
+                    'json_file': 'pyladies_meta_data.json',
+                },
+                'rladies': {
+                    'api_base_url': 'https://github.com/rladies/awesome-rladies-blogs/tree/main/blogs',
+                    'github_raw_url': 'https://raw.githubusercontent.com/rladies/awesome-rladies-blogs/main/blogs',
+                    'json_file': 'rladies_meta_data.json',
+                },
+            },
+            'anniversary': {
+                'pyladies': {
                     'images': 'anniversary_images',
-                    'platform': self.platform
-                }
+                },
+                'rladies': {
+                    'images': 'anniversary_images',
+                },
+            },
+        }
+
+        config = base_configs.get(self.bot, {})
+        config.update(module_configs.get(module_type, {}).get(self.bot, {}))
+
+        if self.platform == 'bluesky':
+            config.update({'api_base_url': self.platform, 'platform': self.platform})
+            platform_specifics = platform_configs.get(self.platform, {}).get(self.bot, {})
+            config.update(platform_specifics)
+
+        return config
+
+    def start_debug(self):
+        """
+        Executes the debugging process for the specified module.
+
+        The method dynamically selects and initializes the correct handler class
+        based on the 'module_name' attribute and calls its main method.
+        """
+        handlers = {
+            'blog': PromoteBlogPost,
+            'rss': RSSData,
+            'boost_tags': BoostTags,
+            'boost_mentions': BoostMentions,
+            'anniversary': PromoteAnniversary,
+        }
+
+        handler_class = handlers.get(self.module_name)
+        if not handler_class:
+            raise ValueError(f'Invalid module_name: {self.module_name}')
+
+        config_dict = self._get_config(self.module_name)
+        handler = handler_class(config_dict, self.no_dry_run)
+
+        # Call the appropriate method based on the module name
+        method_map = {
+            'blog': handler.promote_blog_post,
+            'rss': handler.get_rss_data,
+            'boost_tags': handler.boost_tags,
+            'boost_mentions': handler.boost_mentions,
+            'anniversary': handler.promote_anniversary,
+        }
+
+        method_to_call = method_map.get(self.module_name)
+        if not method_to_call:
+            raise NotImplementedError(f'Handler for {self.module_name} not implemented.')
+
+        method_to_call()
 
 
 if __name__ == '__main__':
-    debug_bots = DebugBots()
-    debug_bots.start_debug()
+    debugger = DebugBots()
+    debugger.start_debug()
