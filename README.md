@@ -1,8 +1,16 @@
 # PyLadies and R-Ladies Bots
 
-> These bots are still WIP and the current version presents a MVP.
+![PyLadies & R-Ladies Bots](docs/img/rladies-pyladies-bots.png)
 
+👋 Welcome to the repository!
 
+This project hosts bots for the PyLadies and R-Ladies communities.  
+
+Want to learn more? Check out the [website](https://cosimameyer.github.io/community-bots) for background information, contribution guidelines, and ways to get involved.  
+
+Let's make this a community project — I'm really looking forward to hearing from you!
+
+---
 
 ## License
 
