@@ -14,7 +14,7 @@ jobs:
       - name: setup python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9.16' # install the python version needed
+          python-version-file: 'pyproject.toml'
 
       - name: install python packages
         run: |
