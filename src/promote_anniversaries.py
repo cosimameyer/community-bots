@@ -101,7 +101,7 @@ class PromoteAnniversary:
 
         Args:
             date_str (str): Date taken from event dictionary
-            format (str, optional): _description_. Defaults to '%m-%d'.
+            date_format (str, optional): _description_. Defaults to '%m-%d'.
 
         Returns:
             bool: Defines whether the date matches the current date
@@ -146,14 +146,14 @@ class PromoteAnniversary:
             print("Image already downloaded")
         return file_path
 
-    def build_post(self, event):
+    def build_post(self, event: dict):
         """Method to build the toot
 
         Args:
             event (dict): Dictionary with information
 
         Returns:
-            str: String with toot text
+            Toot text
         """
         tags = "\n\n#amazingwomenintech #womenalsoknow #impactthefuture"
 
