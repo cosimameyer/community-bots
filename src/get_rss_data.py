@@ -9,6 +9,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+REQUEST_TIMEOUT = 10  # seconds
+
 
 class RSSData:
     """
@@ -43,7 +45,7 @@ class RSSData:
                 json.dump(meta_data, fp, ensure_ascii=False, indent=2)
 
             self.logger.info(
-                "Meta data successfully saved to %s", 
+                "Meta data successfully saved to %s",
                 self.json_file
             )
 
@@ -82,7 +84,7 @@ class RSSData:
             json.JSONDecodeError: If the embedded script cannot be parsed as JSON.
             AttributeError: If the expected DOM structure is missing.
         """
-        response = requests.get(self.base_url)
+        response = requests.get(self.base_url, timeout=REQUEST_TIMEOUT)
         response.raise_for_status()
 
         soup = BeautifulSoup(response.content, "html.parser")
@@ -116,10 +118,10 @@ class RSSData:
         contents_list = []
         for json_file in json_files:
             try:
-                response = requests.get(json_file)
+                response = requests.get(json_file, timeout=REQUEST_TIMEOUT)
                 response.raise_for_status()
                 contents_list.append(response.json())
-            except Exception as exc:
+            except (requests.RequestException, json.JSONDecodeError) as exc:
                 self.logger.warning("Could not access %s. %s", json_file, exc)
 
         return contents_list
@@ -131,23 +133,17 @@ class RSSData:
 
         The method collects:
         - `name`: The author's name (first entry in `authors`).
-        - `rss_feed`: RSS feed URL (prefers `rss_feed`, falls back to 
+        - `rss_feed`: RSS feed URL (prefers `rss_feed`, falls back to
             `rss_feed_youtube`).
         - `mastodon`: Author's Mastodon handle if available.
         - `bluesky`: Author's Bluesky handle if available.
 
         Args:
-            content (dict): Parsed JSON object representing author and 
+            content (dict): Parsed JSON object representing author and
                             feed data.
 
         Returns:
-            dict: A dictionary containing metadata fields:
-                  {
-                      "name": str,
-                      "rss_feed": str | list | '',
-                      "mastodon": str,
-                      "bluesky": str
-                  }
+            dict: A dictionary containing metadata fields.
         """
         rss_feed = [content.get("rss_feed")]
         rss_feed_yt = [content.get("rss_feed_youtube")]
@@ -177,7 +173,7 @@ class RSSData:
         using `extract_info()`, and compiles the results into a list.
 
         Args:
-            contents_list (list[dict]): List of parsed JSON content 
+            contents_list (list[dict]): List of parsed JSON content
                                         dictionaries.
 
         Returns:
