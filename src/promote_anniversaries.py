@@ -32,7 +32,11 @@ class PromoteAnniversary:
     to social platforms.
     """
 
-    def __init__(self, config_dict: Optional[Dict[str, Any]] = None, no_dry_run: bool = True) -> None:
+    def __init__(
+        self,
+        config_dict: Optional[Dict[str, Any]] = None,
+        no_dry_run: bool = True
+    ) -> None:
         """
         Initialize a PromoteAnniversary handler.
 
@@ -49,7 +53,7 @@ class PromoteAnniversary:
             "https://raw.githubusercontent.com/cosimameyer/"
             "illustrations/main/amazing-women"
         )
-    
+   
     @property
     def cfg(self) -> Dict[str, Any]:
         """Property to ensure that the dictionary is initialized."""
