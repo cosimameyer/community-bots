@@ -3,7 +3,7 @@
 import logging
 from typing import TypedDict, Tuple
 
-from mastodon import Mastodon, MastodonNotFoundError, MastodonAPIError
+from mastodon import Mastodon
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -29,10 +29,6 @@ def login_mastodon(config_dict: MastodonConfig) -> Tuple[object, Mastodon]:
         A tuple containing:
             - account: The Mastodon account object.
             - client: The Mastodon client instance.
-
-    Raises:
-        MastodonNotFoundError: If the instance cannot be reached.
-        MastodonAPIError: If authentication fails or API errors occur.
     """
     client_id, client_secret = Mastodon.create_app(
         config_dict["client_name"],
