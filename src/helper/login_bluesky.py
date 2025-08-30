@@ -1,7 +1,7 @@
 """Module to log into Bluesky."""
 
 import logging
-from typing import Dict, Any
+from typing import TypedDict
 
 from atproto import Client
 
@@ -9,14 +9,18 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
 
-def login_bluesky(config_dict: Dict[str, Any]) -> Client:
+class BlueskyConfig(TypedDict):
+    """Typed configuration for Bluesky login."""
+    username: str
+    password: str
+
+
+def login_bluesky(config_dict: BlueskyConfig) -> Client:
     """
     Log in to Bluesky and return the client instance.
 
     Args:
-        config_dict: A dictionary containing Bluesky login credentials:
-            - username: str
-            - password: str
+        config_dict: Configuration required for Bluesky login.
 
     Returns:
         A logged-in Bluesky `Client` instance.
@@ -28,8 +32,8 @@ def login_bluesky(config_dict: Dict[str, Any]) -> Client:
 
     client = Client()
     client.login(
-        config_dict.get("username", ""),
-        config_dict.get("password", ""),
+        config_dict["username"],
+        config_dict["password"],
     )
 
     logger.info(" > Successfully logged in")

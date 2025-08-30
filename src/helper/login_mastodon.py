@@ -1,7 +1,7 @@
 """Module to log into Mastodon."""
 
 import logging
-from typing import Tuple, Dict, Any
+from typing import TypedDict, Tuple
 
 from mastodon import Mastodon, MastodonNotFoundError, MastodonAPIError
 
@@ -9,22 +9,25 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
 
-def login_mastodon(config_dict: Dict[str, Any]) -> Tuple[Any, Mastodon]:
+class MastodonConfig(TypedDict):
+    """Typed configuration for Mastodon login."""
+    client_name: str
+    api_base_url: str
+    access_token: str
+    username: str
+    password: str
+
+
+def login_mastodon(config_dict: MastodonConfig) -> Tuple[object, Mastodon]:
     """
     Log in to Mastodon and return the account and client.
 
     Args:
-        config_dict: A dictionary containing authentication details and
-            Mastodon configuration, including:
-                - client_name: str
-                - api_base_url: str
-                - access_token: str
-                - username: str
-                - password: str
+        config_dict: Configuration required for Mastodon login.
 
     Returns:
         A tuple containing:
-            - account: The Mastodon account object for the logged-in user.
+            - account: The Mastodon account object.
             - client: The Mastodon client instance.
 
     Raises:
