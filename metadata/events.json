@@ -337,6 +337,15 @@
 "alt": "Image of Naomi Ceder (a blond-haired person wearing a blue sweater and glasses). The image has a darker background with nebula and Python symbols as well as '<Trans*Code/>'.",
 "wiki_link":"https://en.wikipedia.org/wiki/Naomi_Ceder"},
 
+{"name":"Joana Carrasqueira",
+"date":"12-16",
+"bluesky": "",
+"img":"joana_carrasqueira_small.png",
+"description_bluesky": "Joana\n✨ is the Global Lead for Vibe Coding at Google DeepMind and former Head of Developer Relations\n✨ has a Master's in Pharmaceutical Sciences\n✨ empowers developers to build responsibly with Google AI \n✨ is a strong advocate for responsible AI and ethics",
+"description_mastodon": "Joana\n✨ is the Global Lead for Vibe Coding at Google DeepMind and former Head of Developer Relations\n✨ has a Master's in Pharmaceutical Sciences\n✨ empowers developers to build responsibly with Google AI \n✨ is a strong advocate for responsible AI and ethics\n✨ and much more!",
+"alt": "An image of Joana Carrasqueira, a blonde individual wearing a blue-and-white checkered blazer. The background features a dark, atmospheric blend of nebula-like clouds, accented with subtle pharmacy symbols—specifically the rod with a snake coiled around it.",
+"wiki_link":"https://pmtc.substack.com/p/from-pharmaceutical-scientist-to"},
+
 
 {"name":"Joy Buolamwini",
 "date":"", 
