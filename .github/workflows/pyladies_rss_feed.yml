@@ -2,17 +2,18 @@ name: Update meta data for RSS feeds for PyLadies
 
 on:
   schedule:
-    - cron: '0 0 * * 1'  # "At 01:00 on day-of-month 1 and 15."
+    - cron: '0 0 * * 1'
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: checkout repo content
-        uses: actions/checkout@v2 # checkout the repository content
+        uses: actions/checkout@v4
 
       - name: setup python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version-file: 'pyproject.toml'
 
@@ -21,29 +22,39 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: execute py script # run get_rss_feed.py
+      # STEP 1: Attempt the OLD URL (Current repo)
+      - name: Execute py script (Old URL)
+        id: try_old
+        continue-on-error: true
         env:
           BASE_URL: "https://github.com/cosimameyer/awesome-pyladies-blogs/tree/main/blogs"
           GITHUB_RAW_URL: "https://raw.githubusercontent.com/cosimameyer/awesome-pyladies-blogs/main/blogs"
           JSON_FILE: "pyladies_meta_data.json"
         run: python src/get_rss_data.py
 
+      # STEP 2: Execute NEW URL only if Step 1 failed
+      - name: Execute py script (New URL - Fallback)
+        if: steps.try_old.outcome == 'failure'
+        env:
+          # Update these two lines with the new organization/repo details
+          BASE_URL: "https://github.com/cosimameyer/awesome-pyladies-creations/tree/main/data/content"
+          GITHUB_RAW_URL: "https://raw.githubusercontent.com/cosimameyer/awesome-pyladies-creations/main/data/content"
+          JSON_FILE: "pyladies_meta_data.json"
+        run: python src/get_rss_data.py
+
+      # STEP 3: Commit and Push
       - name: Commit files
         id: commit
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "github-actions"
-          git add --all
-          if ! git diff-index --quiet HEAD --; then 
-            git commit -m "Add changes" -a
-            echo "::set-output name=push::true"
+          git add pyladies_meta_data.json
+          if ! git diff --cached --quiet; then 
+            git commit -m "Update PyLadies RSS metadata"
+            echo "push=true" >> $GITHUB_OUTPUT
+          else
+            echo "push=false" >> $GITHUB_OUTPUT
           fi
-#          if [-z "$(git status --porcelain)"]; then
-#            echo "::set-output name=push::false"
-#          else
-#            git commit -m "Add changes" -a
-#            echo "::set-output name=push::true"
-#          fi
         shell: bash
         
       - name: Push changes
