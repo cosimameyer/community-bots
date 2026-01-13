@@ -48,15 +48,19 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "github-actions"
-          git add pyladies_meta_data.json
-          if ! git diff --cached --quiet; then 
-            git commit -m "Update PyLadies RSS metadata"
-            echo "push=true" >> $GITHUB_OUTPUT
-          else
-            echo "push=false" >> $GITHUB_OUTPUT
+          git add --all
+          if ! git diff-index --quiet HEAD --; then 
+            git commit -m "Add changes" -a
+            echo "::set-output name=push::true"
           fi
+#          if [-z "$(git status --porcelain)"]; then
+#            echo "::set-output name=push::false"
+#          else
+#            git commit -m "Add changes" -a
+#            echo "::set-output name=push::true"
+#          fi
         shell: bash
-        
+
       - name: Push changes
         if: steps.commit.outputs.push == 'true'
         uses: ad-m/github-push-action@master
