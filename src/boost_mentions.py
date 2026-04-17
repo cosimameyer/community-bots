@@ -116,22 +116,26 @@ class BoostMentions():
         """
         Method to set up the config dictionary with the required parameters
         """
-        self.config_dict = {
-            "platform": os.getenv("PLATFORM"),
-            "password": os.getenv("PASSWORD"),
-            "username": os.getenv("USERNAME"),
-            "client_name": os.getenv("CLIENT_NAME")
-        }
+        if self.config_dict is None:
+            self.config_dict = {}
+        self.config_dict.setdefault("platform", os.getenv("PLATFORM"))
+        self.config_dict.setdefault("password", os.getenv("PASSWORD"))
+        self.config_dict.setdefault("username", os.getenv("USERNAME"))
+        self.config_dict.setdefault("client_name", os.getenv("CLIENT_NAME"))
         if self.config_dict["platform"] == "mastodon":
-            self.config_dict["mastodon_visiblity"] = config.MASTODON_VISIBILITY
-            self.config_dict["api_base_url"] = config.API_BASE_URL
-            self.config_dict["access_token"] = os.getenv("ACCESS_TOKEN")
-            self.config_dict["client_cred_file"] = os.getenv(
-                'BOT_CLIENTCRED_SECRET'
+            self.config_dict.setdefault(
+                "mastodon_visibility", config.MASTODON_VISIBILITY
             )
-            self.config_dict["timeline_depth_limit"] = 40
+            self.config_dict.setdefault("api_base_url", config.API_BASE_URL)
+            self.config_dict.setdefault(
+                "access_token", os.getenv("ACCESS_TOKEN")
+            )
+            self.config_dict.setdefault(
+                "client_cred_file", os.getenv("BOT_CLIENTCRED_SECRET")
+            )
+            self.config_dict.setdefault("timeline_depth_limit", 40)
         else:
-            self.config_dict["api_base_url"] = "bluesky"
+            self.config_dict.setdefault("api_base_url", "bluesky")
 
 
 if __name__ == "__main__":

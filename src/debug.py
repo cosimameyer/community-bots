@@ -1,6 +1,7 @@
 """ This script aims at making debugging easier """
 import os
 from dotenv import load_dotenv
+import config
 
 from promote_blog_post import PromoteBlogPost
 from get_rss_data import RSSData
@@ -158,6 +159,19 @@ class DebugBots:
                     'username': os.getenv('RLADIES_BSKY_USERNAME'),
                     'images': 'anniversary_images',
                     'platform': self.platform,
+                }
+            if self.platform == 'mastodon':
+                return {
+                    'client_name': 'rladies_self.bot',
+                    'api_base_url': config.API_BASE_URL,
+                    'mastodon': None,
+                    'password': os.getenv('RLADIES_MASTODON_PASSWORD'),
+                    'username': os.getenv('RLADIES_MASTODON_USERNAME'),
+                    'access_token': os.getenv('RLADIES_MASTODON_ACCESS_TOKEN'),
+                    'client_cred_file': os.getenv('RLADIES_BOT_CLIENTCRED_SECRET'),
+                    'images': 'anniversary_images',
+                    'platform': self.platform,
+                    'mastodon_visibility': config.MASTODON_VISIBILITY,
                 }
             return {'client_name': 'rladies_self.bot', 'mastodon': None}
 
