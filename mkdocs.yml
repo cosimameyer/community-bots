@@ -85,4 +85,6 @@ nav:
       - Amazing Women in Tech Gallery: https://gallery.cosimameyer.com/amazing-women-in-tech/
       - Contribute: contribute.md
   - API Reference: reference.md
+  - Development:
+      - Architecture: development/architecture.md
   - News: https://github.com/cosimameyer/community-bots/releases
