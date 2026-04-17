@@ -117,6 +117,8 @@ class PromoteBlogPost():
             self.process_feeds(feeds, counter_name, count_post, client)
         else:
             for feed in feeds:
+                if count_post >= 2:
+                    break
                 count_post = self.process_feed(
                     feed,
                     count_post,
@@ -785,7 +787,7 @@ class PromoteBlogPost():
     def _save_rss_feed_archive(self, feed, rss_feed_archive):
         """ Save RSS feed archive to a file """
         archive_path = os.path.join(feed['ARCHIVE'][0], 'file.json')
-        with open(archive_path, 'wb') as fp:
+        with open(archive_path, 'w', encoding='utf-8') as fp:
             json.dump(rss_feed_archive, fp)
         self.logger.info("Archive for %s updated successfully.", feed['name'])
 
@@ -853,25 +855,33 @@ class PromoteBlogPost():
                 feed_config['rss_feed_archive']['link'].append(en['link'])
                 if self.no_dry_run:
                     result = self.send_post(en, feed_config['feed'], client)
+                    if result == 'success':
+                        count_post += 1
+                        count += 1
+                        time.sleep(1)
+                    elif result == 'failed':
+                        count_fails += 1
+                        time.sleep(1)
                 else:
                     self.logger.info(
                         "[DRY RUN] Would post: '%s' from %s",
                         en.get('title', 'unknown'),
                         en.get('link', 'unknown'),
                     )
-                if result == 'success':
                     count_post += 1
                     count += 1
-                    time.sleep(1)
-                elif result == 'failed':
-                    count_fails += 1
-                    time.sleep(1)
 
-        if self.no_dry_run:
-            if result == 'success':
+        if self.no_dry_run and result == 'success':
+            try:
                 self._save_rss_feed_archive(
                     feed_config['feed'],
                     feed_config['rss_feed_archive']
+                )
+            except OSError as e:
+                self.logger.error(
+                    "Failed to save archive for %s: %s",
+                    feed_config['feed'].get('name', 'unknown'),
+                    e,
                 )
 
         return count_post
