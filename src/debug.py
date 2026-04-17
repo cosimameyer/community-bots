@@ -19,10 +19,14 @@ class DebugBots:
     Class to handle debugging of all modules.
     """
     def __init__(self):
-        self.bot = 'rladies'  # 'pyladies' or 'rladies'
-        self.what_to_debug = 'blog'  # 'blog' or 'boost_tags' or 'rss' or 'anniversary
-        self.platform = 'bluesky'  # 'bluesky' or 'mastodon'
-        self.no_dry_run = False
+        self.bot = 'rladies'
+        self.platform = 'bluesky'
+        self.what_to_debug = 'boost_mentions'
+        self.no_dry_run = False  # True to actually repost
+        # self.bot = 'rladies'  # 'pyladies' or 'rladies'
+        # self.what_to_debug = 'blog'  # 'blog' or 'boost_tags' or 'rss' or 'anniversary' or 'boost_mentions'
+        # self.platform = 'bluesky'  # 'bluesky' or 'mastodon'
+        # self.no_dry_run = False
 
     def start_debug(self):
         """Start debugging."""
@@ -131,8 +135,8 @@ class DebugBots:
                     "client_name": "rladies_self.bot",
                     "api_base_url": self.platform,
                     "mastodon": None,
-                    "password": os.getenv("PASSWORD"),
-                    "username": os.getenv("USERNAME"),
+                    "password": os.getenv("RLADIES_BSKY_PASSWORD"),
+                    "username": os.getenv("RLADIES_BSKY_USERNAME"),
                     "platform": self.platform,
                     "tags": "rladies",
                 }
