@@ -78,29 +78,29 @@ class PromoteBlogPost():
                 self.config_dict.get('counter')
             )
 
+        if self.config_dict.get('gen_ai_support'):
+            genai.configure(api_key=self.config_dict.get('gemini_api_key'))
+
     def promote_blog_post(self):
         """Core method to promote blog post"""
 
         self.get_config()
 
-        if self.no_dry_run:
-            client_name = self.config_dict.get('client_name', 'unknown')
-            self.logger.info("")
-            self.logger.info(
-                'Initializing %s Bot',
-                client_name
-            )
-            separator = "%s", "=" * (len(client_name) + 17)
-            self.logger.info(separator)
-            self.logger.info(
-                " > Connecting to %s",
-                self.config_dict.get('api_base_url', '')
-            )
+        client_name = self.config_dict.get('client_name', 'unknown')
+        self.logger.info('Initializing %s Bot', client_name)
+        self.logger.info("=" * (len(client_name) + 17))
+        self.logger.info(
+            " > Connecting to %s",
+            self.config_dict.get('api_base_url', '')
+        )
 
+        if self.no_dry_run:
             if self.config_dict["platform"] == "mastodon":
                 _, client = login_mastodon(self.config_dict)
             elif self.config_dict["platform"] == "bluesky":
                 client = login_bluesky(self.config_dict)
+            else:
+                client = None
         else:
             client = None
 
@@ -355,10 +355,9 @@ class PromoteBlogPost():
 
                 if did:
                     return did
-                else:
-                    self.logger.info(
-                        'The "did" field was not found in the response.'
-                    )
+                self.logger.info(
+                    'The "did" field was not found in the response.'
+                )
             else:
                 self.logger.info(
                     'Failed to retrieve data. Status code: %s',
@@ -367,6 +366,8 @@ class PromoteBlogPost():
 
         except requests.RequestException as e:
             self.logger.info('An error occurred: %s', e)
+
+        return None
 
     def build_post_mastodon(
         self, basis_text, platform_user_handle, tags, entry
@@ -504,13 +505,14 @@ class PromoteBlogPost():
                 tags,
                 entry
             )
-        elif self.config_dict.get('platform', '') == 'bluesky':
+        if self.config_dict.get('platform', '') == 'bluesky':
             return self.build_post_bluesky(
                 basis_text,
                 platform_user_handle,
                 tags,
                 entry
             )
+        return None
 
     def send_post_to_mastodon(self, en, client, post_txt):
         """
@@ -829,7 +831,7 @@ class PromoteBlogPost():
         for _, entry in enumerate(feed_config['d']):
             if count >= 1:  # Limit to 1 post per run
                 break
-            elif count_fails >= 1:
+            if count_fails >= 1:
                 break
 
             en = {
@@ -851,6 +853,12 @@ class PromoteBlogPost():
                 feed_config['rss_feed_archive']['link'].append(en['link'])
                 if self.no_dry_run:
                     result = self.send_post(en, feed_config['feed'], client)
+                else:
+                    self.logger.info(
+                        "[DRY RUN] Would post: '%s' from %s",
+                        en.get('title', 'unknown'),
+                        en.get('link', 'unknown'),
+                    )
                 if result == 'success':
                     count_post += 1
                     count += 1
