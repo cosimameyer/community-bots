@@ -785,7 +785,7 @@ class PromoteBlogPost():
     def _save_rss_feed_archive(self, feed, rss_feed_archive):
         """ Save RSS feed archive to a file """
         archive_path = os.path.join(feed['ARCHIVE'][0], 'file.json')
-        with open(archive_path, 'wb') as fp:
+        with open(archive_path, 'w', encoding='utf-8') as fp:
             json.dump(rss_feed_archive, fp)
         self.logger.info("Archive for %s updated successfully.", feed['name'])
 
@@ -867,11 +867,17 @@ class PromoteBlogPost():
                     count_fails += 1
                     time.sleep(1)
 
-        if self.no_dry_run:
-            if result == 'success':
+        if self.no_dry_run and result == 'success':
+            try:
                 self._save_rss_feed_archive(
                     feed_config['feed'],
                     feed_config['rss_feed_archive']
+                )
+            except OSError as e:
+                self.logger.error(
+                    "Failed to save archive for %s: %s",
+                    feed_config['feed'].get('name', 'unknown'),
+                    e,
                 )
 
         return count_post
