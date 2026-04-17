@@ -1,5 +1,6 @@
 """ This script aims at making debugging easier """
 import os
+import logging
 from dotenv import load_dotenv
 import config
 
@@ -10,6 +11,7 @@ from promote_anniversaries import PromoteAnniversary
 from boost_mentions import BoostMentions
 
 load_dotenv()
+logging.basicConfig(level=logging.INFO)
 
 
 class DebugBots:
@@ -88,6 +90,7 @@ class DebugBots:
                 'json_file': 'metadata/pyladies_meta_data.json',
                 'client_name': 'pyladies_self.bot',
                 'mastodon': None,
+                'platform': 'mastodon',
             }
 
         if self.bot == 'rladies':
@@ -100,6 +103,8 @@ class DebugBots:
                     "images": "rladies_images",
                     "api_base_url": self.platform,
                     "mastodon": None,
+                    "gen_ai_support": True,
+                    "gemini_model_name": "gemini-2.5-flash",
                     "password": os.getenv("RLADIES_BSKY_PASSWORD"),
                     "username": os.getenv("RLADIES_BSKY_USERNAME"),
                     "platform": self.platform,
@@ -110,6 +115,7 @@ class DebugBots:
                 "json_file": "../metadata/rladies_meta_data.json",
                 "client_name": "rladies_self.bot",
                 "mastodon": None,
+                "platform": "mastodon",
             }
 
         return None
@@ -117,7 +123,7 @@ class DebugBots:
     def get_config_boost(self):
         """Method to generate config for boosting tags"""
         if self.bot == 'pyladies':
-            return {"client_name": "pyladies_self.bot", "mastodon": None}
+            return {"client_name": "pyladies_self.bot", "mastodon": None, "platform": "mastodon"}
 
         if self.bot == 'rladies':
             if self.platform == "bluesky":
@@ -130,7 +136,7 @@ class DebugBots:
                     "platform": self.platform,
                     "tags": "rladies",
                 }
-            return {"client_name": "rladies_self.bot", "mastodon": None}
+            return {"client_name": "rladies_self.bot", "mastodon": None, "platform": "mastodon"}
 
         return None
 
@@ -147,7 +153,7 @@ class DebugBots:
                     'images': 'anniversary_images',
                     'platform': self.platform,
                 }
-            return {'client_name': 'pyladies_self.bot', 'mastodon': None}
+            return {'client_name': 'pyladies_self.bot', 'mastodon': None, 'platform': 'mastodon'}
 
         if self.bot == 'rladies':
             if self.platform == 'bluesky':

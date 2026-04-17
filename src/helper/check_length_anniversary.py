@@ -1,52 +1,87 @@
-"""Script to check for length of content"""
+"""Script to check that content length does not exceed 500 characters."""
+
 import json
 import sys
+import logging
+from typing import Any, Dict, List, Optional
 
-def load_json(filename):
+logger = logging.getLogger(__name__)
+
+
+def load_json(filename: str) -> Optional[List[Dict[str, Any]]]:
     """
-    Function to load JSON data from a file.
+    Load JSON data from a file.
+
+    Args:
+        filename: Path to the JSON file.
+
+    Returns:
+        Parsed JSON data as a list of dictionaries,
+        or None if the file is missing or invalid.
     """
     try:
-        with open(filename, 'r') as file:
+        with open(filename, "r", encoding="utf-8") as file:
             return json.load(file)
     except FileNotFoundError:
-        print(f"Error: The file '{filename}' was not found.")
+        logger.error("Error: The file '%s' was not found.", filename)
         return None
     except json.JSONDecodeError:
-        print(f"Error: The file '{filename}' contains invalid JSON.")
+        logger.error(
+            "Error: The file '%s' contains invalid JSON.",
+            filename
+        )
         return None
 
-def check_entries(data):
+
+def check_entries(data: List[Dict[str, Any]]) -> None:
     """
-    Function to check if the combined length of name, description, and wiki_link exceeds 500 characters
+    Check if combined length of `name`, `description`, and `wiki_link`
+    exceeds 500 characters for any entry.
+
+    Args:
+        data: List of entries to validate.
+
+    Raises:
+        SystemExit: If any entry exceeds 500 characters.
     """
     if not data:
         return
-    
     for entry in data:
-        # Combine name, description, and wiki_link fields
-        combined_text = ""
-        combined_text += f"Let's meet {entry.get('name', '')} ✨\n\n{entry.get('description', '')}\n\n🔗 {entry.get('wiki_link', '')}"
-        combined_text += f"\n\n#amazingwomeninstem #womeninstem #womenalsoknow #impactthefuture"
-        
-        # Check the length of the combined text
-        if len(combined_text) > 500:
-            print(f"🚨 Alert: The combined text for '{entry.get('name', 'Unknown')}' exceeds 500 characters!")
-            print(f"Combined length: {len(combined_text)} characters.")
-            print(combined_text)
-            print(f"Length of description: {len(entry.get('description', ''))}.")
-            sys.exit(1)  # Exit with an error code to indicate failure
-        
+        combined_text = (
+            f"Let's meet {entry.get('name', '')} ✨\n\n"
+            f"{entry.get('description', '')}\n\n"
+            f"🔗 {entry.get('wiki_link', '')}\n\n"
+            "#amazingwomeninstem #womeninstem "
+            "#womenalsoknow #impactthefuture"
+        )
 
-# Main function to load the JSON file and perform the check
-def main():
-    filename = 'events.json'  # The path to your JSON file
+        if len(combined_text) > 500:
+            logger.warning(
+                "🚨 Alert: The combined text for %s exceeds 500 characters!",
+                entry.get('name', 'Unknown')
+            )
+            logger.info("Combined length: %s characters.", len(combined_text))
+            logger.info(combined_text)
+            logger.info(
+                "Length of description: %s",
+                len(entry.get('description', ''))
+            )
+            sys.exit(1)  # Exit with error code to indicate failure
+
+
+def main() -> None:
+    """
+    Load the JSON file and validate content length for each entry.
+    """
+    filename = "events.json"  # Path to the JSON file
     data = load_json(filename)
-    
+
     if data:
         check_entries(data)
-        
-    print("All good! 🎉")
 
-if __name__ == '__main__':
+    logger.info("All good! 🎉")
+
+
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     main()
