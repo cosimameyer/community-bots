@@ -67,60 +67,60 @@ class PromoteAnniversary:
     def promote_anniversary(self) -> None:
         """Main entry point. Loads configuration, fetches events, and posts if applicable."""
         if self.config_dict is None and self.no_dry_run:
-            self.config_dict = {
-                "platform": os.getenv("PLATFORM"),
-                "images": os.getenv("IMAGES"),
-                "password": os.getenv("PASSWORD"),
-                "username": os.getenv("USERNAME"),
-                "client_name": os.getenv("CLIENT_NAME"),
-            }
-            if self.config_dict["platform"] == "mastodon":
-                self.config_dict["api_base_url"] = config.API_BASE_URL
-                self.config_dict[
-                    "mastodon_visibility"
-                ] = config.MASTODON_VISIBILITY
-                self.config_dict["client_id"] = os.getenv("CLIENT_ID")
-                self.config_dict["client_secret"] = os.getenv("CLIENT_SECRET")
-                self.config_dict["access_token"] = os.getenv("ACCESS_TOKEN")
-                self.config_dict[
-                    "client_cred_file"
-                ] = os.getenv("BOT_CLIENTCRED_SECRET")
-            else:
-                self.config_dict["api_base_url"] = "bluesky"
+            self._setup_config_from_env()
 
-        if self.no_dry_run:
-            self.logger.info(
-                "Initializing %s Bot",
-                self.cfg["client_name"]
-            )
-            self.logger.info(
-                "=" * (len(self.cfg["client_name"]) + 17)
-            )
-            self.logger.info(
-                " > Connecting to %s",
-                self.cfg["api_base_url"]
-            )
+        if self.config_dict is None:
+            self.logger.error("No config_dict provided — cannot run")
+            return
 
-            if self.cfg["platform"] == "mastodon":
-                _, client = login_mastodon(cast(MastodonConfig, self.config_dict))
-            elif self.cfg["platform"] == "bluesky":
-                client = login_bluesky(cast(BlueskyConfig, self.config_dict))
-            else:
-                self.logger.error(
-                    "Unsupported platform: %s",
-                    self.cfg["platform"]
-                )
-                return
-        else:
-            client = None
+        self.logger.info("Initializing %s Bot", self.cfg["client_name"])
+        self.logger.info("=" * (len(self.cfg["client_name"]) + 17))
+        self.logger.info(" > Connecting to %s", self.cfg["api_base_url"])
+
+        client = self._connect_client() if self.no_dry_run else None
 
         with open("metadata/events.json", encoding="utf-8") as f:
             events = json.load(f)
 
-        if self.no_dry_run:
-            for event in events:
-                if self.is_matching_current_date(event["date"]):
+        for event in events:
+            if self.is_matching_current_date(event["date"]):
+                if not self.no_dry_run:
+                    self.logger.info(
+                        "[DRY RUN] Would post anniversary for %s on %s",
+                        event.get("name"),
+                        event.get("date"),
+                    )
+                else:
                     self.send_post(event, client)
+
+    def _setup_config_from_env(self) -> None:
+        """Populate config_dict from environment variables (used in GitHub Actions)."""
+        self.config_dict = {
+            "platform": os.getenv("PLATFORM"),
+            "images": os.getenv("IMAGES"),
+            "password": os.getenv("PASSWORD"),
+            "username": os.getenv("USERNAME"),
+            "client_name": os.getenv("CLIENT_NAME"),
+        }
+        if self.config_dict["platform"] == "mastodon":
+            self.config_dict["api_base_url"] = config.API_BASE_URL
+            self.config_dict["mastodon_visibility"] = config.MASTODON_VISIBILITY
+            self.config_dict["client_id"] = os.getenv("CLIENT_ID")
+            self.config_dict["client_secret"] = os.getenv("CLIENT_SECRET")
+            self.config_dict["access_token"] = os.getenv("ACCESS_TOKEN")
+            self.config_dict["client_cred_file"] = os.getenv("BOT_CLIENTCRED_SECRET")
+        else:
+            self.config_dict["api_base_url"] = "bluesky"
+
+    def _connect_client(self):
+        """Connect to the configured platform and return the client."""
+        if self.cfg["platform"] == "mastodon":
+            _, client = login_mastodon(cast(MastodonConfig, self.config_dict))
+            return client
+        if self.cfg["platform"] == "bluesky":
+            return login_bluesky(cast(BlueskyConfig, self.config_dict))
+        self.logger.error("Unsupported platform: %s", self.cfg["platform"])
+        return None
 
     @staticmethod
     def is_matching_current_date(

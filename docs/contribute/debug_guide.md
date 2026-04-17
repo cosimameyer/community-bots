@@ -56,3 +56,34 @@ python debug.py
 ```
 
 Log output at `INFO` level will show what the bot would do. Set `no_dry_run = True` only when you're ready to post for real.
+
+### Preferred: run with PDM
+
+```bash
+pdm run python src/debug.py
+```
+
+PDM resolves the virtualenv and dependencies automatically — no need to `cd src` or activate an environment manually.
+
+### Alternative: VS Code debugger with PDM
+
+Add a launch configuration to `.vscode/launch.json`:
+
+```json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug bot (PDM)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/debug.py",
+            "python": "${workspaceFolder}/.venv/bin/python",
+            "cwd": "${workspaceFolder}/src",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
+```
+
+This lets you set breakpoints in any bot module and step through execution in the VS Code debugger. The `cwd` is set to `src/` so relative imports resolve correctly, and `.env` is loaded automatically.
