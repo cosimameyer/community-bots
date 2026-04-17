@@ -6,7 +6,6 @@ from typing import TypedDict
 from atproto import Client
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
 
 
 class BlueskyConfig(TypedDict):

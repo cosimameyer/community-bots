@@ -10,7 +10,7 @@ import posixpath
 import re
 import shutil
 from datetime import datetime
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional, Union, cast
 from urllib.parse import urlsplit
 
 import requests
@@ -18,12 +18,13 @@ from dotenv import load_dotenv
 from atproto import client_utils, models
 
 import config
-from helper.login_bluesky import login_bluesky
-from helper.login_mastodon import login_mastodon
+from helper.login_bluesky import login_bluesky, BlueskyConfig
+from helper.login_mastodon import login_mastodon, MastodonConfig
 
 load_dotenv()
 
 REQUEST_TIMEOUT = 10  # seconds
+logger = logging.getLogger(__name__)
 
 
 class PromoteAnniversary:
@@ -45,7 +46,6 @@ class PromoteAnniversary:
             no_dry_run: Whether to actually execute posting (True)
                 or just simulate actions (False).
         """
-        logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
         self.config_dict = config_dict
         self.no_dry_run = no_dry_run
@@ -53,12 +53,15 @@ class PromoteAnniversary:
             "https://raw.githubusercontent.com/cosimameyer/"
             "illustrations/main/amazing-women"
         )
-   
+
     @property
     def cfg(self) -> Dict[str, Any]:
         """Property to ensure that the dictionary is initialized."""
         if self.config_dict is None:
-            raise RuntimeError("Config dictionary not initialized")
+            raise RuntimeError(
+                "config_dict is not set; call promote_anniversary() or pass "
+                "config_dict to the constructor before accessing cfg"
+            )
         return self.config_dict
 
     def promote_anniversary(self) -> None:
@@ -99,9 +102,9 @@ class PromoteAnniversary:
             )
 
             if self.cfg["platform"] == "mastodon":
-                _, client = login_mastodon(self.config_dict)
+                _, client = login_mastodon(cast(MastodonConfig, self.config_dict))
             elif self.cfg["platform"] == "bluesky":
-                client = login_bluesky(self.config_dict)
+                client = login_bluesky(cast(BlueskyConfig, self.config_dict))
             else:
                 self.logger.error(
                     "Unsupported platform: %s",
@@ -157,8 +160,8 @@ class PromoteAnniversary:
                 "User-Agent": (
                     "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:20.0) "
                     "Gecko/20100101 Firefox/20.0"
-                    )
-                }
+                )
+            }
             response = requests.get(
                 url,
                 headers=headers,
@@ -280,7 +283,8 @@ class PromoteAnniversary:
             )
         )
 
-    def get_bluesky_did(self, platform_user_handle: str) -> Optional[str]:
+    @staticmethod
+    def get_bluesky_did(platform_user_handle: str) -> Optional[str]:
         """
         Resolve a Bluesky handle into a DID.
 
@@ -299,11 +303,12 @@ class PromoteAnniversary:
             if response.status_code == 200:
                 data = response.json()
                 return data.get("did")
-            self.logger.info(
+            logger.info(
                 "Failed to retrieve data. Status code: %s",
-                response.status_code)
+                response.status_code,
+            )
         except requests.RequestException as e:
-            self.logger.info("An error occurred: %s", e)
+            logger.info("An error occurred: %s", e)
         return None
 
     @staticmethod
@@ -336,8 +341,8 @@ class PromoteAnniversary:
         post_txt: str
     ) -> None:
         """Send a post to Mastodon, with media if available."""
-        try:
-            if event.get("img"):
+        if event.get("img"):
+            try:
                 self.logger.info("Uploading media to Mastodon")
                 url = f"{self.base_path}/{event['img']}"
                 filename = self.download_image(url)
@@ -348,13 +353,22 @@ class PromoteAnniversary:
 
                 client.status_post(post_txt, media_ids=media_upload)
                 self.logger.info("Posted with image 🎉")
-            else:
-                client.status_post(post_txt)
-                self.logger.info("Posted without image 🎉")
+                return
+            except Exception as e:
+                self.logger.exception(
+                    "Media upload failed for %s: %s — falling back to text-only",
+                    event.get("name"),
+                    e,
+                )
+
+        try:
+            client.status_post(post_txt)
+            self.logger.info("Posted without image 🎉")
         except Exception as e:
             self.logger.exception("Exception %s for %s", e, event.get("name"))
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     handler = PromoteAnniversary(config_dict=None, no_dry_run=True)
     handler.promote_anniversary()

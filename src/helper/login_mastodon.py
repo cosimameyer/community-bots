@@ -6,7 +6,6 @@ from typing import TypedDict, Tuple
 from mastodon import Mastodon
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
 
 
 class MastodonConfig(TypedDict):

@@ -2,13 +2,13 @@
 
 import os
 import logging
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, cast
 
 from dotenv import load_dotenv
 
 import config
-from helper.login_mastodon import login_mastodon
-from helper.login_bluesky import login_bluesky
+from helper.login_mastodon import login_mastodon, MastodonConfig
+from helper.login_bluesky import login_bluesky, BlueskyConfig
 
 load_dotenv()
 
@@ -34,7 +34,6 @@ class BoostMentions:
             no_dry_run: If True, perform actual boosts; if False, dry run.
         """
         self.logger = logging.getLogger(__name__)
-        logging.basicConfig(level=logging.INFO)
 
         self.process_images = False
         self.no_dry_run = no_dry_run
@@ -44,7 +43,10 @@ class BoostMentions:
     def cfg(self) -> Dict[str, Any]:
         """Property to ensure that the dictionary is initialized."""
         if self.config_dict is None:
-            raise RuntimeError("Config dictionary not initialized")
+            raise RuntimeError(
+                "config_dict is not set; call boost_mentions() or pass "
+                "config_dict to the constructor before accessing cfg"
+            )
         return self.config_dict
 
     def boost_mentions(self) -> None:
@@ -66,7 +68,7 @@ class BoostMentions:
         )
 
         if self.cfg["platform"] == "mastodon":
-            account, client = login_mastodon(self.config_dict)
+            account, client = login_mastodon(cast(MastodonConfig, self.config_dict))
             notifications = client.notifications(types=["mention"])
             self.logger.info(
                 " > Fetched account data for %s", account.acct
@@ -101,7 +103,7 @@ class BoostMentions:
                         )
 
         elif self.cfg["platform"] == "bluesky":
-            client = login_bluesky(self.config_dict)
+            client = login_bluesky(cast(BlueskyConfig, self.config_dict))
             self.logger.info(" > Fetched account data")
 
             self.logger.info(" > Beginning search-loop and repost posts")
@@ -172,6 +174,7 @@ class BoostMentions:
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     boost_mentions_handler = BoostMentions(
         config_dict=None,
         no_dry_run=True,
