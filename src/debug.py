@@ -24,7 +24,7 @@ class DebugBots:
         self.what_to_debug = 'boost_mentions'
         self.no_dry_run = False  # True to actually repost
         # self.bot = 'rladies'  # 'pyladies' or 'rladies'
-        # self.what_to_debug = 'blog'  # 'blog' or 'boost_tags' or 'rss' or 'anniversary' or 'boost_mentions'
+        # self.what_to_debug = 'blog'  # blog, boost_tags, rss, anniversary, boost_mentions
         # self.platform = 'bluesky'  # 'bluesky' or 'mastodon'
         # self.no_dry_run = False
 
@@ -127,12 +127,34 @@ class DebugBots:
     def get_config_boost(self):
         """Method to generate config for boosting tags"""
         if self.bot == 'pyladies':
-            return {"client_name": "pyladies_self.bot", "mastodon": None, "platform": "mastodon"}
+            if self.platform == 'bluesky':
+                return {
+                    "client_name": "pyladies_bot",
+                    "api_base_url": self.platform,
+                    "mastodon": None,
+                    "password": os.getenv("PYLADIES_BSKY_PASSWORD"),
+                    "username": os.getenv("PYLADIES_BSKY_USERNAME"),
+                    "platform": self.platform,
+                    "tags": "pyladies",
+                }
+            if self.platform == 'mastodon':
+                return {
+                    "client_name": "pyladies_bot",
+                    "api_base_url": config.API_BASE_URL,
+                    "mastodon": None,
+                    "password": os.getenv("PYLADIES_MASTODON_PASSWORD"),
+                    "username": os.getenv("PYLADIES_MASTODON_USERNAME"),
+                    "access_token": os.getenv("PYLADIES_MASTODON_ACCESS_TOKEN"),
+                    "client_cred_file": os.getenv("PYLADIES_BOT_CLIENTCRED_SECRET"),
+                    "platform": self.platform,
+                    "mastodon_visibility": config.MASTODON_VISIBILITY,
+                    "tags": "pyladies",
+                }
 
         if self.bot == 'rladies':
             if self.platform == "bluesky":
                 return {
-                    "client_name": "rladies_self.bot",
+                    "client_name": "rladies_bot",
                     "api_base_url": self.platform,
                     "mastodon": None,
                     "password": os.getenv("RLADIES_BSKY_PASSWORD"),
@@ -140,7 +162,19 @@ class DebugBots:
                     "platform": self.platform,
                     "tags": "rladies",
                 }
-            return {"client_name": "rladies_self.bot", "mastodon": None, "platform": "mastodon"}
+            if self.platform == 'mastodon':
+                return {
+                    "client_name": "rladies_bot",
+                    "api_base_url": config.API_BASE_URL,
+                    "mastodon": None,
+                    "password": os.getenv("RLADIES_MASTODON_PASSWORD"),
+                    "username": os.getenv("RLADIES_MASTODON_USERNAME"),
+                    "access_token": os.getenv("RLADIES_MASTODON_ACCESS_TOKEN"),
+                    "client_cred_file": os.getenv("RLADIES_BOT_CLIENTCRED_SECRET"),
+                    "platform": self.platform,
+                    "mastodon_visibility": config.MASTODON_VISIBILITY,
+                    "tags": "rladies",
+                }
 
         return None
 
