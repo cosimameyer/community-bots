@@ -19,9 +19,9 @@ class DebugBots:
     Class to handle debugging of all modules.
     """
     def __init__(self):
-        self.bot = 'rladies'
+        self.bot = 'pyladies'
         self.platform = 'bluesky'
-        self.what_to_debug = 'boost_mentions'
+        self.what_to_debug = 'anniversary'
         self.no_dry_run = False  # True to actually repost
         # self.bot = 'rladies'  # 'pyladies' or 'rladies'
         # self.what_to_debug = 'blog'  # blog, boost_tags, rss, anniversary, boost_mentions
