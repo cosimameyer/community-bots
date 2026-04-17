@@ -5,7 +5,7 @@
 ## Prerequisites
 
 - Python 3.12
-- Dependencies installed: `pdm install` (or `pip install -r requirements.txt`)
+- Dependencies installed: `pdm install`
 - A `.env` file in the project root
 
 ## `.env` setup
