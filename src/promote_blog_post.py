@@ -764,17 +764,27 @@ class PromoteBlogPost():
                 }
 
                 if number_of_entries_feed > number_of_entries_archive:
+                    prev_count = count_post
                     count_post = self._process_feed(
                         client,
                         count_post,
                         feed_config
                     )
-                    self.logger.info(
-                        'New RSS feeds are successfully loaded and '
-                        'processed.'
-                    )
+                    if count_post > prev_count:
+                        self.logger.info(
+                            'New RSS feeds are successfully loaded and '
+                            'processed.'
+                        )
+                    else:
+                        self.logger.info(
+                            'Feed has new entries but all are already '
+                            'in the archive — nothing to post.'
+                        )
                     return count_post
-                self.logger.info('Maximum number of posts is already posted.')
+                self.logger.info(
+                    'Archive is up to date with the feed — '
+                    'no new entries since last run.'
+                )
                 return count_post
             except Exception as e:
                 self.logger.info(
