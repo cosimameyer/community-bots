@@ -56,11 +56,11 @@ class DebugBots:
 
         elif self.what_to_debug == 'boost_mentions':
             config_dict = self.get_config_boost()
-            boost_tags_handler = BoostMentions(
+            boost_mentions_handler = BoostMentions(
                 config_dict,
                 self.no_dry_run
             )
-            boost_tags_handler.boost_mentions()
+            boost_mentions_handler.boost_mentions()
 
         elif self.what_to_debug == 'anniversary':
             config_dict = self.get_config_anniversary()
@@ -78,7 +78,7 @@ class DebugBots:
                     "archive": "pyladies_archive_directory_bluesky",
                     "counter": "metadata/pyladies_counter_bluesky.txt",
                     "json_file": "metadata/pyladies_meta_data.json",
-                    "client_name": "pyladies_self.bot",
+                    "client_name": "pyladies_bot",
                     "images": "pyladies_images",
                     "api_base_url": self.platform,
                     "mastodon": None,
@@ -88,14 +88,22 @@ class DebugBots:
                     "username": os.getenv("PYLADIES_BSKY_USERNAME"),
                     "platform": self.platform,
                 }
-            return {
-                'archive': 'pyladies_archive_directory',
-                'counter': 'pyladies_counter.txt',
-                'json_file': 'metadata/pyladies_meta_data.json',
-                'client_name': 'pyladies_self.bot',
-                'mastodon': None,
-                'platform': 'mastodon',
-            }
+            if self.platform == 'mastodon':
+                return {
+                    "archive": "pyladies_archive_directory",
+                    "counter": "metadata/pyladies_counter.txt",
+                    "json_file": "metadata/pyladies_meta_data.json",
+                    "client_name": "pyladies_bot",
+                    "images": "pyladies_images",
+                    "api_base_url": config.API_BASE_URL,
+                    "mastodon": None,
+                    "password": os.getenv("PYLADIES_MASTODON_PASSWORD"),
+                    "username": os.getenv("PYLADIES_MASTODON_USERNAME"),
+                    "access_token": os.getenv("PYLADIES_MASTODON_ACCESS_TOKEN"),
+                    "client_cred_file": os.getenv("PYLADIES_BOT_CLIENTCRED_SECRET"),
+                    "mastodon_visibility": config.MASTODON_VISIBILITY,
+                    "platform": self.platform,
+                }
 
         if self.bot == 'rladies':
             if self.platform == 'bluesky':
@@ -103,7 +111,7 @@ class DebugBots:
                     "archive": "rladies_archive_directory_bluesky",
                     "counter": "../metadata/rladies_counter_bluesky.txt",
                     "json_file": "../metadata/rladies_meta_data.json",
-                    "client_name": "rladies_self.bot",
+                    "client_name": "rladies_bot",
                     "images": "rladies_images",
                     "api_base_url": self.platform,
                     "mastodon": None,
@@ -113,14 +121,22 @@ class DebugBots:
                     "username": os.getenv("RLADIES_BSKY_USERNAME"),
                     "platform": self.platform,
                 }
-            return {
-                "archive": "rladies_archive_directory",
-                "counter": "../metadata/rladies_counter.txt",
-                "json_file": "../metadata/rladies_meta_data.json",
-                "client_name": "rladies_self.bot",
-                "mastodon": None,
-                "platform": "mastodon",
-            }
+            if self.platform == 'mastodon':
+                return {
+                    "archive": "rladies_archive_directory",
+                    "counter": "../metadata/rladies_counter.txt",
+                    "json_file": "../metadata/rladies_meta_data.json",
+                    "client_name": "rladies_bot",
+                    "images": "rladies_images",
+                    "api_base_url": config.API_BASE_URL,
+                    "mastodon": None,
+                    "password": os.getenv("RLADIES_MASTODON_PASSWORD"),
+                    "username": os.getenv("RLADIES_MASTODON_USERNAME"),
+                    "access_token": os.getenv("RLADIES_MASTODON_ACCESS_TOKEN"),
+                    "client_cred_file": os.getenv("RLADIES_BOT_CLIENTCRED_SECRET"),
+                    "mastodon_visibility": config.MASTODON_VISIBILITY,
+                    "platform": self.platform,
+                }
 
         return None
 
@@ -178,12 +194,40 @@ class DebugBots:
 
         return None
 
+    def get_config_rss(self):
+        """Method to generate config for fetching RSS data"""
+        if self.bot == 'pyladies':
+            return {
+                "json_file": "metadata/pyladies_meta_data.json",
+                "api_base_url": (
+                    "https://github.com/cosimameyer/"
+                    "awesome-pyladies-blogs/tree/main/blogs"
+                ),
+                "github_raw_url": (
+                    "https://raw.githubusercontent.com/cosimameyer/"
+                    "awesome-pyladies-blogs/main/blogs"
+                ),
+            }
+        if self.bot == 'rladies':
+            return {
+                "json_file": "../metadata/rladies_meta_data.json",
+                "api_base_url": (
+                    "https://github.com/rladies/"
+                    "awesome-rladies-blogs/tree/main/blogs"
+                ),
+                "github_raw_url": (
+                    "https://raw.githubusercontent.com/rladies/"
+                    "awesome-rladies-blogs/main/blogs"
+                ),
+            }
+        return None
+
     def get_config_anniversary(self):
         """Method to get config for promoting anniversaries"""
         if self.bot == 'pyladies':
             if self.platform == 'bluesky':
                 return {
-                    'client_name': 'pyladies_self.bot',
+                    'client_name': 'pyladies_bot',
                     'api_base_url': self.platform,
                     'mastodon': None,
                     'password': os.getenv('PYLADIES_BSKY_PASSWORD'),
@@ -191,12 +235,24 @@ class DebugBots:
                     'images': 'anniversary_images',
                     'platform': self.platform,
                 }
-            return {'client_name': 'pyladies_self.bot', 'mastodon': None, 'platform': 'mastodon'}
+            if self.platform == 'mastodon':
+                return {
+                    'client_name': 'pyladies_bot',
+                    'api_base_url': config.API_BASE_URL,
+                    'mastodon': None,
+                    'password': os.getenv('PYLADIES_MASTODON_PASSWORD'),
+                    'username': os.getenv('PYLADIES_MASTODON_USERNAME'),
+                    'access_token': os.getenv('PYLADIES_MASTODON_ACCESS_TOKEN'),
+                    'client_cred_file': os.getenv('PYLADIES_BOT_CLIENTCRED_SECRET'),
+                    'images': 'anniversary_images',
+                    'platform': self.platform,
+                    'mastodon_visibility': config.MASTODON_VISIBILITY,
+                }
 
         if self.bot == 'rladies':
             if self.platform == 'bluesky':
                 return {
-                    'client_name': 'rladies_self.bot',
+                    'client_name': 'rladies_bot',
                     'api_base_url': self.platform,
                     'mastodon': None,
                     'password': os.getenv('RLADIES_BSKY_PASSWORD'),
@@ -206,7 +262,7 @@ class DebugBots:
                 }
             if self.platform == 'mastodon':
                 return {
-                    'client_name': 'rladies_self.bot',
+                    'client_name': 'rladies_bot',
                     'api_base_url': config.API_BASE_URL,
                     'mastodon': None,
                     'password': os.getenv('RLADIES_MASTODON_PASSWORD'),
@@ -217,7 +273,6 @@ class DebugBots:
                     'platform': self.platform,
                     'mastodon_visibility': config.MASTODON_VISIBILITY,
                 }
-            return {'client_name': 'rladies_self.bot', 'mastodon': None}
 
         return None
 
