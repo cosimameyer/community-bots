@@ -68,25 +68,31 @@ class BoostMentions:
         )
 
         if self.cfg["platform"] == "mastodon":
-            account, client = login_mastodon(cast(MastodonConfig, self.config_dict))
-            notifications = client.notifications(types=["mention"])
-            self.logger.info(
-                " > Fetched account data for %s", account.acct
-            )
+            self._boost_mentions_mastodon()
+        elif self.cfg["platform"] == "bluesky":
+            self._boost_mentions_bluesky()
 
-            self.logger.info(
-                " > Beginning search-loop and toot and boost toots"
-            )
-            self.logger.info("------------------------")
+    def _boost_mentions_mastodon(self) -> None:
+        """Fetch and boost Mastodon mentions."""
+        account, client = login_mastodon(cast(MastodonConfig, self.config_dict))
+        notifications = client.notifications(types=["mention"])
+        self.logger.info(" > Fetched account data for %s", account.acct)
+        self.logger.info(" > Beginning search-loop and toot and boost toots")
+        self.logger.info("------------------------")
+        self.logger.info(" > Reading statuses to identify tootable status")
 
-            self.logger.info(
-                " > Reading statuses to identify tootable status"
-            )
-            for notification in notifications:
-                if (
-                    not notification.status.favourited
-                    and notification.status.account.acct != account.acct
-                ):
+        for notification in notifications:
+            if (
+                not notification.status.favourited
+                and notification.status.account.acct != account.acct
+            ):
+                if not self.no_dry_run:
+                    self.logger.info(
+                        "   * [DRY RUN] Would boost toot by %s viewable at: %s",
+                        notification.account.username,
+                        notification.status.url,
+                    )
+                else:
                     try:
                         self.logger.info(
                             "   * Boosting new toot by %s viewable at: %s",
@@ -102,26 +108,31 @@ class BoostMentions:
                             e,
                         )
 
-        elif self.cfg["platform"] == "bluesky":
-            client = login_bluesky(cast(BlueskyConfig, self.config_dict))
-            self.logger.info(" > Fetched account data")
+    def _boost_mentions_bluesky(self) -> None:
+        """Fetch and repost Bluesky mentions."""
+        client = login_bluesky(cast(BlueskyConfig, self.config_dict))
+        self.logger.info(" > Fetched account data")
+        self.logger.info(" > Beginning search-loop and repost posts")
+        self.logger.info("------------------------")
+        self.logger.info(" > Reading statuses to identify postable statuses")
 
-            self.logger.info(" > Beginning search-loop and repost posts")
-            self.logger.info("------------------------")
+        last_seen_at = client.get_current_time_iso()
+        response = client.app.bsky.notification.list_notifications()
+        timeline = client.get_timeline(algorithm="reverse-chronological")
+        cids = [post.post.cid for post in timeline.feed]
 
-            self.logger.info(
-                " > Reading statuses to identify postable statuses"
-            )
-            last_seen_at = client.get_current_time_iso()
-            response = client.app.bsky.notification.list_notifications()
-            timeline = client.get_timeline(algorithm="reverse-chronological")
-            cids = [post.post.cid for post in timeline.feed]
-
-            for notification in response.notifications:
-                if (
-                    notification.reason == "mention"
-                    and notification.cid not in cids
-                ):
+        for notification in response.notifications:
+            if (
+                notification.reason == "mention"
+                and notification.cid not in cids
+            ):
+                if not self.no_dry_run:
+                    self.logger.info(
+                        "   * [DRY RUN] Would repost URI %s CID %s",
+                        notification.uri,
+                        notification.cid,
+                    )
+                else:
                     try:
                         self.logger.info(
                             "   * Reposted post reference: %s",
@@ -142,11 +153,12 @@ class BoostMentions:
                             e,
                         )
 
+        if self.no_dry_run:
             client.app.bsky.notification.update_seen({"seen_at": last_seen_at})
-            self.logger.info(
-                "Successfully process notification. Last seen at: %s",
-                last_seen_at,
-            )
+        self.logger.info(
+            "Successfully processed notifications. Last seen at: %s",
+            last_seen_at,
+        )
 
     def set_up_config_dict(self) -> None:
         """
