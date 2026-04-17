@@ -6,7 +6,6 @@ import logging
 from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
 
 
 def load_json(filename: str) -> Optional[List[Dict[str, Any]]]:
@@ -45,6 +44,8 @@ def check_entries(data: List[Dict[str, Any]]) -> None:
     Raises:
         SystemExit: If any entry exceeds 500 characters.
     """
+    if not data:
+        return
     for entry in data:
         combined_text = (
             f"Let's meet {entry.get('name', '')} ✨\n\n"
@@ -82,4 +83,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     main()
