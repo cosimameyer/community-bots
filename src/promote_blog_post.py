@@ -117,6 +117,8 @@ class PromoteBlogPost():
             self.process_feeds(feeds, counter_name, count_post, client)
         else:
             for feed in feeds:
+                if count_post >= 2:
+                    break
                 count_post = self.process_feed(
                     feed,
                     count_post,
@@ -853,19 +855,21 @@ class PromoteBlogPost():
                 feed_config['rss_feed_archive']['link'].append(en['link'])
                 if self.no_dry_run:
                     result = self.send_post(en, feed_config['feed'], client)
+                    if result == 'success':
+                        count_post += 1
+                        count += 1
+                        time.sleep(1)
+                    elif result == 'failed':
+                        count_fails += 1
+                        time.sleep(1)
                 else:
                     self.logger.info(
                         "[DRY RUN] Would post: '%s' from %s",
                         en.get('title', 'unknown'),
                         en.get('link', 'unknown'),
                     )
-                if result == 'success':
                     count_post += 1
                     count += 1
-                    time.sleep(1)
-                elif result == 'failed':
-                    count_fails += 1
-                    time.sleep(1)
 
         if self.no_dry_run and result == 'success':
             try:
