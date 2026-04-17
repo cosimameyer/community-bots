@@ -4,7 +4,6 @@ Tests for src/promote_blog_post.py
 
 import json
 import os
-import sys
 import time
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -12,8 +11,6 @@ from types import SimpleNamespace
 from unittest.mock import MagicMock, mock_open, patch, call
 
 import pytest
-
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 from promote_blog_post import PromoteBlogPost
 

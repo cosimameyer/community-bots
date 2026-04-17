@@ -11,6 +11,13 @@ repos:
         stages: [pre-push]
         args:
         - --fail-under=4
+      - id: pytest
+        name: 🧪 Run unit tests
+        entry: pdm run pytest
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
+        verbose: true
   - repo: https://github.com/pdm-project/pdm
     rev: 2.24.1
     hooks:
