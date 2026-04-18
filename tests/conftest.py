@@ -13,6 +13,10 @@ _MOCKED_MODULES = [
     "google",
     "google.generativeai",
     "feedparser",
+    "requests",
+    "requests.exceptions",
+    "bs4",
+    "mastodon",
 ]
 
 for _mod in _MOCKED_MODULES:
