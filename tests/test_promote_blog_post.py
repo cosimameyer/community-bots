@@ -1,16 +1,14 @@
+# pylint: disable=missing-class-docstring,missing-function-docstring,protected-access
 """
 Tests for src/promote_blog_post.py
 """
 
 import json
 import os
-import time
 from datetime import datetime, timedelta
 from pathlib import Path
 from types import SimpleNamespace
-from unittest.mock import MagicMock, mock_open, patch, call
-
-import pytest
+from unittest.mock import MagicMock, patch
 
 from promote_blog_post import PromoteBlogPost
 
@@ -227,7 +225,9 @@ class TestGetNumberOfArchiveEntries:
     def test_correct_counts_returned(self):
         d = [object()] * 5
         archive = {"link": ["a", "b", "c"]}
-        result_archive, n_archive, n_feed = PromoteBlogPost.get_number_of_archive_entries(d, archive)
+        _, n_archive, n_feed = PromoteBlogPost.get_number_of_archive_entries(
+            d, archive
+        )
         assert n_feed == 5
         assert n_archive == 3
 
@@ -241,7 +241,9 @@ class TestGetNumberOfArchiveEntries:
         # Archive missing "link" key — should be repaired
         d = [object()]
         archive = {"url": ["a", "b"]}  # wrong key
-        result_archive, n_archive, _ = PromoteBlogPost.get_number_of_archive_entries(d, archive)
+        result_archive, _, _ = PromoteBlogPost.get_number_of_archive_entries(
+            d, archive
+        )
         assert "link" in result_archive
         assert isinstance(result_archive["link"], list)
 
@@ -625,7 +627,10 @@ class TestProcessFeeds:
         captured_counter = []
 
         with patch.object(handler, "process_feed", side_effect=fake_process), \
-             patch.object(handler, "update_counter", side_effect=lambda n: captured_counter.append(n)):
+             patch.object(
+                 handler, "update_counter",
+                 side_effect=captured_counter.append
+             ):
             # counter_name matches last feed → wrap-around path
             handler.process_feeds(feeds, "Carol", 0, MagicMock())
 
@@ -641,7 +646,10 @@ class TestProcessFeeds:
 
         captured_counter = []
         with patch.object(handler, "process_feed", side_effect=fake_process), \
-             patch.object(handler, "update_counter", side_effect=lambda n: captured_counter.append(n)):
+             patch.object(
+                 handler, "update_counter",
+                 side_effect=captured_counter.append
+             ):
             handler.process_feeds(feeds, "OnlyFeed", 0, MagicMock())
 
         assert "OnlyFeed" in captured_counter
@@ -764,4 +772,4 @@ class TestGetMediaContent:
             summary="<p>No images here</p>",
         )
         result = PromoteBlogPost._get_media_content(entry)
-        assert result == {}
+        assert not result
