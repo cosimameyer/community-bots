@@ -1,5 +1,6 @@
 # pylint: disable=missing-class-docstring,missing-function-docstring,protected-access
 # pylint: disable=unused-argument,attribute-defined-outside-init,too-few-public-methods
+# pylint: disable=import-error,too-many-arguments,too-many-positional-arguments
 """
 Tests for src/debug.py
 
@@ -15,10 +16,7 @@ Covers:
 - credentials are sourced from env vars, not hardcoded
 """
 
-import os
-from unittest.mock import MagicMock, call, patch
-
-import pytest
+from unittest.mock import MagicMock, patch
 
 from debug import DebugBots
 
