@@ -775,7 +775,18 @@ class TestGetMediaContent:
             link="https://example.com/post",
             summary='<p><img src="https://example.com/img.jpg" alt="alt text"/></p>',
         )
-        result = PromoteBlogPost._get_media_content(entry)
+        img_mock = MagicMock()
+        img_mock.has_attr.side_effect = lambda attr: attr in ("src", "alt")
+        img_mock.__getitem__ = lambda _, key: {
+            "src": "https://example.com/img.jpg",
+            "alt": "alt text",
+        }[key]
+        soup_mock = MagicMock()
+        soup_mock.find_all.return_value = [img_mock]
+
+        with patch("promote_blog_post.BeautifulSoup", return_value=soup_mock):
+            result = PromoteBlogPost._get_media_content(entry)
+
         assert result.get("media_content") == "https://example.com/img.jpg"
         assert result.get("alt_text") == "alt text"
 
@@ -784,5 +795,8 @@ class TestGetMediaContent:
             link="https://example.com/post",
             summary="<p>No images here</p>",
         )
-        result = PromoteBlogPost._get_media_content(entry)
+        soup_mock = MagicMock()
+        soup_mock.find_all.return_value = []
+        with patch("promote_blog_post.BeautifulSoup", return_value=soup_mock):
+            result = PromoteBlogPost._get_media_content(entry)
         assert not result
