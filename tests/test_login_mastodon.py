@@ -1,4 +1,4 @@
-# pylint: disable=missing-class-docstring,missing-function-docstring
+# pylint: disable=missing-class-docstring,missing-function-docstring,import-error
 """
 Tests for src/helper/login_mastodon.py
 
@@ -11,7 +11,7 @@ Covers:
 """
 
 import logging
-from unittest.mock import MagicMock, patch, call
+from unittest.mock import MagicMock, patch
 
 import pytest
 
