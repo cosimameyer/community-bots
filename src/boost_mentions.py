@@ -35,7 +35,6 @@ class BoostMentions:
         """
         self.logger = logging.getLogger(__name__)
 
-        self.process_images = False
         self.no_dry_run = no_dry_run
         self.config_dict = config_dict
 
@@ -83,7 +82,7 @@ class BoostMentions:
 
         for notification in notifications:
             if (
-                not notification.status.favourited
+                not notification.status.reblogged
                 and notification.status.account.acct != account.acct
             ):
                 if not self.no_dry_run:
@@ -102,7 +101,7 @@ class BoostMentions:
                         client.status_reblog(notification.status.id)
                         client.status_favourite(notification.status.id)
                     except Exception as e:
-                        self.logger.info(
+                        self.logger.error(
                             "   * Boosting new toot by %s did not work: %s",
                             notification.account.username,
                             e,
@@ -142,12 +141,9 @@ class BoostMentions:
                             ),
                         )
                     except Exception as e:
-                        self.logger.info(
-                            (
-                                "   * Reposting new post with URI %s and "
-                                "CID %s did not work because of %s - "
-                                "going to the next post."
-                            ),
+                        self.logger.error(
+                            "   * Reposting new post with URI %s and "
+                            "CID %s did not work: %s",
                             notification.uri,
                             notification.cid,
                             e,
@@ -174,15 +170,20 @@ class BoostMentions:
         self.config_dict.setdefault("username", os.getenv("USERNAME"))
         self.config_dict.setdefault("client_name", os.getenv("CLIENT_NAME"))
         if self.config_dict["platform"] == "mastodon":
-            self.config_dict.setdefault("mastodon_visiblity", config.MASTODON_VISIBILITY)
+            self.config_dict.setdefault("mastodon_visibility", config.MASTODON_VISIBILITY)
             self.config_dict.setdefault("api_base_url", config.API_BASE_URL)
             self.config_dict.setdefault("access_token", os.getenv("ACCESS_TOKEN"))
             self.config_dict.setdefault(
                 "client_cred_file", os.getenv("BOT_CLIENTCRED_SECRET")
             )
             self.config_dict.setdefault("timeline_depth_limit", 40)
-        else:
+        elif self.config_dict["platform"] == "bluesky":
             self.config_dict.setdefault("api_base_url", "bluesky")
+        else:
+            raise ValueError(
+                f"Unknown platform: {self.config_dict['platform']!r}. "
+                "Expected 'mastodon' or 'bluesky'."
+            )
 
 
 if __name__ == "__main__":
