@@ -69,15 +69,19 @@ class PromoteAnniversary:
         if self.config_dict is None and self.no_dry_run:
             self._setup_config_from_env()
 
-        if self.config_dict is None:
+        if self.config_dict is None and self.no_dry_run:
             self.logger.error("No config_dict provided — cannot run")
             return
 
-        self.logger.info("Initializing %s Bot", self.cfg["client_name"])
-        self.logger.info("=" * (len(self.cfg["client_name"]) + 17))
-        self.logger.info(" > Connecting to %s", self.cfg["api_base_url"])
+        if self.config_dict is not None:
+            self.logger.info("Initializing %s Bot", self.cfg["client_name"])
+            self.logger.info("=" * (len(self.cfg["client_name"]) + 17))
+            self.logger.info(" > Connecting to %s", self.cfg["api_base_url"])
 
         client = self._connect_client() if self.no_dry_run else None
+        if client is None and self.no_dry_run:
+            self.logger.error("Failed to connect to %s", self.cfg["platform"])
+            return
 
         with open("metadata/events.json", encoding="utf-8") as f:
             events = json.load(f)
@@ -110,7 +114,7 @@ class PromoteAnniversary:
             self.config_dict["access_token"] = os.getenv("ACCESS_TOKEN")
             self.config_dict["client_cred_file"] = os.getenv("BOT_CLIENTCRED_SECRET")
         else:
-            self.config_dict["api_base_url"] = "bluesky"
+            self.config_dict["api_base_url"] = "https://bsky.social"
 
     def _connect_client(self):
         """Connect to the configured platform and return the client."""
@@ -162,16 +166,14 @@ class PromoteAnniversary:
                     "Gecko/20100101 Firefox/20.0"
                 )
             }
-            response = requests.get(
+            with requests.get(
                 url,
                 headers=headers,
                 stream=True,
                 timeout=REQUEST_TIMEOUT
-            )
-
-            with open(file_path, "wb") as out_file:
-                shutil.copyfileobj(response.raw, out_file)
-            del response
+            ) as response:
+                with open(file_path, "wb") as out_file:
+                    shutil.copyfileobj(response.raw, out_file)
         else:
             self.logger.info("Image already downloaded: %s", file_path)
 
@@ -227,9 +229,10 @@ class PromoteAnniversary:
             text_builder.text("\n\n🔗 ")
             text_builder.link(event["wiki_link"], event["wiki_link"])
             text_builder.text("\n\n")
-            for tag in tags.split("#"):
-                if tag.strip():
-                    text_builder.tag(f"#{tag.strip()} ", tag.strip())
+            tag_list = [t.strip() for t in tags.split("#") if t.strip()]
+            for i, tag in enumerate(tag_list):
+                display = f"#{tag}" if i == len(tag_list) - 1 else f"#{tag} "
+                text_builder.tag(display, tag)
             return text_builder
 
         raise ValueError(
@@ -248,7 +251,9 @@ class PromoteAnniversary:
         if self.cfg["platform"] == "mastodon":
             self.send_post_to_mastodon(event, client, post_txt)
         elif self.cfg["platform"] == "bluesky":
-            embed_external = self.build_embed_external(event, client)
+            embed_external = (
+                self.build_embed_external(event, client) if event.get("img") else None
+            )
             self.send_post_to_bluesky(event, client, post_txt, embed_external)
 
     def build_embed_external(
@@ -303,12 +308,12 @@ class PromoteAnniversary:
             if response.status_code == 200:
                 data = response.json()
                 return data.get("did")
-            logger.info(
+            logger.warning(
                 "Failed to retrieve data. Status code: %s",
                 response.status_code,
             )
         except requests.RequestException as e:
-            logger.info("An error occurred: %s", e)
+            logger.warning("An error occurred: %s", e)
         return None
 
     @staticmethod
@@ -326,7 +331,7 @@ class PromoteAnniversary:
         """Send a post to Bluesky with optional media embed."""
         self.logger.info(
             "Preview your post...\n\n%s",
-            post_txt._buffer.getvalue().decode("utf-8")
+            post_txt.build()[0]
         )
         try:
             client.send_post(text=post_txt, embed=embed_external)
@@ -351,7 +356,7 @@ class PromoteAnniversary:
                 description = event.get("alt") or str(event["name"])
                 client.media_update(media_upload, description=description)
 
-                client.status_post(post_txt, media_ids=media_upload)
+                client.status_post(post_txt, media_ids=[media_upload])
                 self.logger.info("Posted with image 🎉")
                 return
             except Exception as e:
@@ -370,5 +375,5 @@ class PromoteAnniversary:
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    handler = PromoteAnniversary(config_dict=None, no_dry_run=True)
+    handler = PromoteAnniversary(config_dict=None, no_dry_run=False)
     handler.promote_anniversary()
