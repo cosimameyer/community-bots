@@ -68,8 +68,6 @@ class PromoteBlogPost():
             else:
                 self.config_dict["api_base_url"] = "bluesky"
 
-            if self.config_dict["gen_ai_support"]:
-                genai.configure(api_key=self.config_dict["gemini_api_key"])
         else:
             self.config_dict['json_file'] = self._ensure_metadata_prefix(
                 self.config_dict.get('json_file')
@@ -524,7 +522,7 @@ class PromoteBlogPost():
                                         description=alt_text)
 
                 self.logger.info('Now ready to post... ⏳')
-                client.status_post(post_txt, media_ids=media_upload_mastodon)
+                client.status_post(post_txt, media_ids=[media_upload_mastodon])
 
                 self.logger.info('Posted 🎉')
                 return 'success'

@@ -700,7 +700,7 @@ class TestGetConfig:
         """genai.configure must be called on the GitHub Actions env-var path."""
         handler = PromoteBlogPost(config_dict=None, no_dry_run=True)
         handler.get_config()
-        mock_genai.configure.assert_called_with(api_key="env-key")
+        mock_genai.configure.assert_called_once_with(api_key="env-key")
 
     @patch("promote_blog_post.genai")
     def test_genai_not_called_when_gen_ai_support_false(self, mock_genai):
@@ -716,6 +716,40 @@ class TestGetConfig:
             handler.get_config()
         assert handler.config_dict["counter"].startswith("metadata/")
         assert handler.config_dict["json_file"].startswith("metadata/")
+
+
+# ---------------------------------------------------------------------------
+# send_post_to_mastodon — media_ids must be a list
+# ---------------------------------------------------------------------------
+
+class TestSendPostToMastodon:
+    def test_media_ids_passed_as_list(self):
+        """Mastodon.py status_post requires media_ids to be a list, not a
+        bare media dict. This was a bug where media_upload_mastodon was
+        passed directly instead of [media_upload_mastodon]."""
+        handler = make_handler(
+            config={**BASE_CONFIG, "platform": "mastodon"},
+            no_dry_run=True,
+        )
+        fake_media = {"id": "123", "type": "image"}
+        client = MagicMock()
+        client.media_post.return_value = fake_media
+        client.status_post.return_value = MagicMock()
+
+        en = {
+            "title": "Test",
+            "link": "https://example.com",
+            "media_content": "https://example.com/img.png",
+            "alt_text": "alt",
+        }
+        with patch.object(handler, "download_image", return_value="/tmp/img.png"):
+            handler.send_post_to_mastodon(en, client, "post text")
+
+        _, kwargs = client.status_post.call_args
+        assert isinstance(kwargs["media_ids"], list), (
+            "media_ids must be a list — Mastodon.py status_post requires it"
+        )
+        assert kwargs["media_ids"] == [fake_media]
 
 
 # ---------------------------------------------------------------------------
