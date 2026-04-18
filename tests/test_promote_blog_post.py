@@ -1,4 +1,5 @@
 # pylint: disable=missing-class-docstring,missing-function-docstring,protected-access
+# pylint: disable=unused-argument,attribute-defined-outside-init,too-few-public-methods
 """
 Tests for src/promote_blog_post.py
 """
@@ -75,7 +76,8 @@ class TestEnsureMetadataPrefix:
         assert PromoteBlogPost._ensure_metadata_prefix("counter.txt") == "metadata/counter.txt"
 
     def test_leaves_existing_prefix_intact(self):
-        assert PromoteBlogPost._ensure_metadata_prefix("metadata/counter.txt") == "metadata/counter.txt"
+        result = PromoteBlogPost._ensure_metadata_prefix("metadata/counter.txt")
+        assert result == "metadata/counter.txt"
 
     def test_empty_string_gets_prefix(self):
         # Edge: empty string should still receive the prefix
@@ -350,7 +352,7 @@ class TestBuildPostMastodon:
                                 "gemini_model_name": "gemini-2.5-flash"})
         entry = {"title": "T", "link": "https://x.com", "pub_date": "2024-01-01",
                  "tags": [], "summary": "content", "media_content": []}
-        with patch.object(handler, "summarize_text", return_value="AI summary") as mock_sum:
+        with patch.object(handler, "summarize_text", return_value="AI summary"):
             result = handler.build_post_mastodon("base text", "", "#tag", entry)
         assert "AI summary" in result
         assert isinstance(result, str)
