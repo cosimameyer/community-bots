@@ -784,11 +784,27 @@ class TestSendPostToMastodonFallbackFailure:
 class TestMain:
     def test_main_block_runs_in_dry_run_mode_without_error(self):
         """Running the module as __main__ must complete without error.
-        __main__ uses no_dry_run=True. _setup_config_from_env is mocked so
-        no real env vars are required; because it does nothing config_dict
-        stays None, triggering the early-return guard — no post is ever sent."""
-        with patch(
-            "promote_anniversaries.PromoteAnniversary._setup_config_from_env"
+        __main__ uses no_dry_run=True, so _setup_config_from_env runs for real.
+        runpy re-executes the module in a fresh namespace, so class-level
+        patches don't survive — instead we patch at the boundary level:
+        - os.environ supplies valid values so client_name is never None
+        - helper.login_bluesky.Client is mocked (that cached module survives
+          runpy) so no real Bluesky connection is attempted
+        - builtins.open and json.load are patched so events.json need not exist
+        """
+        mock_bsky_client = MagicMock()
+        mock_bsky_client.login.return_value = MagicMock(handle="test_bot")
+        with (
+            patch.dict(os.environ, {
+                "CLIENT_NAME": "test_bot",
+                "PLATFORM": "bluesky",
+                "IMAGES": "test_images",
+                "PASSWORD": "pw",
+                "USERNAME": "user",
+            }),
+            patch("helper.login_bluesky.Client", return_value=mock_bsky_client),
+            patch("builtins.open"),
+            patch("json.load", return_value=[]),
         ):
             runpy.run_module("promote_anniversaries", run_name="__main__")
         # Reaching here without exception is the assertion.
