@@ -5,6 +5,8 @@ import sys
 import logging
 from typing import Any, Dict, List, Optional
 
+MAX_POST_LENGTH = 500
+
 logger = logging.getLogger(__name__)
 
 
@@ -45,20 +47,22 @@ def check_entries(data: List[Dict[str, Any]]) -> None:
         SystemExit: If any entry exceeds 500 characters.
     """
     if not data:
+        logger.warning("Warning: No entries found to check.")
         return
     for entry in data:
+        name = entry.get('name', '')
         combined_text = (
-            f"Let's meet {entry.get('name', '')} ✨\n\n"
+            f"Let's meet {name} ✨\n\n"
             f"{entry.get('description', '')}\n\n"
             f"🔗 {entry.get('wiki_link', '')}\n\n"
             "#amazingwomeninstem #womeninstem "
             "#womenalsoknow #impactthefuture"
         )
 
-        if len(combined_text) > 500:
+        if len(combined_text) > MAX_POST_LENGTH:
             logger.warning(
-                "🚨 Alert: The combined text for %s exceeds 500 characters!",
-                entry.get('name', 'Unknown')
+                "🚨 Alert: The combined text for '%s' exceeds %s characters!",
+                name, MAX_POST_LENGTH
             )
             logger.info("Combined length: %s characters.", len(combined_text))
             logger.info(combined_text)
@@ -73,12 +77,13 @@ def main() -> None:
     """
     Load the JSON file and validate content length for each entry.
     """
-    filename = "events.json"  # Path to the JSON file
+    filename = sys.argv[1] if len(sys.argv) > 1 else "events.json"
     data = load_json(filename)
 
-    if data:
-        check_entries(data)
+    if data is None:
+        sys.exit(1)
 
+    check_entries(data)
     logger.info("All good! 🎉")
 
 

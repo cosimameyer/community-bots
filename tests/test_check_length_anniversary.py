@@ -1,4 +1,5 @@
 # pylint: disable=missing-class-docstring,missing-function-docstring
+# pylint: disable=import-error,wrong-import-position,wrong-import-order
 """
 Tests for src/helper/check_length_anniversary.py
 
@@ -11,13 +12,13 @@ Covers:
 
 import json
 import sys
-from unittest.mock import MagicMock, mock_open, patch
+from unittest.mock import patch
 
 import pytest
 
 sys.path.insert(0, "src")
 
-from helper.check_length_anniversary import check_entries, load_json, main  # noqa: E402
+from helper.check_length_anniversary import check_entries, load_json, main
 
 # ---------------------------------------------------------------------------
 # Shared helpers
@@ -256,40 +257,49 @@ class TestMain:
 
         assert exc_info.value.code == 1
 
-    def test_silent_pass_when_load_returns_none(self):
+    def test_exits_when_load_returns_none(self):
         """
-        Known quirk: when load_json returns None (file missing/invalid),
-        the `if data:` guard skips check_entries entirely and logs 'All good!'.
-        This documents the current behaviour — callers cannot distinguish
-        'file error' from 'all entries passed'.
+        When load_json returns None (file missing/invalid), main must call
+        sys.exit(1) — not silently log 'All good!' as if nothing was wrong.
         """
         with patch("helper.check_length_anniversary.load_json", return_value=None), \
-             patch("helper.check_length_anniversary.check_entries") as mock_check, \
              patch("helper.check_length_anniversary.logger"):
-            main()
+            with pytest.raises(SystemExit) as exc_info:
+                main()
 
-        mock_check.assert_not_called()
+        assert exc_info.value.code == 1
 
-    def test_silent_pass_when_load_returns_empty_list(self):
+    def test_runs_check_entries_when_load_returns_empty_list(self):
         """
-        Known quirk: an empty events.json produces `[]`; `if data:` is False
-        for an empty list, so check_entries is never called and 'All good!'
-        is still logged — even though no entry was validated.
+        An empty events.json is valid JSON — check_entries must still be called
+        so it can emit the 'no entries' warning rather than silently succeeding.
         """
         with patch("helper.check_length_anniversary.load_json", return_value=[]), \
              patch("helper.check_length_anniversary.check_entries") as mock_check, \
              patch("helper.check_length_anniversary.logger"):
             main()
 
-        mock_check.assert_not_called()
+        mock_check.assert_called_once_with([])
 
     def test_uses_events_json_as_default_filename(self):
-        """main() must pass 'events.json' to load_json by default."""
-        with patch("helper.check_length_anniversary.load_json", return_value=[]) as mock_load, \
+        """main() must pass 'events.json' to load_json when no CLI arg is given."""
+        with patch("sys.argv", ["script"]), \
+             patch("helper.check_length_anniversary.load_json", return_value=[]) as mock_load, \
+             patch("helper.check_length_anniversary.check_entries"), \
              patch("helper.check_length_anniversary.logger"):
             main()
 
         mock_load.assert_called_once_with("events.json")
+
+    def test_uses_argv1_as_filename_when_provided(self):
+        """main() must use sys.argv[1] as the filename when it is present."""
+        with patch("sys.argv", ["script", "custom.json"]), \
+             patch("helper.check_length_anniversary.load_json", return_value=[]) as mock_load, \
+             patch("helper.check_length_anniversary.check_entries"), \
+             patch("helper.check_length_anniversary.logger"):
+            main()
+
+        mock_load.assert_called_once_with("custom.json")
 
 
 # ---------------------------------------------------------------------------
