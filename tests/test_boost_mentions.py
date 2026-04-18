@@ -1,5 +1,6 @@
 # pylint: disable=missing-class-docstring,missing-function-docstring,protected-access
 # pylint: disable=unused-argument,attribute-defined-outside-init,too-few-public-methods
+# pylint: disable=too-many-arguments,import-outside-toplevel
 """
 Tests for src/boost_mentions.py
 
@@ -14,6 +15,7 @@ Covers:
 - boost_mentions: platform routing and logging
 """
 
+import logging
 import os
 from unittest.mock import MagicMock, call, patch
 
@@ -237,7 +239,6 @@ class TestBoostMentionsMastodon:
         client.status_favourite.assert_not_called()
 
     def test_dry_run_logs_dry_run_message(self, caplog):
-        import logging
         handler = self._make(no_dry_run=False)
         notif = _mastodon_notification(reblogged=False, username="alice")
         with caplog.at_level(logging.INFO, logger="boost_mentions"):
@@ -247,7 +248,6 @@ class TestBoostMentionsMastodon:
     def test_exception_logged_as_error_and_loop_continues(self, caplog):
         # A failing boost must be logged at ERROR level and must not abort
         # processing of subsequent notifications
-        import logging
         handler = self._make()
         notif_fail = _mastodon_notification(reblogged=False, status_id="1",
                                             username="alice")
@@ -343,7 +343,6 @@ class TestBoostMentionsBluesky:
         client.app.bsky.notification.update_seen.assert_not_called()
 
     def test_dry_run_logs_dry_run_message(self, caplog):
-        import logging
         handler = self._make(no_dry_run=False)
         notif = _bluesky_notification(reason="mention", cid="new-cid")
         with caplog.at_level(logging.INFO, logger="boost_mentions"):
@@ -360,7 +359,6 @@ class TestBoostMentionsBluesky:
         )
 
     def test_exception_logged_as_error_and_loop_continues(self, caplog):
-        import logging
         handler = self._make()
         notif_fail = _bluesky_notification(reason="mention", cid="cid-1")
         notif_ok = _bluesky_notification(reason="mention", cid="cid-2")
@@ -415,7 +413,6 @@ class TestBoostMentions:
         mock_mastodon.assert_not_called()
 
     def test_logs_client_name_and_url(self, caplog):
-        import logging
         handler = BoostMentions(config_dict=None)
         with patch.object(handler, "set_up_config_dict"), \
              patch.object(handler, "_boost_mentions_bluesky"), \
