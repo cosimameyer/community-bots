@@ -1,5 +1,6 @@
 # pylint: disable=missing-class-docstring,missing-function-docstring,protected-access
 # pylint: disable=unused-argument,attribute-defined-outside-init,too-few-public-methods
+# pylint: disable=import-error,too-many-arguments,too-many-positional-arguments
 """
 Tests for src/debug.py
 
