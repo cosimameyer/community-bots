@@ -375,5 +375,5 @@ class PromoteAnniversary:
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    handler = PromoteAnniversary(config_dict=None, no_dry_run=False)
+    handler = PromoteAnniversary(config_dict=None, no_dry_run=True)
     handler.promote_anniversary()

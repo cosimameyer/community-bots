@@ -341,3 +341,12 @@ class TestStartDebug:
         d.start_debug()
         d.get_config_boost.assert_called_once()
         d.get_config_anniversary.assert_not_called()
+
+    @patch('debug.PromoteBlogPost')
+    def test_none_config_logs_error_and_does_not_instantiate_handler(self, mock_bp):
+        """When get_config_blog returns None (unknown bot/platform), start_debug
+        must log an error and return rather than passing None to PromoteBlogPost."""
+        d = make_debug(what_to_debug='blog')
+        d.get_config_blog = MagicMock(return_value=None)
+        d.start_debug()
+        mock_bp.assert_not_called()

@@ -26,8 +26,16 @@ class DebugBots:
 
     def start_debug(self):
         """Start debugging."""
+        logger = logging.getLogger(__name__)
+
         if self.what_to_debug == 'blog':
             config_dict = self.get_config_blog()
+            if config_dict is None:
+                logger.error(
+                    "No config for bot=%r platform=%r — check bot/platform settings.",
+                    self.bot, self.platform
+                )
+                return
             promote_blog_post_handler = PromoteBlogPost(
                 config_dict,
                 self.no_dry_run
@@ -36,6 +44,12 @@ class DebugBots:
 
         elif self.what_to_debug == 'rss':
             config_dict = self.get_config_rss()
+            if config_dict is None:
+                logger.error(
+                    "No config for bot=%r platform=%r — check bot/platform settings.",
+                    self.bot, self.platform
+                )
+                return
             rss_data_handler = RSSData(
                 config_dict,
                 self.no_dry_run
@@ -44,6 +58,12 @@ class DebugBots:
 
         elif self.what_to_debug == 'boost_tags':
             config_dict = self.get_config_boost()
+            if config_dict is None:
+                logger.error(
+                    "No config for bot=%r platform=%r — check bot/platform settings.",
+                    self.bot, self.platform
+                )
+                return
             boost_tags_handler = BoostTags(
                 config_dict,
                 self.no_dry_run
@@ -52,6 +72,12 @@ class DebugBots:
 
         elif self.what_to_debug == 'boost_mentions':
             config_dict = self.get_config_boost()
+            if config_dict is None:
+                logger.error(
+                    "No config for bot=%r platform=%r — check bot/platform settings.",
+                    self.bot, self.platform
+                )
+                return
             boost_mentions_handler = BoostMentions(
                 config_dict,
                 self.no_dry_run
@@ -60,6 +86,12 @@ class DebugBots:
 
         elif self.what_to_debug == 'anniversary':
             config_dict = self.get_config_anniversary()
+            if config_dict is None:
+                logger.error(
+                    "No config for bot=%r platform=%r — check bot/platform settings.",
+                    self.bot, self.platform
+                )
+                return
             promote_anniversary_handler = PromoteAnniversary(
                 config_dict,
                 self.no_dry_run

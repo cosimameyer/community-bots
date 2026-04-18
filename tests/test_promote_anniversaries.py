@@ -784,10 +784,11 @@ class TestSendPostToMastodonFallbackFailure:
 class TestMain:
     def test_main_block_runs_in_dry_run_mode_without_error(self):
         """Running the module as __main__ must complete without error.
-        The no_dry_run=False default means _connect_client is never called,
-        so no platform credentials are needed and no post is ever sent."""
-        # Patch open + json.load so events.json need not exist on disk.
-        with patch("builtins.open"), patch("json.load", return_value=[]):
+        __main__ uses no_dry_run=True. _setup_config_from_env is mocked so
+        no real env vars are required; because it does nothing config_dict
+        stays None, triggering the early-return guard — no post is ever sent."""
+        with patch(
+            "promote_anniversaries.PromoteAnniversary._setup_config_from_env"
+        ):
             runpy.run_module("promote_anniversaries", run_name="__main__")
-        # Reaching here without exception is the assertion:
-        # dry-run mode is safe to invoke without any environment setup.
+        # Reaching here without exception is the assertion.
