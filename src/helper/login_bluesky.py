@@ -24,17 +24,14 @@ def login_bluesky(config_dict: BlueskyConfig) -> Client:
     Returns:
         A logged-in Bluesky `Client` instance.
     """
-    logger.info(
-        " > Logging in as %s with password <TRUNCATED>",
-        config_dict["username"],
-    )
+    logger.info(" > Logging in as %s", config_dict["username"])
 
     client = Client()
-    client.login(
+    profile = client.login(
         config_dict["username"],
         config_dict["password"],
     )
 
-    logger.info(" > Successfully logged in")
+    logger.info(" > Successfully logged in as @%s", profile.handle)
 
     return client
