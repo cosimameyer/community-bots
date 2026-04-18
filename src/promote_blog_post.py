@@ -138,26 +138,15 @@ class PromoteBlogPost():
             is_last_feed = feed['name'] == feeds[-1]['name']
 
             if count_post == 0 and is_last_feed:
-                count_post = self.process_feed(
-                    feed,
-                    count_post,
-                    client
-                )
-
-                # Add the counter_name
-                if is_last_feed:
-                    new_feed = feeds[0]
-                    count_post = self.process_feed(
-                        new_feed,
-                        count_post,
-                        client
-                    )
-
-                    self.logger.info(
-                        "Successfully promoted blog posts. "
-                        "Thank you and see you next time!")
-                    self.update_counter(feeds[1]['name'])
-                    break
+                count_post = self.process_feed(feed, count_post, client)
+                new_feed = feeds[0]
+                count_post = self.process_feed(new_feed, count_post, client)
+                self.logger.info(
+                    "Successfully promoted blog posts. "
+                    "Thank you and see you next time!")
+                next_counter = feeds[1]['name'] if len(feeds) > 1 else feeds[0]['name']
+                self.update_counter(next_counter)
+                break
 
             elif count_post < 2:
                 count_post = self.process_feed(
@@ -384,8 +373,8 @@ class PromoteBlogPost():
         if self.config_dict.get('gen_ai_support', None):
             summarized_blog_post = self.summarize_text(entry)
             if summarized_blog_post:
-                basis_text.text('\n\n📖 ')
-                basis_text.text(summarized_blog_post)
+                basis_text += '\n\n📖 '
+                basis_text += summarized_blog_post
         basis_text += f"\n\n🔗 {entry.get('link', '')}\n\n{tags}"
 
         self.logger.info('*****************************')
@@ -844,6 +833,9 @@ class PromoteBlogPost():
             if count >= 1:  # Limit to 1 post per run
                 break
             if count_fails >= 1:
+                self.logger.warning(
+                    "Stopping feed after post failure — skipping remaining entries."
+                )
                 break
 
             en = {
@@ -862,8 +854,8 @@ class PromoteBlogPost():
                 en.update(self._get_media_content(entry))
 
             if en['link'] not in feed_config['rss_feed_archive']['link']:
-                feed_config['rss_feed_archive']['link'].append(en['link'])
                 if self.no_dry_run:
+                    feed_config['rss_feed_archive']['link'].append(en['link'])
                     result = self.send_post(en, feed_config['feed'], client)
                     if result == 'success':
                         count_post += 1

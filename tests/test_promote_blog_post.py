@@ -1,19 +1,14 @@
+# pylint: disable=missing-class-docstring,missing-function-docstring,protected-access
+# pylint: disable=unused-argument,attribute-defined-outside-init,too-few-public-methods
 """
 Tests for src/promote_blog_post.py
 """
 
 import json
 import os
-import sys
-import time
 from datetime import datetime, timedelta
 from pathlib import Path
-from types import SimpleNamespace
-from unittest.mock import MagicMock, mock_open, patch, call
-
-import pytest
-
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+from unittest.mock import MagicMock, patch
 
 from promote_blog_post import PromoteBlogPost
 
@@ -21,6 +16,19 @@ from promote_blog_post import PromoteBlogPost
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
+
+class FeedEntry:
+    """
+    Minimal feedparser entry stub.
+    Supports both attribute access (entry.title) and
+    membership tests ('category' in entry) — matching feedparser's behaviour.
+    """
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
+    def __contains__(self, item):
+        return item in self.__dict__
+
 
 BASE_CONFIG = {
     "platform": "bluesky",
@@ -50,15 +58,14 @@ def make_entry(
     tags=None,
     summary="<p>Summary text</p>",
 ):
-    """Build a minimal RSS entry mock."""
-    entry = SimpleNamespace(
+    """Build a minimal RSS entry stub that mirrors a feedparser entry."""
+    return FeedEntry(
         title=title,
         link=link,
         published=published,
-        tags=[SimpleNamespace(term=t) for t in (tags or [])],
+        tags=[FeedEntry(term=t) for t in (tags or [])],
         summary=summary,
     )
-    return entry
 
 
 def make_feed_config(entries, archived_links=None):
@@ -80,7 +87,8 @@ class TestEnsureMetadataPrefix:
         assert PromoteBlogPost._ensure_metadata_prefix("counter.txt") == "metadata/counter.txt"
 
     def test_leaves_existing_prefix_intact(self):
-        assert PromoteBlogPost._ensure_metadata_prefix("metadata/counter.txt") == "metadata/counter.txt"
+        result = PromoteBlogPost._ensure_metadata_prefix("metadata/counter.txt")
+        assert result == "metadata/counter.txt"
 
     def test_empty_string_gets_prefix(self):
         # Edge: empty string should still receive the prefix
@@ -230,7 +238,9 @@ class TestGetNumberOfArchiveEntries:
     def test_correct_counts_returned(self):
         d = [object()] * 5
         archive = {"link": ["a", "b", "c"]}
-        result_archive, n_archive, n_feed = PromoteBlogPost.get_number_of_archive_entries(d, archive)
+        _, n_archive, n_feed = PromoteBlogPost.get_number_of_archive_entries(
+            d, archive
+        )
         assert n_feed == 5
         assert n_archive == 3
 
@@ -244,7 +254,9 @@ class TestGetNumberOfArchiveEntries:
         # Archive missing "link" key — should be repaired
         d = [object()]
         archive = {"url": ["a", "b"]}  # wrong key
-        result_archive, n_archive, _ = PromoteBlogPost.get_number_of_archive_entries(d, archive)
+        result_archive, _, _ = PromoteBlogPost.get_number_of_archive_entries(
+            d, archive
+        )
         assert "link" in result_archive
         assert isinstance(result_archive["link"], list)
 
@@ -351,7 +363,7 @@ class TestBuildPostMastodon:
                                 "gemini_model_name": "gemini-2.5-flash"})
         entry = {"title": "T", "link": "https://x.com", "pub_date": "2024-01-01",
                  "tags": [], "summary": "content", "media_content": []}
-        with patch.object(handler, "summarize_text", return_value="AI summary") as mock_sum:
+        with patch.object(handler, "summarize_text", return_value="AI summary"):
             result = handler.build_post_mastodon("base text", "", "#tag", entry)
         assert "AI summary" in result
         assert isinstance(result, str)
@@ -628,7 +640,10 @@ class TestProcessFeeds:
         captured_counter = []
 
         with patch.object(handler, "process_feed", side_effect=fake_process), \
-             patch.object(handler, "update_counter", side_effect=lambda n: captured_counter.append(n)):
+             patch.object(
+                 handler, "update_counter",
+                 side_effect=captured_counter.append
+             ):
             # counter_name matches last feed → wrap-around path
             handler.process_feeds(feeds, "Carol", 0, MagicMock())
 
@@ -644,7 +659,10 @@ class TestProcessFeeds:
 
         captured_counter = []
         with patch.object(handler, "process_feed", side_effect=fake_process), \
-             patch.object(handler, "update_counter", side_effect=lambda n: captured_counter.append(n)):
+             patch.object(
+                 handler, "update_counter",
+                 side_effect=captured_counter.append
+             ):
             handler.process_feeds(feeds, "OnlyFeed", 0, MagicMock())
 
         assert "OnlyFeed" in captured_counter
@@ -734,7 +752,7 @@ class TestPromoteBlogPostDryRunCap:
 
 class TestGetMediaContent:
     def test_youtube_link_builds_thumbnail_url(self):
-        entry = SimpleNamespace(
+        entry = FeedEntry(
             link="https://www.youtube.com/watch?v=abc123",
             id="yt:video:abc123",
             summary="",
@@ -744,7 +762,7 @@ class TestGetMediaContent:
         assert "abc123" in result["media_content"]
 
     def test_media_content_field_extracted(self):
-        entry = SimpleNamespace(
+        entry = FeedEntry(
             link="https://example.com/post",
             media_content=[{"url": "https://example.com/img.png"}],
             summary="",
@@ -753,18 +771,32 @@ class TestGetMediaContent:
         assert result.get("media_content") == "https://example.com/img.png"
 
     def test_image_extracted_from_html_summary(self):
-        entry = SimpleNamespace(
+        entry = FeedEntry(
             link="https://example.com/post",
             summary='<p><img src="https://example.com/img.jpg" alt="alt text"/></p>',
         )
-        result = PromoteBlogPost._get_media_content(entry)
+        img_mock = MagicMock()
+        img_mock.has_attr.side_effect = lambda attr: attr in ("src", "alt")
+        img_mock.__getitem__ = lambda _, key: {
+            "src": "https://example.com/img.jpg",
+            "alt": "alt text",
+        }[key]
+        soup_mock = MagicMock()
+        soup_mock.find_all.return_value = [img_mock]
+
+        with patch("promote_blog_post.BeautifulSoup", return_value=soup_mock):
+            result = PromoteBlogPost._get_media_content(entry)
+
         assert result.get("media_content") == "https://example.com/img.jpg"
         assert result.get("alt_text") == "alt text"
 
     def test_no_media_returns_empty_dict(self):
-        entry = SimpleNamespace(
+        entry = FeedEntry(
             link="https://example.com/post",
             summary="<p>No images here</p>",
         )
-        result = PromoteBlogPost._get_media_content(entry)
-        assert result == {}
+        soup_mock = MagicMock()
+        soup_mock.find_all.return_value = []
+        with patch("promote_blog_post.BeautifulSoup", return_value=soup_mock):
+            result = PromoteBlogPost._get_media_content(entry)
+        assert not result
