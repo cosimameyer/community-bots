@@ -8,7 +8,6 @@ import json
 import os
 from datetime import datetime, timedelta
 from pathlib import Path
-from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
 from promote_blog_post import PromoteBlogPost
@@ -17,6 +16,19 @@ from promote_blog_post import PromoteBlogPost
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
+
+class FeedEntry:
+    """
+    Minimal feedparser entry stub.
+    Supports both attribute access (entry.title) and
+    membership tests ('category' in entry) — matching feedparser's behaviour.
+    """
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
+    def __contains__(self, item):
+        return item in self.__dict__
+
 
 BASE_CONFIG = {
     "platform": "bluesky",
@@ -46,15 +58,14 @@ def make_entry(
     tags=None,
     summary="<p>Summary text</p>",
 ):
-    """Build a minimal RSS entry mock."""
-    entry = SimpleNamespace(
+    """Build a minimal RSS entry stub that mirrors a feedparser entry."""
+    return FeedEntry(
         title=title,
         link=link,
         published=published,
-        tags=[SimpleNamespace(term=t) for t in (tags or [])],
+        tags=[FeedEntry(term=t) for t in (tags or [])],
         summary=summary,
     )
-    return entry
 
 
 def make_feed_config(entries, archived_links=None):
@@ -741,7 +752,7 @@ class TestPromoteBlogPostDryRunCap:
 
 class TestGetMediaContent:
     def test_youtube_link_builds_thumbnail_url(self):
-        entry = SimpleNamespace(
+        entry = FeedEntry(
             link="https://www.youtube.com/watch?v=abc123",
             id="yt:video:abc123",
             summary="",
@@ -751,7 +762,7 @@ class TestGetMediaContent:
         assert "abc123" in result["media_content"]
 
     def test_media_content_field_extracted(self):
-        entry = SimpleNamespace(
+        entry = FeedEntry(
             link="https://example.com/post",
             media_content=[{"url": "https://example.com/img.png"}],
             summary="",
@@ -760,7 +771,7 @@ class TestGetMediaContent:
         assert result.get("media_content") == "https://example.com/img.png"
 
     def test_image_extracted_from_html_summary(self):
-        entry = SimpleNamespace(
+        entry = FeedEntry(
             link="https://example.com/post",
             summary='<p><img src="https://example.com/img.jpg" alt="alt text"/></p>',
         )
@@ -769,7 +780,7 @@ class TestGetMediaContent:
         assert result.get("alt_text") == "alt text"
 
     def test_no_media_returns_empty_dict(self):
-        entry = SimpleNamespace(
+        entry = FeedEntry(
             link="https://example.com/post",
             summary="<p>No images here</p>",
         )
