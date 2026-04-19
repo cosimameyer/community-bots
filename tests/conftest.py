@@ -11,7 +11,7 @@ _MOCKED_MODULES = [
     "atproto.client_utils",
     "atproto.models",
     "google",
-    "google.generativeai",
+    "google.genai",
     "feedparser",
     "requests",
     "requests.exceptions",
