@@ -126,6 +126,11 @@ class TestParsePubDate:
         result = self.handler.parse_pub_date(entry)
         assert result == datetime(2024, 6, 15)
 
+    def test_youtube_atom_format(self):
+        entry = self._make_entry("2024-01-15T10:00:00+00:00")
+        result = self.handler.parse_pub_date(entry)
+        assert result == datetime(2024, 1, 15, 10, 0, 0)
+
     def test_fallback_to_today_on_unknown_format(self):
         entry = self._make_entry("not-a-valid-date")
         before = datetime.now()
@@ -354,18 +359,19 @@ class TestBuildPostMastodon:
         handler = make_handler({"platform": "mastodon", "gen_ai_support": False})
         entry = {"title": "T", "link": "https://x.com", "pub_date": "2024-01-01",
                  "tags": [], "summary": "", "media_content": []}
-        result = handler.build_post_mastodon("base text", "", "#tag", entry)
+        result = handler.build_post_mastodon("T", "Author", "", "#tag", entry)
         assert isinstance(result, str)
 
-    def test_gen_ai_summary_appended_with_concat(self):
-        # Verifies fix: basis_text += ... (not .text())
+    def test_gen_ai_summary_appended_without_emoji(self):
+        # Summary should appear in the post without the 📖 emoji prefix
         handler = make_handler({"platform": "mastodon", "gen_ai_support": True,
                                 "gemini_model_name": "gemini-2.5-flash"})
         entry = {"title": "T", "link": "https://x.com", "pub_date": "2024-01-01",
                  "tags": [], "summary": "content", "media_content": []}
         with patch.object(handler, "summarize_text", return_value="AI summary"):
-            result = handler.build_post_mastodon("base text", "", "#tag", entry)
+            result = handler.build_post_mastodon("T", "Author", "", "#tag", entry)
         assert "AI summary" in result
+        assert "📖" not in result
         assert isinstance(result, str)
 
     def test_no_gen_ai_no_summary(self):
@@ -373,15 +379,145 @@ class TestBuildPostMastodon:
         entry = {"title": "T", "link": "https://x.com", "pub_date": "2024-01-01",
                  "tags": [], "summary": "", "media_content": []}
         with patch.object(handler, "summarize_text") as mock_sum:
-            handler.build_post_mastodon("base", "", "#tag", entry)
+            handler.build_post_mastodon("T", "Author", "", "#tag", entry)
         mock_sum.assert_not_called()
 
     def test_platform_handle_included(self):
         handler = make_handler({"platform": "mastodon", "gen_ai_support": False})
         entry = {"title": "T", "link": "https://x.com", "pub_date": "2024-01-01",
                  "tags": [], "summary": "", "media_content": []}
-        result = handler.build_post_mastodon("base", "@author@example.social", "#tag", entry)
+        result = handler.build_post_mastodon("T", "Author", "@author@example.social", "#tag", entry)
         assert "@author@example.social" in result
+
+    def test_post_order(self):
+        # Verify: title → summary → name+handle → link → tags
+        handler = make_handler({"platform": "mastodon", "gen_ai_support": True,
+                                "gemini_model_name": "gemini-2.5-flash"})
+        entry = {"title": "My Title", "link": "https://x.com/post", "pub_date": "2024-01-01",
+                 "tags": [], "summary": "content", "media_content": []}
+        with patch.object(handler, "summarize_text", return_value="A short summary"):
+            result = handler.build_post_mastodon(
+                "My Title", "Jane Doe", "@jane", "#python ", entry
+            )
+        title_pos = result.index("My Title")
+        summary_pos = result.index("A short summary")
+        name_pos = result.index("Jane Doe")
+        link_pos = result.index("https://x.com/post")
+        tags_pos = result.index("#python")
+        assert title_pos < summary_pos < name_pos < link_pos < tags_pos
+
+    def test_title_uses_double_quotes(self):
+        handler = make_handler({"platform": "mastodon", "gen_ai_support": False})
+        entry = {"title": "My Title", "link": "https://x.com", "pub_date": "2024-01-01",
+                 "tags": [], "summary": "", "media_content": []}
+        result = handler.build_post_mastodon("My Title", "", "", "#tag", entry)
+        assert '📝 "My Title"' in result
+
+
+# ---------------------------------------------------------------------------
+# build_post_bluesky
+# ---------------------------------------------------------------------------
+
+class FakeTextBuilder:
+    """
+    Minimal TextBuilder stand-in that concatenates all text/link/tag/mention
+    display strings so tests can assert on the full rendered text.
+    """
+    def __init__(self):
+        self._parts = []
+
+    def text(self, s):
+        self._parts.append(s)
+        return self
+
+    def link(self, display, url):
+        self._parts.append(display)
+        return self
+
+    def mention(self, display, did):
+        self._parts.append(display)
+        return self
+
+    def tag(self, display, tag_name):
+        self._parts.append(display)
+        return self
+
+    def build_text(self):
+        return "".join(self._parts)
+
+
+class TestBuildPostBluesky:
+    BASE_ENTRY = {
+        "title": "My Post Title",
+        "link": "https://example.com/post",
+        "pub_date": "2024-01-01",
+        "tags": [],
+        "summary": "",
+        "media_content": [],
+    }
+
+    def _make_handler_with_fake_builder(self, config=None):
+        """Return a handler whose client_utils.TextBuilder produces FakeTextBuilder."""
+        handler = make_handler(config or {"platform": "bluesky", "gen_ai_support": False})
+        import promote_blog_post as pbp
+        pbp.client_utils.TextBuilder.side_effect = FakeTextBuilder
+        return handler
+
+    def test_title_uses_double_quotes(self):
+        handler = self._make_handler_with_fake_builder()
+        with patch.object(handler, "get_bluesky_did", return_value="did:plc:test"):
+            builder = handler.build_post_bluesky(
+                "My Title", "Author", "", "#python ", self.BASE_ENTRY
+            )
+        assert '📝 "My Title"' in builder.build_text()
+
+    def test_post_order(self):
+        # Verify: title → summary → name+handle → link → tags
+        handler = self._make_handler_with_fake_builder(
+            {"platform": "bluesky", "gen_ai_support": True, "gemini_model_name": "gemini-2.5-flash"}
+        )
+        entry = {**self.BASE_ENTRY, "link": "https://example.com/post"}
+        with patch.object(handler, "summarize_text", return_value="Short summary"), \
+             patch.object(handler, "get_bluesky_did", return_value="did:plc:test"):
+            builder = handler.build_post_bluesky(
+                "My Title", "Jane Doe", "@jane", "#python ", entry
+            )
+        text = builder.build_text()
+        assert text.index("My Title") < text.index("Short summary")
+        assert text.index("Short summary") < text.index("Jane Doe")
+        assert text.index("Jane Doe") < text.index("https://example.com/post")
+        assert text.index("https://example.com/post") < text.index("#python")
+
+    def test_no_summary_emoji(self):
+        handler = self._make_handler_with_fake_builder(
+            {"platform": "bluesky", "gen_ai_support": True, "gemini_model_name": "gemini-2.5-flash"}
+        )
+        with patch.object(handler, "summarize_text", return_value="AI summary"), \
+             patch.object(handler, "get_bluesky_did", return_value="did:plc:test"):
+            builder = handler.build_post_bluesky(
+                "T", "Author", "", "#python ", self.BASE_ENTRY
+            )
+        assert "📖" not in builder.build_text()
+
+    def test_long_title_truncated_to_fit_300_graphemes(self):
+        handler = self._make_handler_with_fake_builder()
+        long_title = "A" * 280  # will exceed 300 once link + tags are added
+        entry = {**self.BASE_ENTRY, "link": "https://example.com/post"}
+        with patch.object(handler, "get_bluesky_did", return_value="did:plc:test"):
+            builder = handler.build_post_bluesky(
+                long_title, "Author", "", "#python ", entry
+            )
+        assert len(builder.build_text()) <= 300
+
+    def test_short_title_not_truncated(self):
+        handler = self._make_handler_with_fake_builder()
+        with patch.object(handler, "get_bluesky_did", return_value="did:plc:test"):
+            builder = handler.build_post_bluesky(
+                "Short title", "Author", "", "#python ", self.BASE_ENTRY
+            )
+        text = builder.build_text()
+        assert "Short title" in text
+        assert "…" not in text
 
 
 # ---------------------------------------------------------------------------
