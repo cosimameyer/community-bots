@@ -463,49 +463,39 @@ class PromoteBlogPost():
         if self.config_dict.get('gen_ai_support', None):
             summarized_blog_post = self.summarize_text(entry) or ''
 
-        # Calculate overhead of all parts except the title to enforce grapheme limit
-        overhead = 0
-        if summarized_blog_post:
-            overhead += len(summarized_blog_post) + 2  # +2 for '\n\n'
-        if name:
-            overhead += len('👤 ') + len(name)
-        if platform_user_handle:
-            overhead += len(f' ({platform_user_handle})')
-        if name or platform_user_handle:
-            overhead += 2  # '\n\n' after person block
-        overhead += len('🔗 ') + len(link) + 2  # +2 for '\n\n'
-        overhead += len(tags)
+        # Resolve DID once so _build() never makes a duplicate HTTP call
+        did = self.get_bluesky_did(platform_user_handle) if platform_user_handle else None
 
-        title_wrapper = len('📝 "') + len('"\n\n')  # 6 graphemes
-        available_for_title = bluesky_max_graphemes - overhead - title_wrapper
-        if title and len(title) > available_for_title:
-            title = title[:max(0, available_for_title - 1)] + '…'
+        def _build(t):
+            tb = client_utils.TextBuilder()
+            if t:
+                tb.text(f'📝 "{t}"\n\n')
+            if summarized_blog_post:
+                tb.text(summarized_blog_post)
+                tb.text('\n\n')
+            if name:
+                tb.text(f'👤 {name}')
+            if platform_user_handle:
+                tb.mention(f' ({platform_user_handle})', did)
+            if name or platform_user_handle:
+                tb.text('\n\n')
+            tb.text('🔗 ')
+            tb.link(link, link)
+            tb.text('\n\n')
+            for tag in tags.split('#'):
+                tag_clean = tag.strip()
+                if tag_clean:
+                    tb.tag(f'#{tag_clean} ', tag_clean)
+            return tb
 
-        text_builder = client_utils.TextBuilder()
+        text_builder = _build(title)
 
-        if title:
-            text_builder.text(f'📝 "{title}"\n\n')
-
-        if summarized_blog_post:
-            text_builder.text(summarized_blog_post)
-            text_builder.text('\n\n')
-
-        if name:
-            text_builder.text(f'👤 {name}')
-        if platform_user_handle:
-            did = self.get_bluesky_did(platform_user_handle)
-            text_builder.mention(f' ({platform_user_handle})', did)
-        if name or platform_user_handle:
-            text_builder.text('\n\n')
-
-        text_builder.text('🔗 ')
-        text_builder.link(link, link)
-        text_builder.text('\n\n')
-
-        for tag in tags.split('#'):
-            tag_clean = tag.strip()
-            if tag_clean:
-                text_builder.tag(f'#{tag_clean} ', tag_clean)
+        # Measure actual grapheme count; trim title by the exact excess if needed
+        actual_len = len(text_builder.build_text())
+        if actual_len > bluesky_max_graphemes:
+            excess = actual_len - bluesky_max_graphemes
+            trimmed_title = title[:max(0, len(title) - excess - 1)] + '…'
+            text_builder = _build(trimmed_title)
 
         return text_builder
 
