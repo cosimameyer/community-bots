@@ -2,8 +2,6 @@
 import logging
 import os
 import json
-import posixpath
-import shutil
 import time
 from datetime import datetime
 from pathlib import Path
@@ -28,7 +26,6 @@ class PromoteBlogPost():
         self.logger = logging.getLogger(__name__)
         logging.basicConfig(level=logging.INFO)
 
-        self.process_images = False
         self.no_dry_run = no_dry_run
         self.config_dict = config_dict
 
@@ -40,7 +37,6 @@ class PromoteBlogPost():
             self.config_dict = {
                 "platform": os.getenv("PLATFORM"),
                 "archive": os.getenv("ARCHIVE_DIRECTORY"),
-                "images": os.getenv("IMAGES"),
                 "counter": self._ensure_metadata_prefix(
                     os.getenv("COUNTER", "")
                 ),
@@ -207,67 +203,6 @@ class PromoteBlogPost():
         if not value.startswith(prefix):
             return prefix + value
         return value
-
-    def download_image(self, url: str):
-        """
-        Downloads an image from the given URL and saves it locally,
-        organizing files by domain name.
-        """
-        try:
-            filename = ''
-            # Parse the URL components
-            if self.config_dict["platform"] == "bluesky":
-                domain = urlsplit(url).path
-                filename = posixpath.basename(domain)
-            elif self.config_dict["platform"] == "mastodon":
-                domain = urlsplit(url).netloc
-                filename = posixpath.basename(urlsplit(url).path)
-
-            # Create folder structure based on the domain name
-            domain_dir = Path(self.config_dict['images']) / domain
-            domain_dir.mkdir(parents=True, exist_ok=True)
-
-            # Full file path for the image
-            file_path = domain_dir / filename
-
-            if file_path.is_file():
-                self.logger.info("Image already downloaded: %s", file_path)
-                return str(file_path)
-
-            # Set user-agent headers for the request
-            headers = {
-                'User-Agent': (
-                    'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:20.0) '
-                    'Gecko/20100101 Firefox/20.0'
-                )
-            }
-
-            # Download the image
-            self.logger.info("Downloading image from %s...", url)
-            response = requests.get(
-                url,
-                headers=headers,
-                stream=True,
-                timeout=15
-            )
-            response.raise_for_status()  # Raises an exception for HTTP errors
-
-            # Save the image to the designated path
-            with open(file_path, 'wb') as out_file:
-                shutil.copyfileobj(response.raw, out_file)
-
-            self.logger.info("Image successfully downloaded: %s", file_path)
-            return str(file_path)
-
-        except requests.exceptions.RequestException as e:
-            self.logger.error("Failed to download image from %s: %e", url, e)
-            return None
-        except OSError as e:
-            self.logger.error("File system error while saving image: %s", e)
-            return None
-        finally:
-            if 'response' in locals():
-                response.close()
 
     def parse_pub_date(self, entry):
         """Method to parse the publication date"""
@@ -507,45 +442,17 @@ class PromoteBlogPost():
         """
         Send post to Mastodon.
         """
-        media_content = en.get('media_content', None)
-        alt_text = en.get('alt_text', None)
-
-        if media_content:
-            try:
-                self.logger.info('Uploading media to mastodon')
-                filename = self.download_image(media_content)
-                media_upload_mastodon = client.media_post(filename)
-
-                if alt_text:
-                    self.logger.info('Adding description')
-                    client.media_update(media_upload_mastodon,
-                                        description=alt_text)
-
-                self.logger.info('Now ready to post... ⏳')
-                client.status_post(post_txt, media_ids=[media_upload_mastodon])
-
-                self.logger.info('Posted 🎉')
-                return 'success'
-            except Exception as e:
-                self.logger.exception(
-                    'Urg, media could not be printed for %s. Exception: %s',
-                    en.get('link', 'unknown link'),
-                    e)
-                client.status_post(post_txt)
-                self.logger.info('Posted post without image.')
-                return 'failed'
-        else:
-            try:
-                client.status_post(post_txt)
-                self.logger.info('Posted 🎉')
-                return 'success'
-            except Exception as e:
-                self.logger.exception(
-                    'Urg, exception %s for %s',
-                    e,
-                    en.get('link', 'unknown link')
-                )
-                return 'failed'
+        try:
+            client.status_post(post_txt)
+            self.logger.info('Posted 🎉')
+            return 'success'
+        except Exception as e:
+            self.logger.exception(
+                'Urg, exception %s for %s',
+                e,
+                en.get('link', 'unknown link')
+            )
+            return 'failed'
 
     def send_post_to_bluesky(self, en, client, post_txt, embed_external):
         """
@@ -566,21 +473,6 @@ class PromoteBlogPost():
         """
         Build embed external. This is a speciality of Bluesky's protocol.
         """
-        if en['media_content']:
-            filename = self.download_image(en['media_content'])
-            with open(filename, 'rb') as f:
-                img_data = f.read()
-
-            thumb = client.upload_blob(img_data)
-
-            return models.AppBskyEmbedExternal.Main(
-                external=models.AppBskyEmbedExternal.External(
-                    title=en['title'],
-                    description=en['title'],
-                    uri=en['link'],
-                    thumb=thumb.blob,
-                )
-            )
         return None
 
     def send_post(self, en, feed, client):
@@ -847,9 +739,6 @@ class PromoteBlogPost():
 
             if not en['tags'] and 'category' in entry:
                 en['tags'].append(entry.category)
-
-            if self.process_images:
-                en.update(self._get_media_content(entry))
 
             if en['link'] not in feed_config['rss_feed_archive']['link']:
                 if self.no_dry_run:
