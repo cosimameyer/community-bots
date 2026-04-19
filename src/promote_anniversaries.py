@@ -202,38 +202,51 @@ class PromoteAnniversary:
             )
 
         if self.cfg["platform"] == "bluesky":
-            text_builder = client_utils.TextBuilder()
-            if event.get("bluesky"):
-                did = self.get_bluesky_did(event["bluesky"])
-                text_builder.text("Let's meet ")
-                text_builder.mention(event["bluesky"], did)
-                text_builder.text(" ⭐️\n\n")
-            else:
-                text_builder.text(f"Let's meet {event['name']} ⭐️\n\n")
-
-            split_text = [
-                item.rstrip(" ")
-                for item in re.split(r"(#\w+)", event["description_bluesky"])
-                if item.strip()
-            ]
-            for text_chunk in split_text:
-                if text_chunk.startswith("#"):
-                    for tag in text_chunk.split("#"):
-                        if tag.strip():
-                            text_builder.tag(f"#{tag.strip()}", tag.strip())
-                else:
-                    text_builder.text(
-                        self.add_whitespace_if_needed(text_chunk)
-                    )
-
-            text_builder.text("\n\n🔗 ")
-            text_builder.link(event["wiki_link"], event["wiki_link"])
-            text_builder.text("\n\n")
+            bluesky_max_graphemes = 300
             tag_list = [t.strip() for t in tags.split("#") if t.strip()]
-            for i, tag in enumerate(tag_list):
-                display = f"#{tag}" if i == len(tag_list) - 1 else f"#{tag} "
-                text_builder.tag(display, tag)
-            return text_builder
+            did = self.get_bluesky_did(event["bluesky"]) if event.get("bluesky") else None
+
+            def _build(tag_subset, desc_override=None):
+                desc = desc_override if desc_override is not None else event["description_bluesky"]
+                tb = client_utils.TextBuilder()
+                if event.get("bluesky"):
+                    tb.text("Let's meet ")
+                    tb.mention(event["bluesky"], did)
+                    tb.text(" ⭐️\n\n")
+                else:
+                    tb.text(f"Let's meet {event['name']} ⭐️\n\n")
+                split_text = [
+                    item.rstrip(" ")
+                    for item in re.split(r"(#\w+)", desc)
+                    if item.strip()
+                ]
+                for text_chunk in split_text:
+                    if text_chunk.startswith("#"):
+                        for tag in text_chunk.split("#"):
+                            if tag.strip():
+                                tb.tag(f"#{tag.strip()}", tag.strip())
+                    else:
+                        tb.text(self.add_whitespace_if_needed(text_chunk))
+                tb.text("\n\n🔗 ")
+                tb.link(event["wiki_link"], event["wiki_link"])
+                if tag_subset:
+                    tb.text("\n\n")
+                    for i, tag in enumerate(tag_subset):
+                        display = f"#{tag}" if i == len(tag_subset) - 1 else f"#{tag} "
+                        tb.tag(display, tag)
+                return tb
+
+            # Drop trailing tags one by one until within limit
+            for count in range(len(tag_list), -1, -1):
+                text_builder = _build(tag_list[:count])
+                if len(text_builder.build_text()) <= bluesky_max_graphemes:
+                    return text_builder
+
+            # Still over limit: trim description to fit
+            overhead = len(_build([], desc_override="").build_text())
+            available = bluesky_max_graphemes - overhead - 1  # -1 for "…"
+            desc_trimmed = event["description_bluesky"][:available].rstrip() + "…"
+            return _build([], desc_override=desc_trimmed)
 
         raise ValueError(
             f"Unsupported platform: {self.cfg['platform']}"
