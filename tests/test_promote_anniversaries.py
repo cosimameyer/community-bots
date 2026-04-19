@@ -485,7 +485,7 @@ class TestSendPostToBluesky:
         handler = make_handler(platform="bluesky")
         client = MagicMock()
         post_txt = MagicMock()
-        post_txt.build.return_value = ("preview", [])
+        post_txt.build_text.return_value = "preview"
         embed = MagicMock()
 
         handler.send_post_to_bluesky(SAMPLE_EVENT, client, post_txt, embed)
@@ -494,17 +494,17 @@ class TestSendPostToBluesky:
 
     def test_uses_public_build_api_for_preview_logging(self):
         """
-        Critical fix: preview must use post_txt.build()[0], not the private _buffer.
+        Critical fix: preview must use post_txt.build_text(), not the private _buffer.
         _buffer is an atproto internal subject to change without notice.
         """
         handler = make_handler(platform="bluesky")
         client = MagicMock()
         post_txt = MagicMock()
-        post_txt.build.return_value = ("preview text", [])
+        post_txt.build_text.return_value = "preview text"
 
         handler.send_post_to_bluesky(SAMPLE_EVENT, client, post_txt, None)
 
-        post_txt.build.assert_called()
+        post_txt.build_text.assert_called()
 
     def test_handles_send_exception_without_raising(self):
         """A failed send must be logged, not re-raised, so one bad post can't crash the run."""
@@ -512,7 +512,7 @@ class TestSendPostToBluesky:
         client = MagicMock()
         client.send_post.side_effect = Exception("network error")
         post_txt = MagicMock()
-        post_txt.build.return_value = ("preview", [])
+        post_txt.build_text.return_value = "preview"
 
         # Must complete without raising.
         handler.send_post_to_bluesky(SAMPLE_EVENT, client, post_txt, None)
