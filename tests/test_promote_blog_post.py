@@ -499,17 +499,31 @@ class TestBuildPostBluesky:
             )
         assert "📖" not in builder.build_text()
 
-    def test_long_title_truncated_to_fit_300_graphemes(self):
+    def test_tags_trimmed_to_fit_300_graphemes(self):
         handler = self._make_handler_with_fake_builder()
-        long_title = "A" * 280  # will exceed 300 once link + tags are added
+        # 30 tags of ~10 chars each — far exceeds 300 with the rest of the post
+        many_tags = " ".join(f"#longtag{i:02d}" for i in range(30))
         entry = {**self.BASE_ENTRY, "link": "https://example.com/post"}
         with patch.object(handler, "get_bluesky_did", return_value="did:plc:test"):
             builder = handler.build_post_bluesky(
-                long_title, "Author", "", "#python ", entry
+                "My Post Title", "Author", "", many_tags, entry
             )
-        assert len(builder.build_text()) <= 300
+        text = builder.build_text()
+        assert len(text) <= 300
+        assert "My Post Title" in text  # title is preserved
+        assert "…" not in text          # title not truncated with ellipsis
 
-    def test_short_title_not_truncated(self):
+    def test_title_preserved_when_tags_trimmed(self):
+        handler = self._make_handler_with_fake_builder()
+        many_tags = " ".join(f"#tag{i}" for i in range(50))
+        entry = {**self.BASE_ENTRY, "link": "https://example.com/post"}
+        with patch.object(handler, "get_bluesky_did", return_value="did:plc:test"):
+            builder = handler.build_post_bluesky(
+                "Important Title", "Author", "", many_tags, entry
+            )
+        assert "Important Title" in builder.build_text()
+
+    def test_all_tags_kept_when_post_fits(self):
         handler = self._make_handler_with_fake_builder()
         with patch.object(handler, "get_bluesky_did", return_value="did:plc:test"):
             builder = handler.build_post_bluesky(
@@ -517,6 +531,7 @@ class TestBuildPostBluesky:
             )
         text = builder.build_text()
         assert "Short title" in text
+        assert "#python" in text
         assert "…" not in text
 
 
@@ -771,7 +786,7 @@ class TestProcessFeeds:
         feeds = self._make_feeds(["Alice", "Bob", "Carol"])
 
         def fake_process(feed, count_post, client):
-            return count_post  # nothing posted → stays 0
+            return count_post + 1  # one post per feed
 
         captured_counter = []
 
@@ -780,7 +795,7 @@ class TestProcessFeeds:
                  handler, "update_counter",
                  side_effect=captured_counter.append
              ):
-            # counter_name matches last feed → wrap-around path
+            # counter_name matches last feed → should process Carol, Alice, then stop at Bob
             handler.process_feeds(feeds, "Carol", 0, MagicMock())
 
         assert "Bob" in captured_counter  # wraps to feeds[1]

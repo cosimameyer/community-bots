@@ -127,43 +127,42 @@ class PromoteBlogPost():
         """
         Method to handle processing of all feeds.
         """
-        for feed in feeds:
-            if counter_name not in (feed['name'], '\n', ''):
-                continue
+        n = len(feeds)
+        if n == 0:
+            return
+
+        start_index = 0
+        for i, f in enumerate(feeds):
+            if counter_name in (f['name'], '\n', ''):
+                start_index = i
+                break
+
+        next_index = start_index
+
+        for offset in range(n):
+            idx = (start_index + offset) % n
+            feed = feeds[idx]
+
             if len(feed['rss_feed']) == 0 or feed['rss_feed'] == [None]:
                 continue
 
-            is_last_feed = feed['name'] == feeds[-1]['name']
-
-            if count_post == 0 and is_last_feed:
-                count_post = self.process_feed(feed, count_post, client)
-                new_feed = feeds[0]
-                count_post = self.process_feed(new_feed, count_post, client)
+            if count_post >= 2:
+                next_index = idx
                 self.logger.info(
                     "Successfully promoted blog posts. "
                     "Thank you and see you next time!")
-                next_counter = feeds[1]['name'] if len(feeds) > 1 else feeds[0]['name']
-                self.update_counter(next_counter)
                 break
 
-            elif count_post < 2:
-                count_post = self.process_feed(
-                    feed,
-                    count_post,
-                    client
-                )
-                counter_name = ''
-                if is_last_feed:
-                    self.update_counter(feed['name'])
-                self.logger.info(
-                    "=========================================")
-
-            else:
+            count_post = self.process_feed(feed, count_post, client)
+            next_index = (idx + 1) % n
+            self.logger.info("=========================================")
+        else:
+            if count_post >= 2:
                 self.logger.info(
                     "Successfully promoted blog posts. "
                     "Thank you and see you next time!")
-                self.update_counter(feed['name'])
-                break
+
+        self.update_counter(feeds[next_index]['name'])
 
     def update_counter(self, counter_name):
         """
@@ -466,10 +465,12 @@ class PromoteBlogPost():
         # Resolve DID once so _build() never makes a duplicate HTTP call
         did = self.get_bluesky_did(platform_user_handle) if platform_user_handle else None
 
-        def _build(t):
+        tag_list = [t.strip() for t in tags.split('#') if t.strip()]
+
+        def _build(tag_subset):
             tb = client_utils.TextBuilder()
-            if t:
-                tb.text(f'📝 "{t}"\n\n')
+            if title:
+                tb.text(f'📝 "{title}"\n\n')
             if summarized_blog_post:
                 tb.text(summarized_blog_post)
                 tb.text('\n\n')
@@ -482,22 +483,17 @@ class PromoteBlogPost():
             tb.text('🔗 ')
             tb.link(link, link)
             tb.text('\n\n')
-            for tag in tags.split('#'):
-                tag_clean = tag.strip()
-                if tag_clean:
-                    tb.tag(f'#{tag_clean} ', tag_clean)
+            for tag_clean in tag_subset:
+                tb.tag(f'#{tag_clean} ', tag_clean)
             return tb
 
-        text_builder = _build(title)
+        # Try with all tags; drop from the end one by one until within limit
+        for count in range(len(tag_list), -1, -1):
+            text_builder = _build(tag_list[:count])
+            if len(text_builder.build_text()) <= bluesky_max_graphemes:
+                return text_builder
 
-        # Measure actual grapheme count; trim title by the exact excess if needed
-        actual_len = len(text_builder.build_text())
-        if actual_len > bluesky_max_graphemes:
-            excess = actual_len - bluesky_max_graphemes
-            trimmed_title = title[:max(0, len(title) - excess - 1)] + '…'
-            text_builder = _build(trimmed_title)
-
-        return text_builder
+        return _build([])
 
     def build_post(self, entry, feed):
         """Take the entry dict and build a post"""
