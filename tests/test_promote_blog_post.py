@@ -833,7 +833,7 @@ class TestGetConfig:
         cfg = {**BASE_CONFIG, "gen_ai_support": True, "gemini_api_key": "test-key"}
         handler = PromoteBlogPost(config_dict=cfg, no_dry_run=False)
         handler.get_config()
-        mock_genai.configure.assert_called_once_with(api_key="test-key")
+        mock_genai.Client.assert_called_once_with(api_key="test-key")
 
     @patch("promote_blog_post.genai")
     @patch.dict(os.environ, {
@@ -848,17 +848,17 @@ class TestGetConfig:
         "GEMINI_API_KEY": "env-key",
     })
     def test_genai_configure_called_via_env_path(self, mock_genai):
-        """genai.configure must be called on the GitHub Actions env-var path."""
+        """genai.Client must be called on the GitHub Actions env-var path."""
         handler = PromoteBlogPost(config_dict=None, no_dry_run=True)
         handler.get_config()
-        mock_genai.configure.assert_called_once_with(api_key="env-key")
+        mock_genai.Client.assert_called_once_with(api_key="env-key")
 
     @patch("promote_blog_post.genai")
     def test_genai_not_called_when_gen_ai_support_false(self, mock_genai):
         cfg = {**BASE_CONFIG, "gen_ai_support": False}
         handler = PromoteBlogPost(config_dict=cfg, no_dry_run=False)
         handler.get_config()
-        mock_genai.configure.assert_not_called()
+        mock_genai.Client.assert_not_called()
 
     def test_metadata_prefix_applied_to_counter_and_json(self):
         cfg = {**BASE_CONFIG, "counter": "my_counter.txt", "json_file": "my_meta.json"}
