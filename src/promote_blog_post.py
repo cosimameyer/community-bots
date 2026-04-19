@@ -275,7 +275,8 @@ class PromoteBlogPost():
             "%a, %d %b %Y %H:%M:%S %z",  # Format 1
             "%a, %d %b %Y %H:%M:%S %Z",  # Format 2
             "%Y-%m-%d",                  # Format 3
-            "%Y-%m-%dT%H:%M:%S.%f%Z"     # Format 4
+            "%Y-%m-%dT%H:%M:%S.%f%Z",    # Format 4
+            "%Y-%m-%dT%H:%M:%S%z",       # Format 5: YouTube Atom (e.g. 2024-01-15T10:00:00+00:00)
         ]
 
         pub_date_str = entry.get('pub_date', '')
@@ -359,27 +360,34 @@ class PromoteBlogPost():
         return None
 
     def build_post_mastodon(
-        self, basis_text, platform_user_handle, tags, entry
+        self, title, name, platform_user_handle, tags, entry
     ):
         """
         Build Mastodon post.
         """
         platform_user_handle = self.check_platform_handle(platform_user_handle)
 
-        if platform_user_handle:
-            basis_text += f" ({platform_user_handle}) "
+        post = f'📝 "{title}"\n\n' if title else ''
+
         if self.config_dict.get('gen_ai_support', None):
             summarized_blog_post = self.summarize_text(entry)
             if summarized_blog_post:
-                basis_text += '\n\n📖 '
-                basis_text += summarized_blog_post
-        basis_text += f"\n\n🔗 {entry.get('link', '')}\n\n{tags}"
+                post += summarized_blog_post + '\n\n'
+
+        if name:
+            post += f'👤 {name}'
+        if platform_user_handle:
+            post += f' ({platform_user_handle})'
+        if name or platform_user_handle:
+            post += '\n\n'
+
+        post += f"🔗 {entry.get('link', '')}\n\n{tags}"
 
         self.logger.info('*****************************')
-        self.logger.info(basis_text)
+        self.logger.info(post)
         self.logger.info('*****************************')
 
-        return basis_text
+        return post
 
     @staticmethod
     def generate_text_to_summarize(entry):
@@ -438,7 +446,8 @@ class PromoteBlogPost():
 
     def build_post_bluesky(
         self,
-        basis_text,
+        title,
+        name,
         platform_user_handle,
         tags,
         entry
@@ -446,27 +455,58 @@ class PromoteBlogPost():
         """
         Build post for Bluesky.
         """
-        text_builder = client_utils.TextBuilder()
-        text_builder.text(basis_text)
-
+        bluesky_max_graphemes = 300
+        link = entry.get('link', '')
         platform_user_handle = self.check_platform_handle(platform_user_handle)
 
+        summarized_blog_post = ''
+        if self.config_dict.get('gen_ai_support', None):
+            summarized_blog_post = self.summarize_text(entry) or ''
+
+        # Calculate overhead of all parts except the title to enforce grapheme limit
+        overhead = 0
+        if summarized_blog_post:
+            overhead += len(summarized_blog_post) + 2  # +2 for '\n\n'
+        if name:
+            overhead += len('👤 ') + len(name)
+        if platform_user_handle:
+            overhead += len(f' ({platform_user_handle})')
+        if name or platform_user_handle:
+            overhead += 2  # '\n\n' after person block
+        overhead += len('🔗 ') + len(link) + 2  # +2 for '\n\n'
+        overhead += len(tags)
+
+        title_wrapper = len('📝 "') + len('"\n\n')  # 6 graphemes
+        available_for_title = bluesky_max_graphemes - overhead - title_wrapper
+        if title and len(title) > available_for_title:
+            title = title[:max(0, available_for_title - 1)] + '…'
+
+        text_builder = client_utils.TextBuilder()
+
+        if title:
+            text_builder.text(f'📝 "{title}"\n\n')
+
+        if summarized_blog_post:
+            text_builder.text(summarized_blog_post)
+            text_builder.text('\n\n')
+
+        if name:
+            text_builder.text(f'👤 {name}')
         if platform_user_handle:
             did = self.get_bluesky_did(platform_user_handle)
-            text_builder.mention(f" ({platform_user_handle})", did)
-        if self.config_dict.get('gen_ai_support', None):
-            summarized_blog_post = self.summarize_text(entry)
-            if summarized_blog_post:
-                text_builder.text('\n\n📖 ')
-                text_builder.text(summarized_blog_post)
-        text_builder.text('\n\n🔗 ')
-        link = entry.get('link', '')
+            text_builder.mention(f' ({platform_user_handle})', did)
+        if name or platform_user_handle:
+            text_builder.text('\n\n')
+
+        text_builder.text('🔗 ')
         text_builder.link(link, link)
         text_builder.text('\n\n')
+
         for tag in tags.split('#'):
             tag_clean = tag.strip()
             if tag_clean:
-                text_builder.tag(f"#{tag_clean} ", tag_clean)
+                text_builder.tag(f'#{tag_clean} ', tag_clean)
+
         return text_builder
 
     def build_post(self, entry, feed):
@@ -479,24 +519,18 @@ class PromoteBlogPost():
         title = entry.get('title', '')
         name = feed.get('name', '')
 
-        basis_text = ""
-
-        if title:
-            basis_text += f"📝 '{title}'\n\n"
-
-        if name:
-            basis_text += f"👤 {name}"
-
         if self.config_dict.get('platform', '') == 'mastodon':
             return self.build_post_mastodon(
-                basis_text,
+                title,
+                name,
                 platform_user_handle,
                 tags,
                 entry
             )
         if self.config_dict.get('platform', '') == 'bluesky':
             return self.build_post_bluesky(
-                basis_text,
+                title,
+                name,
                 platform_user_handle,
                 tags,
                 entry
