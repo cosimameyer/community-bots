@@ -3,6 +3,7 @@ Module to promote anniversaries on Mastodon and Bluesky.
 Handles fetching events, building posts, and posting to platforms.
 """
 
+import io
 import json
 import logging
 import os
@@ -12,6 +13,8 @@ import shutil
 from datetime import datetime
 from typing import Any, Dict, Optional, Union, cast
 from urllib.parse import urlsplit
+
+from PIL import Image
 
 import requests
 from dotenv import load_dotenv
@@ -290,6 +293,7 @@ class PromoteAnniversary:
         with open(filename, "rb") as f:
             img_data = f.read()
 
+        img_data = self._compress_for_bluesky(img_data)
         thumb = client.upload_blob(img_data)
 
         return models.AppBskyEmbedExternal.Main(
@@ -300,6 +304,21 @@ class PromoteAnniversary:
                 thumb=thumb.blob,
             )
         )
+
+    _BLUESKY_MAX_BLOB_BYTES = 1_000_000
+
+    @staticmethod
+    def _compress_for_bluesky(img_data: bytes) -> bytes:
+        """Return img_data compressed to under 1 MB for Bluesky, converting to JPEG if needed."""
+        if len(img_data) <= PromoteAnniversary._BLUESKY_MAX_BLOB_BYTES:
+            return img_data
+        image = Image.open(io.BytesIO(img_data)).convert("RGB")
+        for quality in (85, 70, 55, 40):
+            buf = io.BytesIO()
+            image.save(buf, format="JPEG", quality=quality, optimize=True)
+            if buf.tell() <= PromoteAnniversary._BLUESKY_MAX_BLOB_BYTES:
+                return buf.getvalue()
+        return buf.getvalue()
 
     @staticmethod
     def get_bluesky_did(platform_user_handle: str) -> Optional[str]:
