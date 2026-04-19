@@ -84,6 +84,12 @@ SAMPLE_EVENT_INLINE_TAGS = {
     "description_bluesky": "Pioneer of #computing and #algorithms.",
 }
 
+# Event whose description alone pushes the post well past the 300-grapheme limit.
+SAMPLE_EVENT_LONG_DESC = {
+    **SAMPLE_EVENT,
+    "description_bluesky": "A" * 350,
+}
+
 
 # ---------------------------------------------------------------------------
 # cfg property
@@ -362,6 +368,13 @@ class TestBuildPostBluesky:
         tag_names = [c[0][1] for c in tb.tag.call_args_list]
         assert "computing" in tag_names
         assert "algorithms" in tag_names
+
+    def test_trims_description_when_post_exceeds_grapheme_limit(self):
+        """When description pushes past 300 graphemes, the post must be truncated with '…'."""
+        handler = make_handler(platform="bluesky")
+        result = handler.build_post(SAMPLE_EVENT_LONG_DESC)
+        assert len(result.build_text()) <= 300
+        assert result.build_text().endswith("…")
 
     def test_raises_value_error_for_unsupported_platform(self):
         """An unknown platform must raise ValueError — silent failure would mean lost posts."""
