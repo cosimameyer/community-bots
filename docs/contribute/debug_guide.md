@@ -113,7 +113,23 @@ Add a launch configuration to `.vscode/launch.json`:
             "program": "${workspaceFolder}/src/debug.py",
             "python": "${workspaceFolder}/.venv/bin/python",
             "cwd": "${workspaceFolder}/src",
-            "envFile": "${workspaceFolder}/.env"
+            "envFile": "${workspaceFolder}/.env",
+            "preLaunchTask": "Check requirements"
+        }
+    ]
+}
+```
+
+And the corresponding `tasks.json`:
+
+```json
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Check requirements",
+            "type": "shell",
+            "command": "pdm install"
         }
     ]
 }
