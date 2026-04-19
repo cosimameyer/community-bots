@@ -331,7 +331,7 @@ class PromoteAnniversary:
         """Send a post to Bluesky with optional media embed."""
         self.logger.info(
             "Preview your post...\n\n%s",
-            post_txt.build()[0]
+            post_txt.build_text()
         )
         try:
             client.send_post(text=post_txt, embed=embed_external)
