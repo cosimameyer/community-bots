@@ -9,7 +9,7 @@ from datetime import datetime
 from pathlib import Path
 from urllib.parse import urlsplit
 from atproto import client_utils, models
-import google.generativeai as genai
+from google import genai
 
 import feedparser
 import requests
@@ -77,7 +77,7 @@ class PromoteBlogPost():
             )
 
         if self.config_dict.get('gen_ai_support'):
-            genai.configure(api_key=self.config_dict.get('gemini_api_key'))
+            self.genai_client = genai.Client(api_key=self.config_dict.get('gemini_api_key'))
 
     def promote_blog_post(self):
         """Core method to promote blog post"""
@@ -414,16 +414,16 @@ class PromoteBlogPost():
         Summarize text using LLMs.
         """
         text = self.generate_text_to_summarize(entry)
-        model = genai.GenerativeModel(
-            self.config_dict.get('gemini_model_name', '')
-        )
         prompt_parts = [
             'Summarize the content of the post in maximum 60 characters.',
             'Be as concise as possible and be engaging.',
             'Don\'t repeat the title.',
             text
         ]
-        response = model.generate_content(prompt_parts)
+        response = self.genai_client.models.generate_content(
+            model=self.config_dict.get('gemini_model_name', ''),
+            contents=prompt_parts
+        )
         response_cleaned = self.clean_response(response)
         safety_ratings = response.candidates[0].safety_ratings
         if all(
