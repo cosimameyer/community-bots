@@ -73,20 +73,15 @@ def _mastodon_notification(
     return notif
 
 
-def _bluesky_notification(*, reason="mention", cid="cid-abc", uri="at://uri-abc"):
+def _bluesky_notification(*, reason="mention", cid="cid-abc", uri="at://uri-abc",
+                           is_read=False):
     """Build a minimal Bluesky notification stub."""
     notif = MagicMock()
     notif.reason = reason
     notif.cid = cid
     notif.uri = uri
+    notif.is_read = is_read
     return notif
-
-
-def _bluesky_timeline_post(cid="cid-xyz"):
-    """Build a minimal Bluesky timeline feed item."""
-    item = MagicMock()
-    item.post.cid = cid
-    return item
 
 
 # ---------------------------------------------------------------------------
@@ -135,6 +130,7 @@ class TestSetUpConfigDict:
         assert handler.config_dict["access_token"] == "tok"
         assert handler.config_dict["client_cred_file"] == "cred.secret"
         assert handler.config_dict["timeline_depth_limit"] == 40
+        assert handler.config_dict["max_boosts_per_run"] == 5
 
     def test_bluesky_populates_api_base_url(self):
         env = {"PLATFORM": "bluesky", "PASSWORD": "pw",
@@ -285,6 +281,30 @@ class TestBoostMentionsMastodon:
         client = self._run(handler, [])
         client.status_reblog.assert_not_called()
 
+    def test_flood_limit_caps_boosts(self):
+        # At most max_boosts_per_run posts should be boosted in one run
+        cfg = dict(BASE_MASTODON_CONFIG)
+        cfg["max_boosts_per_run"] = 2
+        handler = make_handler(config=cfg)
+        notifications = [
+            _mastodon_notification(reblogged=False, status_id=str(i))
+            for i in range(5)
+        ]
+        client = self._run(handler, notifications)
+        assert client.status_reblog.call_count == 2
+
+    def test_flood_limit_logs_stop_message(self, caplog):
+        cfg = dict(BASE_MASTODON_CONFIG)
+        cfg["max_boosts_per_run"] = 1
+        handler = make_handler(config=cfg)
+        notifications = [
+            _mastodon_notification(reblogged=False, status_id="1"),
+            _mastodon_notification(reblogged=False, status_id="2"),
+        ]
+        with caplog.at_level(logging.INFO, logger="boost_mentions"):
+            self._run(handler, notifications)
+        assert "max boosts per run" in caplog.text.lower()
+
 
 # ---------------------------------------------------------------------------
 # _boost_mentions_bluesky
@@ -295,30 +315,28 @@ class TestBoostMentionsBluesky:
     def _make(self, no_dry_run=True):
         return make_handler(config=BASE_BLUESKY_CONFIG, no_dry_run=no_dry_run)
 
-    def _run(self, handler, notifications, timeline_cids=None):
+    def _run(self, handler, notifications):
         client = MagicMock()
         client.get_current_time_iso.return_value = "2024-01-01T00:00:00Z"
         client.app.bsky.notification.list_notifications.return_value.notifications = (
             notifications
         )
-        timeline_posts = [_bluesky_timeline_post(cid) for cid in (timeline_cids or [])]
-        client.get_timeline.return_value.feed = timeline_posts
         with patch("boost_mentions.login_bluesky", return_value=client):
             handler._boost_mentions_bluesky()
         return client
 
-    def test_reposts_mention_not_in_timeline(self):
-        # A mention whose CID isn't in the bot's timeline should be reposted
+    def test_reposts_unread_mention(self):
+        # An unread mention notification should be reposted
         handler = self._make()
-        notif = _bluesky_notification(reason="mention", cid="new-cid")
-        client = self._run(handler, [notif], timeline_cids=["other-cid"])
+        notif = _bluesky_notification(reason="mention", cid="new-cid", is_read=False)
+        client = self._run(handler, [notif])
         client.repost.assert_called_once_with(uri=notif.uri, cid="new-cid")
 
-    def test_skips_mention_already_in_timeline(self):
-        # CID already in timeline means we've already reposted — skip
+    def test_skips_already_read_mention(self):
+        # is_read=True means update_seen already processed this — skip
         handler = self._make()
-        notif = _bluesky_notification(reason="mention", cid="seen-cid")
-        client = self._run(handler, [notif], timeline_cids=["seen-cid"])
+        notif = _bluesky_notification(reason="mention", cid="old-cid", is_read=True)
+        client = self._run(handler, [notif])
         client.repost.assert_not_called()
 
     def test_skips_non_mention_notifications(self):
@@ -331,22 +349,22 @@ class TestBoostMentionsBluesky:
 
     def test_dry_run_does_not_repost(self):
         handler = self._make(no_dry_run=False)
-        notif = _bluesky_notification(reason="mention", cid="new-cid")
-        client = self._run(handler, [notif], timeline_cids=[])
+        notif = _bluesky_notification(reason="mention", cid="new-cid", is_read=False)
+        client = self._run(handler, [notif])
         client.repost.assert_not_called()
 
     def test_dry_run_does_not_call_update_seen(self):
         # update_seen modifies server state and must be skipped in dry-run mode
         handler = self._make(no_dry_run=False)
-        notif = _bluesky_notification(reason="mention", cid="new-cid")
+        notif = _bluesky_notification(reason="mention", cid="new-cid", is_read=False)
         client = self._run(handler, [notif])
         client.app.bsky.notification.update_seen.assert_not_called()
 
     def test_dry_run_logs_dry_run_message(self, caplog):
         handler = self._make(no_dry_run=False)
-        notif = _bluesky_notification(reason="mention", cid="new-cid")
+        notif = _bluesky_notification(reason="mention", cid="new-cid", is_read=False)
         with caplog.at_level(logging.INFO, logger="boost_mentions"):
-            self._run(handler, [notif], timeline_cids=[])
+            self._run(handler, [notif])
         assert "[DRY RUN]" in caplog.text
 
     def test_live_run_calls_update_seen(self):
@@ -360,15 +378,14 @@ class TestBoostMentionsBluesky:
 
     def test_exception_logged_as_error_and_loop_continues(self, caplog):
         handler = self._make()
-        notif_fail = _bluesky_notification(reason="mention", cid="cid-1")
-        notif_ok = _bluesky_notification(reason="mention", cid="cid-2")
+        notif_fail = _bluesky_notification(reason="mention", cid="cid-1", is_read=False)
+        notif_ok = _bluesky_notification(reason="mention", cid="cid-2", is_read=False)
 
         client = MagicMock()
         client.get_current_time_iso.return_value = "2024-01-01T00:00:00Z"
         client.app.bsky.notification.list_notifications.return_value.notifications = [
             notif_fail, notif_ok
         ]
-        client.get_timeline.return_value.feed = []
         client.repost.side_effect = [Exception("rate limit"), None]
 
         with patch("boost_mentions.login_bluesky", return_value=client), \
@@ -382,6 +399,30 @@ class TestBoostMentionsBluesky:
         handler = self._make()
         client = self._run(handler, [])
         client.repost.assert_not_called()
+
+    def test_flood_limit_caps_reposts(self):
+        # At most max_boosts_per_run posts should be reposted in one run
+        cfg = dict(BASE_BLUESKY_CONFIG)
+        cfg["max_boosts_per_run"] = 2
+        handler = make_handler(config=cfg)
+        notifications = [
+            _bluesky_notification(reason="mention", cid=f"cid-{i}", is_read=False)
+            for i in range(5)
+        ]
+        client = self._run(handler, notifications)
+        assert client.repost.call_count == 2
+
+    def test_flood_limit_logs_stop_message(self, caplog):
+        cfg = dict(BASE_BLUESKY_CONFIG)
+        cfg["max_boosts_per_run"] = 1
+        handler = make_handler(config=cfg)
+        notifications = [
+            _bluesky_notification(reason="mention", cid="cid-1", is_read=False),
+            _bluesky_notification(reason="mention", cid="cid-2", is_read=False),
+        ]
+        with caplog.at_level(logging.INFO, logger="boost_mentions"):
+            self._run(handler, notifications)
+        assert "max boosts per run" in caplog.text.lower()
 
 
 # ---------------------------------------------------------------------------
