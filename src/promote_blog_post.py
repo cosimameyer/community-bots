@@ -6,6 +6,7 @@ import posixpath
 import shutil
 import time
 from datetime import datetime
+from dateutil import parser as dateutil_parser
 from pathlib import Path
 from urllib.parse import urlsplit
 from atproto import client_utils, models
@@ -270,32 +271,14 @@ class PromoteBlogPost():
 
     def parse_pub_date(self, entry):
         """Method to parse the publication date"""
-        date_formats = [
-            "%a, %d %b %Y %H:%M:%S %z",  # Format 1
-            "%a, %d %b %Y %H:%M:%S %Z",  # Format 2
-            "%Y-%m-%d",                  # Format 3
-            "%Y-%m-%dT%H:%M:%S.%f%Z",    # Format 4
-            "%Y-%m-%dT%H:%M:%S%z",       # Format 5: YouTube Atom (e.g. 2024-01-15T10:00:00+00:00)
-        ]
-
         pub_date_str = entry.get('pub_date', '')
-
-        for date_format in date_formats:
+        if pub_date_str:
             try:
-                pub_date = datetime.strptime(
-                    pub_date_str, date_format).replace(tzinfo=None)
-                return pub_date  # Return as soon as a valid format is found
-            except ValueError:
-                self.logger.info(
-                    "Failed to parse date with format: %s",
-                    date_format
-                )
-
-        # If none of the formats match, use the current date as a fallback
-        self.logger.warning(
-            "No matching date format found. Using current date."
-        )
-        return datetime.now()  # Fallback value
+                return dateutil_parser.parse(pub_date_str).replace(tzinfo=None)
+            except (ValueError, OverflowError):
+                pass
+        self.logger.warning("No matching date format found. Using current date.")
+        return datetime.now()
 
     def define_tags(self, entry):
         """
