@@ -141,6 +141,8 @@ This lets you set breakpoints in any bot module and step through execution. The 
 
 ## Scenario reference
 
+The table below summarises all five scenarios at a glance, showing what each exercises and whether credentials or a platform selection are required.
+
 | `what_to_debug` | What it exercises | Needs credentials? | Platform matters? |
 |---|---|---|---|
 | `blog` | Fetch RSS → check archive → (post) blog entry | Yes | Yes |
@@ -162,6 +164,8 @@ This lets you set breakpoints in any bot module and step through execution. The 
 - When the archive or counter file is suspected to be out of sync
 
 ### Required env vars
+
+The required environment variables depend on the bot and platform combination you are testing.
 
 | Combination | Vars needed |
 |---|---|
@@ -270,6 +274,8 @@ None — this scenario reads from public GitHub URLs only.
 
 ### Required env vars
 
+The required environment variables depend on the bot and platform combination you are testing.
+
 | Combination | Vars needed |
 |---|---|
 | pyladies + bluesky | `PYLADIES_BSKY_USERNAME`, `PYLADIES_BSKY_PASSWORD` |
@@ -359,6 +365,8 @@ Same as `boost_tags` — see the table in Scenario 3.
 - When you want to test the image-upload path
 
 ### Required env vars
+
+The required environment variables depend on the bot and platform combination you are testing.
 
 | Combination | Vars needed |
 |---|---|
