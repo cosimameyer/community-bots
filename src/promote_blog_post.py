@@ -426,7 +426,7 @@ class PromoteBlogPost():
         )
         response_cleaned = self.clean_response(response)
         safety_ratings = response.candidates[0].safety_ratings
-        if all(
+        if not safety_ratings or all(
             rating.probability.name == 'NEGLIGIBLE'
             for rating in safety_ratings
         ):
