@@ -59,8 +59,17 @@
 "img": "mary_jackson_small.png",
 "wiki_link": "https://en.wikipedia.org/wiki/Mary_Jackson_(engineer)"},
 
+{"name":"Joana Carrasqueira",
+"date":"04-19",
+"bluesky": "",
+"img":"joana_carrasqueira_small.png",
+"description_bluesky": "Joana\n✨ is the Global Lead for Vibe Coding at Google DeepMind\n✨ has a Master's in Pharmaceutical Sciences\n✨ empowers developers to build responsibly with Google AI \n✨ is a strong advocate for AI ethics",
+"description_mastodon": "Joana\n✨ is the Global Lead for Vibe Coding at Google DeepMind and former Head of Developer Relations\n✨ has a Master's in Pharmaceutical Sciences\n✨ empowers developers to build responsibly with Google AI \n✨ is a strong advocate for responsible AI and ethics\n✨ and much more!",
+"alt": "An image of Joana Carrasqueira, a blonde individual wearing a blue-and-white checkered blazer. The background features a dark, atmospheric blend of nebula-like clouds, accented with subtle pharmacy symbols—specifically the rod with a snake coiled around it.",
+"wiki_link":"https://pmtc.substack.com/p/from-pharmaceutical-scientist-to"},
+
 {"name": "Anita Borg",
-"date": "17-01",
+"date": "01-17",
 "bluesky": "",
 "description_bluesky": "Anita\n✨ was a computer scientist who started Systers and AnitaB.org to support women in tech\n✨ founded the Grace Hopper Celebration of Women in Computing\n✨ was honored in the Women in Technology International Hall of Fame\n✨ and much more!",
 "description_mastodon": "Anita\n✨ was a computer scientist who started Systers and AnitaB.org to support women in tech\n✨ founded the Grace Hopper Celebration of Women in Computing\n✨ researched operating systems and memory at Digital Equipment Corporation\n✨ was honored in the Women in Technology International Hall of Fame\n✨ and much more!",
@@ -69,7 +78,7 @@
 "wiki_link": "https://en.wikipedia.org/wiki/Anita_Borg"},
 
 {"name": "Annie Easley",
-"date": "23-04",
+"date": "04-23",
 "bluesky": "",
 "description_bluesky": "Annie\n✨ was a trailblazing NASA computer scientist\n✨ broke barriers as one of the first African-American women in STEM\n✨ championed diversity in tech and inspired future generations",
 "description_mastodon": "Annie\n✨ was a trailblazing NASA computer scientist and mathematician who helped develop software for the Centaur rocket program\n✨ broke barriers as one of the first African-American women in STEM\n✨ championed diversity in tech and inspired future generations\n✨ and much more!",
