@@ -6,6 +6,7 @@ Tests for src/promote_blog_post.py
 
 import json
 import os
+import pytest
 from datetime import datetime, timedelta
 from pathlib import Path
 from unittest.mock import MagicMock, patch
@@ -402,6 +403,46 @@ class TestSummarizeText:
         handler.genai_client.models.generate_content.return_value = response
         entry = {"title": "Title", "summary": "Body", "pub_date": "2024-01-01"}
         assert handler.summarize_text(entry) == ""
+
+    @patch("promote_blog_post.time.sleep")
+    def test_retries_on_503_then_succeeds(self, mock_sleep):
+        handler = self._make_handler()
+        response = self._make_response("Retry success", [self._negligible_rating()])
+        handler.genai_client.models.generate_content.side_effect = [
+            Exception("503 UNAVAILABLE"),
+            response,
+        ]
+        entry = {"title": "Title", "summary": "Body", "pub_date": "2024-01-01"}
+        assert handler.summarize_text(entry) == "Retry success"
+        mock_sleep.assert_called_once_with(30)
+
+    @patch("promote_blog_post.time.sleep")
+    def test_retries_on_429_then_succeeds(self, mock_sleep):
+        handler = self._make_handler()
+        response = self._make_response("Retry success", [self._negligible_rating()])
+        handler.genai_client.models.generate_content.side_effect = [
+            Exception("429 RESOURCE_EXHAUSTED"),
+            response,
+        ]
+        entry = {"title": "Title", "summary": "Body", "pub_date": "2024-01-01"}
+        assert handler.summarize_text(entry) == "Retry success"
+        mock_sleep.assert_called_once_with(30)
+
+    @patch("promote_blog_post.time.sleep")
+    def test_raises_after_max_retries(self, mock_sleep):
+        handler = self._make_handler()
+        handler.genai_client.models.generate_content.side_effect = Exception("503 UNAVAILABLE")
+        entry = {"title": "Title", "summary": "Body", "pub_date": "2024-01-01"}
+        with pytest.raises(Exception, match="503"):
+            handler.summarize_text(entry)
+        assert mock_sleep.call_count == 2
+
+    def test_non_retryable_error_raises_immediately(self):
+        handler = self._make_handler()
+        handler.genai_client.models.generate_content.side_effect = Exception("400 BAD_REQUEST")
+        entry = {"title": "Title", "summary": "Body", "pub_date": "2024-01-01"}
+        with pytest.raises(Exception, match="400"):
+            handler.summarize_text(entry)
 
 
 # ---------------------------------------------------------------------------

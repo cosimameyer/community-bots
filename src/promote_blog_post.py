@@ -403,10 +403,29 @@ class PromoteBlogPost():
             'Don\'t repeat the title.',
             text
         ]
-        response = self.genai_client.models.generate_content(
-            model=self.config_dict.get('gemini_model_name', ''),
-            contents=prompt_parts
-        )
+        _retryable_codes = ("429", "503")
+        _max_attempts = 3
+        _retry_wait = 30
+        response = None
+        for attempt in range(_max_attempts):
+            try:
+                response = self.genai_client.models.generate_content(
+                    model=self.config_dict.get('gemini_model_name', ''),
+                    contents=prompt_parts
+                )
+                break
+            except Exception as e:  # pylint: disable=broad-except
+                if attempt < _max_attempts - 1 and any(
+                    code in str(e) for code in _retryable_codes
+                ):
+                    self.logger.info(
+                        "Gemini API transient error (attempt %d/%d), "
+                        "retrying in %ds: %s",
+                        attempt + 1, _max_attempts, _retry_wait, e
+                    )
+                    time.sleep(_retry_wait)
+                else:
+                    raise
         response_cleaned = self.clean_response(response)
         safety_ratings = response.candidates[0].safety_ratings
         if safety_ratings and all(
