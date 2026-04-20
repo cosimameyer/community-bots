@@ -80,7 +80,15 @@ class BoostMentions:
         self.logger.info("------------------------")
         self.logger.info(" > Reading statuses to identify tootable status")
 
+        max_boosts = self.cfg.get("max_boosts_per_run", 5)
+        boost_count = 0
+
         for notification in notifications:
+            if boost_count >= max_boosts:
+                self.logger.info(
+                    " > Reached max boosts per run (%d), stopping.", max_boosts
+                )
+                break
             if (
                 not notification.status.reblogged
                 and notification.status.account.acct != account.acct
@@ -91,6 +99,7 @@ class BoostMentions:
                         notification.account.username,
                         notification.status.url,
                     )
+                    boost_count += 1
                 else:
                     try:
                         self.logger.info(
@@ -100,6 +109,7 @@ class BoostMentions:
                         )
                         client.status_reblog(notification.status.id)
                         client.status_favourite(notification.status.id)
+                        boost_count += 1
                     except Exception as e:
                         self.logger.error(
                             "   * Boosting new toot by %s did not work: %s",
@@ -117,20 +127,23 @@ class BoostMentions:
 
         last_seen_at = client.get_current_time_iso()
         response = client.app.bsky.notification.list_notifications()
-        timeline = client.get_timeline(algorithm="reverse-chronological")
-        cids = [post.post.cid for post in timeline.feed]
+        max_boosts = self.cfg.get("max_boosts_per_run", 5)
+        boost_count = 0
 
         for notification in response.notifications:
-            if (
-                notification.reason == "mention"
-                and notification.cid not in cids
-            ):
+            if boost_count >= max_boosts:
+                self.logger.info(
+                    " > Reached max boosts per run (%d), stopping.", max_boosts
+                )
+                break
+            if notification.reason == "mention" and not notification.is_read:
                 if not self.no_dry_run:
                     self.logger.info(
                         "   * [DRY RUN] Would repost URI %s CID %s",
                         notification.uri,
                         notification.cid,
                     )
+                    boost_count += 1
                 else:
                     try:
                         self.logger.info(
@@ -140,6 +153,7 @@ class BoostMentions:
                                 cid=notification.cid,
                             ),
                         )
+                        boost_count += 1
                     except Exception as e:
                         self.logger.error(
                             "   * Reposting new post with URI %s and "
@@ -169,6 +183,7 @@ class BoostMentions:
         self.config_dict.setdefault("password", os.getenv("PASSWORD"))
         self.config_dict.setdefault("username", os.getenv("USERNAME"))
         self.config_dict.setdefault("client_name", os.getenv("CLIENT_NAME"))
+        self.config_dict.setdefault("max_boosts_per_run", 5)
         if self.config_dict["platform"] == "mastodon":
             self.config_dict.setdefault("mastodon_visibility", config.MASTODON_VISIBILITY)
             self.config_dict.setdefault("api_base_url", config.API_BASE_URL)
