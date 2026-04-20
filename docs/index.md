@@ -62,9 +62,8 @@ You can find the bots on Bluesky (and formerly also on Mastodon). I'd love to ex
 
 -   __R-Ladies Bot__
 
-    ![R-Ladies bot profile](img/rladies_bot.png)
-
-    *Coming soon*
+    [![R-Ladies bot Bluesky profile](img/rladies_bot.png)](https://bsky.app/profile/rladies-bot.bsky.social)
+    [:octicons-arrow-right-24: Hop over to Bluesky and meet the bot](https://bsky.app/profile/rladies-bot.bsky.social)
 
 
 </div>
