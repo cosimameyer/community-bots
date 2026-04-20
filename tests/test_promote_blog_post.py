@@ -351,6 +351,60 @@ class TestCleanResponse:
 
 
 # ---------------------------------------------------------------------------
+# summarize_text
+# ---------------------------------------------------------------------------
+
+class TestSummarizeText:
+    def _make_handler(self):
+        cfg = {**BASE_CONFIG, "gen_ai_support": True, "gemini_api_key": "key", "gemini_model_name": "gemini-2.5-flash"}
+        handler = PromoteBlogPost(config_dict=cfg, no_dry_run=False)
+        handler.genai_client = MagicMock()
+        return handler
+
+    def _make_response(self, text, safety_ratings):
+        response = MagicMock()
+        response.text = text
+        response.candidates = [MagicMock()]
+        response.candidates[0].safety_ratings = safety_ratings
+        return response
+
+    def _negligible_rating(self):
+        r = MagicMock()
+        r.probability.name = "NEGLIGIBLE"
+        return r
+
+    def test_returns_summary_when_all_ratings_negligible(self):
+        handler = self._make_handler()
+        response = self._make_response("Great post", [self._negligible_rating()])
+        handler.genai_client.models.generate_content.return_value = response
+        entry = {"title": "Title", "summary": "Body", "pub_date": "2024-01-01"}
+        assert handler.summarize_text(entry) == "Great post"
+
+    def test_returns_empty_when_safety_ratings_none(self):
+        handler = self._make_handler()
+        response = self._make_response("Great post", None)
+        handler.genai_client.models.generate_content.return_value = response
+        entry = {"title": "Title", "summary": "Body", "pub_date": "2024-01-01"}
+        assert handler.summarize_text(entry) == ""
+
+    def test_returns_empty_when_safety_ratings_empty(self):
+        handler = self._make_handler()
+        response = self._make_response("Great post", [])
+        handler.genai_client.models.generate_content.return_value = response
+        entry = {"title": "Title", "summary": "Body", "pub_date": "2024-01-01"}
+        assert handler.summarize_text(entry) == ""
+
+    def test_returns_empty_when_rating_not_negligible(self):
+        handler = self._make_handler()
+        r = MagicMock()
+        r.probability.name = "MEDIUM"
+        response = self._make_response("Flagged content", [r])
+        handler.genai_client.models.generate_content.return_value = response
+        entry = {"title": "Title", "summary": "Body", "pub_date": "2024-01-01"}
+        assert handler.summarize_text(entry) == ""
+
+
+# ---------------------------------------------------------------------------
 # build_post_mastodon
 # ---------------------------------------------------------------------------
 
