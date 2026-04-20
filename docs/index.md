@@ -1,4 +1,4 @@
-# Welcome 👋
+# Welcome
 
 ![Illustration of the community bots](img/bots.png)
 
