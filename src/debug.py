@@ -20,7 +20,7 @@ class DebugBots:
     """
     def __init__(self):
         self.bot = 'pyladies'  # 'pyladies' or 'rladies'
-        self.what_to_debug = 'blog'  # 'blog', 'boost_tags', 'rss', 'anniversary', 'boost_mentions'
+        self.what_to_debug = 'boost_tags'  # 'blog', 'boost_tags', 'rss', 'anniversary', 'boost_mentions'
         self.platform = 'bluesky'  # 'bluesky' or 'mastodon'
         self.no_dry_run = False  # True to actually post
 
@@ -179,7 +179,7 @@ class DebugBots:
                     "password": os.getenv("PYLADIES_BSKY_PASSWORD"),
                     "username": os.getenv("PYLADIES_BSKY_USERNAME"),
                     "platform": self.platform,
-                    "tags": "pyladies",
+                    "tags": ["pyladies"],
                 }
             if self.platform == 'mastodon':
                 return {
@@ -192,7 +192,7 @@ class DebugBots:
                     "client_cred_file": os.getenv("PYLADIES_BOT_CLIENTCRED_SECRET"),
                     "platform": self.platform,
                     "mastodon_visibility": config.MASTODON_VISIBILITY,
-                    "tags": "pyladies",
+                    "tags": ["pyladies"],
                 }
 
         if self.bot == 'rladies':
@@ -204,7 +204,7 @@ class DebugBots:
                     "password": os.getenv("RLADIES_BSKY_PASSWORD"),
                     "username": os.getenv("RLADIES_BSKY_USERNAME"),
                     "platform": self.platform,
-                    "tags": "rladies",
+                    "tags": ["rladies"],
                 }
             if self.platform == 'mastodon':
                 return {
@@ -217,7 +217,7 @@ class DebugBots:
                     "client_cred_file": os.getenv("RLADIES_BOT_CLIENTCRED_SECRET"),
                     "platform": self.platform,
                     "mastodon_visibility": config.MASTODON_VISIBILITY,
-                    "tags": "rladies",
+                    "tags": ["rladies"],
                 }
 
         return None

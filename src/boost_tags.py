@@ -20,9 +20,13 @@ except ImportError:  # pragma: no cover - optional dependency
 
 try:
     from atproto.exceptions import AtProtocolError  # type: ignore
+    from atproto_client.exceptions import InvokeTimeoutError  # type: ignore
 except ImportError:  # pragma: no cover - optional dependency
     class AtProtocolError(Exception):
         """Fallback Bluesky/AtProto error."""
+
+    class InvokeTimeoutError(Exception):
+        """Fallback Bluesky timeout error."""
 
 
 load_dotenv()
@@ -124,11 +128,19 @@ class BoostTags:
 
     def _boost_tags_bluesky(self) -> None:
         """Handle reposting tags on Bluesky."""
-        client = login_bluesky(cast(BlueskyConfig, self.config_dict))
+        try:
+            client = login_bluesky(cast(BlueskyConfig, self.config_dict))
+        except InvokeTimeoutError:
+            self.logger.error("Timed out while logging in to Bluesky. Aborting.")
+            return
         self.logger.info(" > Fetched Bluesky account data.")
         self.logger.info(" > Starting search-loop for reposting.")
 
-        timeline = client.get_timeline(algorithm="reverse-chronological")
+        try:
+            timeline = client.get_timeline(algorithm="reverse-chronological")
+        except InvokeTimeoutError:
+            self.logger.error("Timed out fetching timeline. Aborting.")
+            return
         seen_cids = {post.post.cid for post in timeline.feed}
 
         max_boosts = self.cfg.get("max_boosts_per_run", 5)
@@ -142,9 +154,13 @@ class BoostTags:
                 )
                 break
 
-            response = client.app.bsky.feed.search_posts(
-                params={"q": tag, "tag": [tag], "sort": "top", "limit": 50}
-            )
+            try:
+                response = client.app.bsky.feed.search_posts(
+                    params={"q": tag, "tag": [tag], "sort": "top", "limit": 50}
+                )
+            except InvokeTimeoutError:
+                self.logger.error("Timed out searching posts for tag #%s. Skipping.", tag)
+                continue
             for post in response.posts:
                 if boost_count >= max_boosts:
                     break
