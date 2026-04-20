@@ -1,7 +1,7 @@
 
 # How to contribute to the project
 
-Contributions are highly welcomed! 
+Contributions are highly welcomed! Expand a section below to jump to the relevant instructions.
 
 ??? questions "I have PyLadies/R-Ladies content (blog, YouTube channel, ...), how do I contribute it to the bot?"
 
@@ -19,8 +19,8 @@ Contributions are highly welcomed!
 
     To  allow dependency management, this repository uses [`pdm`](https://pdm-project.org/en/latest/) and [`pre-commit`](https://pre-commit.com/) hooks. To get started, there's not a lot you have to do. Just follow these steps:
 
-    1. Install `pdm`. [Here](https://pdm-project.org/en/latest/#installation) are options how to do it.
-    2. Now you're good to go. `pyproject.toml` contains all relevant info. You just need to run `pdm install` in you terminal. This will create a `.venv/` folder with the Python packages installed in.
+    1. Install `pdm`. See the [PDM installation guide](https://pdm-project.org/en/latest/#installation) for options.
+    2. Now you're good to go. `pyproject.toml` contains all relevant info. You just need to run `pdm install` in your terminal. This will create a `.venv/` folder with the Python packages installed in.
     3. If you want to add a package, don't do it manually. Run `pdm add <package_name>`.
     4. This repository also relies on pre-commit hooks. To have them activated on your end, make sure to run `pdm run pre-commit install`. They'll be running in the background and just complain if something's not right. Otherwise, you'll not really see them 😊
 

@@ -6,6 +6,8 @@ This page describes how the community bots are structured and how data flows thr
 
 The project contains four automation bots that run on Bluesky (and historically Mastodon). Each bot is a standalone Python class triggered by a scheduled GitHub Actions workflow.
 
+Each bot is a Python class in `src/`, triggered by a GitHub Actions cron job. The class then calls the appropriate platform API — `Mastodon.py` for Mastodon and `atproto` for Bluesky.
+
 ```
 GitHub Actions (cron)
         │
@@ -15,7 +17,7 @@ GitHub Actions (cron)
   ┌─────┴─────┐
   ▼           ▼
 Mastodon    Bluesky
-(atproto)  (Mastodon.py)
+(Mastodon.py) (atproto)
 ```
 
 ## Bots
@@ -24,7 +26,7 @@ Mastodon    Bluesky
 
 Posts a celebration message on the anniversary date of women in tech profiles.
 
-**Flow:**
+**Flow:** The bot loads `events.json`, compares each entry's date against today, builds a text post with the person's image, and sends it to both platforms.
 
 ```
 metadata/events.json
@@ -48,7 +50,7 @@ Each entry in `events.json` holds a name, anniversary date (`MM-DD`), descriptio
 
 Rotates through community members and shares their latest blog post.
 
-**Flow:**
+**Flow:** The bot reads a counter file to pick the next community member, fetches their RSS feed, generates a summary via Gemini, posts to the platform, then commits the updated counter back to the repository.
 
 ```
 metadata/{pyladies,rladies}_meta_data.json   ← member list + RSS feeds
@@ -78,7 +80,7 @@ The counter files (`*_counter_mastodon.txt`, `*_counter_bluesky.txt`) persist th
 
 Reposts any public post tagged `#pyladies` or `#rladies`.
 
-**Flow:**
+**Flow:** The bot searches each configured hashtag, then reposts any public post it finds that hasn't already been boosted.
 
 ```
 config.TAGS  ←  ['#rladies', '#pyladies']
@@ -101,7 +103,7 @@ BoostTags.boost_tags()
 
 Boosts and likes posts that mention the bot accounts.
 
-**Flow:**
+**Flow:** The bot reads its notification feed, then boosts and likes any new mention it finds.
 
 ```
 BoostMentions.boost_mentions()
@@ -122,7 +124,7 @@ BoostMentions.boost_mentions()
 
 Scrapes community RSS feeds and regenerates the metadata JSON files used by the blog-post bot.
 
-**Flow:**
+**Flow:** The bot fetches the community blog list from GitHub, parses each blog's RSS feed, and writes an updated metadata JSON file locally.
 
 ```
 RSSData.get_rss_data()
@@ -138,6 +140,8 @@ This bot runs on a daily schedule and keeps the member list fresh.
 ---
 
 ## Directory Structure
+
+The repository is organised as follows: bot source code lives in `src/`, persistent state in `metadata/`, documentation in `docs/`, and scheduled triggers in `.github/workflows/`.
 
 ```
 .
@@ -167,7 +171,7 @@ This bot runs on a daily schedule and keeps the member list fresh.
 
 ## Scheduling
 
-All bots are triggered by GitHub Actions cron schedules:
+All bots are triggered by GitHub Actions cron schedules. The table below shows each workflow, its schedule, and the bot module it runs.
 
 | Workflow | Schedule | Bot |
 |---|---|---|
@@ -184,7 +188,7 @@ All bots are triggered by GitHub Actions cron schedules:
 
 ## Configuration & Authentication
 
-Environment variables (stored as GitHub Secrets) drive all credentials and paths:
+Environment variables (stored as GitHub Secrets) drive all credentials and paths. The table below lists each variable and which bot module reads it.
 
 | Variable | Used by |
 |---|---|
@@ -202,6 +206,8 @@ Bots accept a `config_dict` constructor argument as an alternative to environmen
 Every bot respects a `no_dry_run` flag. When `False` (the default for local runs), the bot executes all logic but skips the actual API calls to the social media platforms. Set `no_dry_run=True` in production or pass `--no-dry-run` via the workflow step.
 
 ## Key Dependencies
+
+The table below lists the third-party libraries the project depends on and what each is used for.
 
 | Library | Purpose |
 |---|---|
