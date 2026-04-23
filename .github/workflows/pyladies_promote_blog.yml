@@ -2,17 +2,24 @@ name: Promote PyLadies' blog posts
 
 on:
   schedule:
-    - cron: '0 7 1-31/2 * *' # will only run on odd days #'0 7 */3 * *' # '0 7 */3 * *' #'0 0 1 * *'  # "At 07:00 UTC every third day (which is 10 CET)"
+    - cron: '0 7 1-31/2 * *'
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
       - name: checkout repo content
-        uses: actions/checkout@v2 # checkout the repository content
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.BOT_PAT }}
+          fetch-depth: 0
 
       - name: setup python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version-file: 'pyproject.toml'
 
@@ -58,11 +65,11 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "github-actions"
           git add --all
-          if [-z "$(git status --porcelain)"]; then
-            echo "::set-output name=push::false"
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "push=false" >> $GITHUB_OUTPUT
           else
-            git commit -m "Add changes" -a
-            echo "::set-output name=push::true"
+            git commit -m "Update blog post metadata" -a
+            echo "push=true" >> $GITHUB_OUTPUT
           fi
         shell: bash
           
@@ -70,4 +77,5 @@ jobs:
         if: steps.commit.outputs.push == 'true'
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.SECRET_WRITE }}
+          github_token: ${{ secrets.BOT_PAT }}
+          branch: main
