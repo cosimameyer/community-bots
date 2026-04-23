@@ -2,14 +2,22 @@ name: Promote PyLadies' anniversaries
 
 on:
   schedule:
-    - cron: '0 11 * * *' # will run every day at noon CET
+    - cron: '0 11 * * *' # runs every day at noon CET
+  workflow_dispatch: # allows you to run it manually for testing
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout repo content
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.SECRET_WRITE }} # Uses PAT for checkout to handle protected branch
+          fetch-depth: 0 
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -52,7 +60,7 @@ jobs:
           if [ -z "$(git status --porcelain)" ]; then
             echo "push=false" >> $GITHUB_OUTPUT
           else
-            git commit -m "Add changes" -a
+            git commit -m "Automated anniversary update" -a
             echo "push=true" >> $GITHUB_OUTPUT
           fi
         shell: bash
@@ -62,3 +70,4 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.SECRET_WRITE }}
+          branch: main
