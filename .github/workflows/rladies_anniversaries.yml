@@ -16,7 +16,7 @@ jobs:
       - name: Checkout repo content
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.BOT_PAT }} # Uses PAT for checkout to handle protected branch
+          token: ${{ secrets.SECRET_WRITE }} # Uses PAT for checkout to handle protected branch
           fetch-depth: 0 
 
       - name: Setup Python
@@ -70,5 +70,5 @@ jobs:
         if: steps.commit.outputs.push == 'true'
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.BOT_PAT }}
+          github_token: ${{ secrets.SECRET_WRITE }}
           branch: main
