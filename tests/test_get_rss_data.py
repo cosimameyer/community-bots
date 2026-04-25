@@ -56,15 +56,17 @@ def make_content(
 # ---------------------------------------------------------------------------
 
 class TestInit:
-    def test_dry_run_reads_from_config_dict(self):
-        """no_dry_run=False → attributes come from config_dict."""
-        handler = make_handler(no_dry_run=False)
-        assert handler.base_url == BASE_CONFIG["api_base_url"]
-        assert handler.github_raw_url == BASE_CONFIG["github_raw_url"]
-        assert handler.json_file == BASE_CONFIG["json_file"]
+    def test_config_dict_takes_priority_over_env(self, monkeypatch):
+        """config_dict provided → attributes come from it regardless of no_dry_run."""
+        monkeypatch.setenv("BASE_URL", "https://env-base.example.com")
+        for no_dry_run in (True, False):
+            handler = make_handler(no_dry_run=no_dry_run)
+            assert handler.base_url == BASE_CONFIG["api_base_url"]
+            assert handler.github_raw_url == BASE_CONFIG["github_raw_url"]
+            assert handler.json_file == BASE_CONFIG["json_file"]
 
-    def test_no_dry_run_reads_from_env(self, monkeypatch):
-        """no_dry_run=True → attributes come from environment variables."""
+    def test_no_config_dict_reads_from_env(self, monkeypatch):
+        """config_dict=None → attributes come from environment variables."""
         monkeypatch.setenv("BASE_URL", "https://env-base.example.com")
         monkeypatch.setenv("GITHUB_RAW_URL", "https://env-raw.example.com")
         monkeypatch.setenv("JSON_FILE", "metadata/env.json")
@@ -83,12 +85,11 @@ class TestInit:
         assert handler.github_raw_url is None
         assert handler.json_file is None
 
-    def test_none_config_dict_defaults_to_empty(self):
-        """config_dict=None must not raise; defaults to empty dict."""
+    def test_none_config_dict_falls_back_to_env(self, monkeypatch):
+        """config_dict=None falls back to env vars (None if unset)."""
+        monkeypatch.delenv("BASE_URL", raising=False)
         handler = RSSData(config_dict=None, no_dry_run=False)
         assert handler.base_url is None
-        assert handler.github_raw_url is None
-        assert handler.json_file is None
 
 
 # ---------------------------------------------------------------------------

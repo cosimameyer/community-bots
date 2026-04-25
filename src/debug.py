@@ -20,7 +20,7 @@ class DebugBots:
     """
     def __init__(self):
         self.bot = 'pyladies'  # 'pyladies' or 'rladies'
-        self.what_to_debug = 'blog'  # 'blog', 'boost_tags', 'rss', 'anniversary', 'boost_mentions'
+        self.what_to_debug = 'rss'  # 'blog', 'boost_tags', 'rss', 'anniversary', 'boost_mentions'
         self.platform = 'bluesky'  # 'bluesky' or 'mastodon'
         self.no_dry_run = False  # True to actually post
 

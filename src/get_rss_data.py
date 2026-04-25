@@ -23,14 +23,14 @@ class RSSData:
         self.config_dict = config_dict or {}
         self.no_dry_run = no_dry_run
 
-        if self.no_dry_run:
-            self.base_url = os.getenv("BASE_URL")
-            self.github_raw_url = os.getenv("GITHUB_RAW_URL")
-            self.json_file = os.getenv("JSON_FILE")
-        else:
+        if self.config_dict:
             self.base_url = self.config_dict.get("api_base_url")
             self.github_raw_url = self.config_dict.get("github_raw_url")
             self.json_file = self.config_dict.get("json_file")
+        else:
+            self.base_url = os.getenv("BASE_URL")
+            self.github_raw_url = os.getenv("GITHUB_RAW_URL")
+            self.json_file = os.getenv("JSON_FILE")
 
     def get_rss_data(self):
         """
