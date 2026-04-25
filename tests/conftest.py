@@ -19,17 +19,15 @@ _MOCKED_MODULES = [
     "mastodon",
 ]
 
-for _mod in _MOCKED_MODULES:
-    sys.modules.setdefault(_mod, MagicMock())
-
 # requests must be the real module so its exception classes remain valid
-# BaseException subclasses. Without this, the mocked module's attributes
-# (e.g. requests.RequestException) are MagicMocks that Python rejects in
-# except clauses at runtime.
+# BaseException subclasses. Import it before the setdefault loop so
+# sys.modules["requests"] is already populated and setdefault is a no-op.
 try:
-    import requests
-    import requests.exceptions
-    sys.modules["requests"] = requests
-    sys.modules["requests.exceptions"] = requests.exceptions
+    import importlib
+    importlib.import_module("requests")
+    importlib.import_module("requests.exceptions")
 except ImportError:
     pass
+
+for _mod in _MOCKED_MODULES:
+    sys.modules.setdefault(_mod, MagicMock())
