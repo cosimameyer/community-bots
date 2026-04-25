@@ -148,6 +148,7 @@ class BoostTags:
 
         for tag in self.cfg["tags"]:
             tag = tag.lower().strip("# ")
+            self.logger.info(" > Searching for tag #%s", tag)
             if boost_count >= max_boosts:
                 self.logger.info(
                     " > Reached max boosts per run (%d), stopping.", max_boosts
