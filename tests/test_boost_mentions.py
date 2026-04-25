@@ -139,7 +139,7 @@ class TestSetUpConfigDict:
         with patch.dict(os.environ, env, clear=True):
             handler.set_up_config_dict()
 
-        assert handler.config_dict["api_base_url"] == "bluesky"
+        assert handler.config_dict["api_base_url"] == "https://bsky.social"
 
     def test_unknown_platform_raises_value_error(self):
         # A misconfigured / missing PLATFORM must fail loudly, not silently
@@ -154,7 +154,7 @@ class TestSetUpConfigDict:
         # Missing PLATFORM env var must also raise, not default to Bluesky
         handler = BoostMentions(config_dict=None)
         with patch.dict(os.environ, {}, clear=True), \
-             pytest.raises(ValueError, match="Unknown platform"):
+             pytest.raises(ValueError, match="PLATFORM environment variable is not set"):
             handler.set_up_config_dict()
 
     def test_pre_set_keys_are_not_overwritten(self):

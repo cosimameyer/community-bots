@@ -179,7 +179,10 @@ class BoostMentions:
         """
         if self.config_dict is None:
             self.config_dict = {}
-        self.config_dict.setdefault("platform", os.getenv("PLATFORM"))
+        platform = (os.getenv("PLATFORM") or "").lower()
+        if not platform and not self.config_dict.get("platform"):
+            raise ValueError("PLATFORM environment variable is not set.")
+        self.config_dict.setdefault("platform", platform)
         self.config_dict.setdefault("password", os.getenv("PASSWORD"))
         self.config_dict.setdefault("username", os.getenv("USERNAME"))
         self.config_dict.setdefault("client_name", os.getenv("CLIENT_NAME"))
@@ -193,7 +196,7 @@ class BoostMentions:
             )
             self.config_dict.setdefault("timeline_depth_limit", 40)
         elif self.config_dict["platform"] == "bluesky":
-            self.config_dict.setdefault("api_base_url", "bluesky")
+            self.config_dict.setdefault("api_base_url", "https://bsky.social")
         else:
             raise ValueError(
                 f"Unknown platform: {self.config_dict['platform']!r}. "

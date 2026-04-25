@@ -2,7 +2,12 @@ name: Boost posts that the tag rladies
 
 on:
     schedule:
-    - cron: '0 */6 * * *' #'5 */12 * * *'  
+    - cron: '0 */6 * * *' #'5 */12 * * *'
+    workflow_dispatch:
+        inputs:
+            tags:
+                description: 'Comma-separated tags to boost'
+                default: 'rladies'
 
 jobs:
     build:
@@ -40,5 +45,5 @@ jobs:
               CLIENT_NAME: "rladies_bot"
               PASSWORD: ${{ secrets.RLADIES_BSKY_PASSWORD }}
               USERNAME: ${{ secrets.RLADIES_BSKY_USERNAME }}
-              TAGS_TO_BOOST: "rladies"
+              TAGS_TO_BOOST: ${{ github.event.inputs.tags || 'rladies' }}
           run: python src/boost_tags.py
