@@ -269,7 +269,9 @@ class TestGetMetaData:
 
 def _make_tree_payload(items):
     """Build a minimal GitHub-style tree payload string."""
-    return json.dumps({"payload": {"tree": {"items": items}}})
+    return json.dumps(
+        {"payload": {"codeViewTreeRoute": {"tree": {"items": items}}}}
+    )
 
 
 def _mock_soup(script_string):

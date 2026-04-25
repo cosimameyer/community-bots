@@ -73,7 +73,9 @@ class RSSData:
 
         payload = json.loads(script_tag.string)
         try:
-            items = payload["payload"]["tree"]["items"]
+            items = (
+                payload["payload"]["codeViewTreeRoute"]["tree"]["items"]
+            )
         except KeyError as exc:
             raise RuntimeError(
                 f"Unexpected GitHub payload structure — missing key {exc}. "
