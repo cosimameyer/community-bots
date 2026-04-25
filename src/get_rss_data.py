@@ -47,6 +47,13 @@ class RSSData:
                 "Meta data successfully saved to %s",
                 self.json_file
             )
+        else:
+            self.logger.info(
+                "[DRY RUN] Would write %d entries to %s:\n%s",
+                len(meta_data),
+                self.json_file,
+                json.dumps(meta_data, ensure_ascii=False, indent=2),
+            )
 
     def get_json_file_names(self) -> list[str]:
         """

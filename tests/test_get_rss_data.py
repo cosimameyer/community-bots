@@ -519,6 +519,22 @@ class TestGetRssData:
 
         m.assert_not_called()
 
+    @patch.object(RSSData, "get_meta_data")
+    @patch.object(RSSData, "get_json_data")
+    def test_dry_run_logs_would_write_message(self, mock_json, mock_meta, caplog):
+        """no_dry_run=False must log a dry-run summary instead of writing."""
+        import logging
+        mock_json.return_value = [make_content()]
+        mock_meta.return_value = [{"name": "Alice", "rss_feed": "", "mastodon": "", "bluesky": ""}]
+
+        handler = make_handler(no_dry_run=False)
+
+        with caplog.at_level(logging.INFO):
+            handler.get_rss_data()
+
+        assert any("[DRY RUN]" in msg for msg in caplog.messages)
+        assert any("Alice" in msg for msg in caplog.messages)
+
     @patch.object(RSSData, "get_json_data", side_effect=RuntimeError("No JSON files found."))
     def test_runtime_error_from_get_json_data_propagates(self, _):
         """RuntimeError from get_json_data must propagate to the caller."""
