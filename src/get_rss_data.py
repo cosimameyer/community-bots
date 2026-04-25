@@ -134,8 +134,9 @@ class RSSData:
 
         The method collects:
         - `name`: The author's name (first entry in `authors`).
-        - `rss_feed`: RSS feed URL (prefers `rss_feed`, falls back to
-            `rss_feed_youtube`).
+        - `rss_feed`: List of feed URLs, combining `rss_feed` and
+            `rss_feed_youtube` when both are present. Empty list if
+            neither is set.
         - `mastodon`: Author's Mastodon handle if available.
         - `bluesky`: Author's Bluesky handle if available.
 
@@ -146,7 +147,13 @@ class RSSData:
         Returns:
             dict: A dictionary containing metadata fields.
         """
-        rss_feed = content.get("rss_feed") or content.get("rss_feed_youtube") or ""
+        rss_feed = [
+            url for url in [
+                content.get("rss_feed"),
+                content.get("rss_feed_youtube"),
+            ]
+            if url
+        ]
 
         author = content.get("authors", [{}])[0]
         name = author.get("name", "")

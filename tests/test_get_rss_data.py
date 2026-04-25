@@ -97,44 +97,48 @@ class TestInit:
 # ---------------------------------------------------------------------------
 
 class TestExtractInfo:
-    def test_returns_rss_feed_when_present(self):
-        """rss_feed field is returned as a string when present."""
-        content = make_content(rss_feed="https://example.com/feed.xml")
+    def test_returns_rss_feed_as_single_item_list(self):
+        """rss_feed is returned as a one-element list when only rss_feed is set."""
+        content = make_content(rss_feed="https://example.com/feed.xml", rss_feed_youtube=None)
         result = RSSData.extract_info(content)
-        assert result["rss_feed"] == "https://example.com/feed.xml"
+        assert result["rss_feed"] == ["https://example.com/feed.xml"]
 
-    def test_falls_back_to_youtube_when_rss_feed_absent(self):
-        """rss_feed_youtube is used when rss_feed key is missing."""
+    def test_returns_youtube_as_single_item_list_when_rss_feed_absent(self):
+        """rss_feed_youtube produces a one-element list when rss_feed is missing."""
         content = make_content(rss_feed=None, rss_feed_youtube="https://yt.example.com/feed")
         result = RSSData.extract_info(content)
-        assert result["rss_feed"] == "https://yt.example.com/feed"
+        assert result["rss_feed"] == ["https://yt.example.com/feed"]
 
-    def test_rss_feed_takes_priority_over_youtube(self):
-        """rss_feed wins over rss_feed_youtube when both are present."""
+    def test_both_feeds_included_when_present(self):
+        """Both rss_feed and rss_feed_youtube are included when both are set."""
         content = make_content(
             rss_feed="https://example.com/feed.xml",
             rss_feed_youtube="https://yt.example.com/feed",
         )
         result = RSSData.extract_info(content)
-        assert result["rss_feed"] == "https://example.com/feed.xml"
+        assert result["rss_feed"] == [
+            "https://example.com/feed.xml",
+            "https://yt.example.com/feed",
+        ]
 
-    def test_rss_feed_is_empty_string_when_both_absent(self):
-        """rss_feed is consistently "" when both feed fields are missing."""
+    def test_rss_feed_is_empty_list_when_both_absent(self):
+        """rss_feed is an empty list when both feed fields are missing."""
         content = make_content(rss_feed=None, rss_feed_youtube=None)
         result = RSSData.extract_info(content)
-        assert result["rss_feed"] == ""
+        assert result["rss_feed"] == []
 
-    def test_rss_feed_type_is_always_str(self):
-        """rss_feed must always be a str, never a list or None."""
+    def test_rss_feed_type_is_always_list(self):
+        """rss_feed must always be a list."""
         for rss, yt in [
             ("https://example.com/feed.xml", None),
             (None, "https://yt.example.com/feed"),
+            ("https://example.com/feed.xml", "https://yt.example.com/feed"),
             (None, None),
         ]:
             content = make_content(rss_feed=rss, rss_feed_youtube=yt)
             result = RSSData.extract_info(content)
-            assert isinstance(result["rss_feed"], str), (
-                f"Expected str for rss={rss!r}, yt={yt!r}; got {type(result['rss_feed'])}"
+            assert isinstance(result["rss_feed"], list), (
+                f"Expected list for rss={rss!r}, yt={yt!r}; got {type(result['rss_feed'])}"
             )
 
     def test_extracts_author_name(self):
@@ -221,7 +225,7 @@ class TestExtractInfo:
     def test_completely_empty_content_dict(self):
         """Fully empty dict must not raise; all fields default to ''."""
         result = RSSData.extract_info({})
-        assert result == {"name": "", "rss_feed": "", "mastodon": "", "bluesky": ""}
+        assert result == {"name": "", "rss_feed": [], "mastodon": "", "bluesky": ""}
 
     def test_return_dict_has_expected_keys(self):
         """Returned dict must always have exactly the four expected keys."""
@@ -261,7 +265,7 @@ class TestGetMetaData:
         handler = make_handler()
         result = handler.get_meta_data([{}])
         assert len(result) == 1
-        assert result[0] == {"name": "", "rss_feed": "", "mastodon": "", "bluesky": ""}
+        assert result[0] == {"name": "", "rss_feed": [], "mastodon": "", "bluesky": ""}
 
 
 # ---------------------------------------------------------------------------
