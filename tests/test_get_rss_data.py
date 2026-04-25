@@ -5,6 +5,7 @@ Tests for src/get_rss_data.py
 """
 
 import json
+import requests
 import pytest
 from unittest.mock import MagicMock, patch, mock_open
 
@@ -337,13 +338,12 @@ class TestGetJsonFileNames:
     @patch("get_rss_data.requests.get")
     def test_http_error_propagates(self, mock_get):
         """An HTTP error from the base URL must propagate (raise_for_status)."""
-        import requests as req
         handler = make_handler()
         mock_resp = MagicMock()
-        mock_resp.raise_for_status.side_effect = req.HTTPError("404")
+        mock_resp.raise_for_status.side_effect = requests.HTTPError("404")
         mock_get.return_value = mock_resp
 
-        with pytest.raises(req.HTTPError):
+        with pytest.raises(requests.HTTPError):
             handler.get_json_file_names()
 
     @patch("get_rss_data.BeautifulSoup")
@@ -423,7 +423,6 @@ class TestGetJsonData:
     @patch.object(RSSData, "get_json_file_names")
     def test_failed_file_fetch_is_skipped_with_warning(self, mock_names, mock_get, caplog):
         """A per-file HTTP error is logged and skipped; other files still returned."""
-        import requests as req
         import logging
         handler = make_handler()
         mock_names.return_value = [
@@ -432,7 +431,7 @@ class TestGetJsonData:
         ]
 
         bad_resp = MagicMock()
-        bad_resp.raise_for_status.side_effect = req.HTTPError("500")
+        bad_resp.raise_for_status.side_effect = requests.HTTPError("500")
 
         good_resp = MagicMock()
         good_resp.raise_for_status = MagicMock()
@@ -469,11 +468,10 @@ class TestGetJsonData:
     @patch.object(RSSData, "get_json_file_names")
     def test_all_files_fail_returns_empty_list(self, mock_names, mock_get):
         """If every file fetch fails, an empty list is returned without raising."""
-        import requests as req
         handler = make_handler()
         mock_names.return_value = ["https://raw.example.com/a.json"]
         mock_resp = MagicMock()
-        mock_resp.raise_for_status.side_effect = req.RequestException("timeout")
+        mock_resp.raise_for_status.side_effect = requests.RequestException("timeout")
         mock_get.return_value = mock_resp
 
         result = handler.get_json_data()
