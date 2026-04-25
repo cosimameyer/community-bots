@@ -179,7 +179,12 @@ class BoostTags:
                         if t.startswith("#")
                     }
 
-                if tag in tags_in_post and post.cid not in seen_cids:
+                own_handle = (self.cfg.get("username") or "").lower()
+                if (
+                    tag in tags_in_post
+                    and post.cid not in seen_cids
+                    and post.author.handle.lower() != own_handle
+                ):
                     if not self.no_dry_run:
                         self.logger.info(
                             "   * [DRY RUN] Would repost URI %s CID %s by %s",

@@ -283,6 +283,24 @@ class TestBoostTagsBluesky:
         self._run(handler, client)
         client.repost.assert_called_once_with(uri=post.uri, cid="new-cid")
 
+    def test_skips_own_posts(self):
+        # The bot must never repost its own posts
+        cfg = {**BASE_BLUESKY_CONFIG, "username": "bot.bsky.social"}
+        handler = make_handler(config=cfg)
+        post = _bluesky_post(cid="own-cid", text="#rstats", handle="bot.bsky.social")
+        client = _make_bluesky_client(posts_by_tag={"rstats": [post]})
+        self._run(handler, client)
+        client.repost.assert_not_called()
+
+    def test_skips_own_posts_case_insensitive(self):
+        # Handle comparison must be case-insensitive
+        cfg = {**BASE_BLUESKY_CONFIG, "username": "Bot.Bsky.Social"}
+        handler = make_handler(config=cfg)
+        post = _bluesky_post(cid="own-cid", text="#rstats", handle="bot.bsky.social")
+        client = _make_bluesky_client(posts_by_tag={"rstats": [post]})
+        self._run(handler, client)
+        client.repost.assert_not_called()
+
     def test_skips_post_already_in_seen_cids(self):
         # A post already in the timeline must never be reposted
         handler = make_handler(config=BASE_BLUESKY_CONFIG)
