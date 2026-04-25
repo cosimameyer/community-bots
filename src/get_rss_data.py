@@ -77,9 +77,11 @@ class RSSData:
                 payload["payload"]["codeViewTreeRoute"]["tree"]["items"]
             )
         except KeyError as exc:
+            top_keys = list(payload.get("payload", {}).keys())
             raise RuntimeError(
                 f"Unexpected GitHub payload structure — missing key {exc}. "
-                "The page layout may have changed."
+                f"Available keys under 'payload': {top_keys}. "
+                "Update the key path in get_json_file_names()."
             ) from exc
         return [
             f"{self.github_raw_url}/{item['path'].split('/')[-1]}"

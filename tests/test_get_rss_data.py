@@ -386,7 +386,7 @@ class TestGetJsonFileNames:
         mock_get.return_value = mock_resp
         mock_bs4.return_value = _mock_soup(json.dumps({"payload": {}}))
 
-        with pytest.raises(RuntimeError, match="page layout may have changed"):
+        with pytest.raises(RuntimeError, match="Update the key path"):
             handler.get_json_file_names()
 
 
