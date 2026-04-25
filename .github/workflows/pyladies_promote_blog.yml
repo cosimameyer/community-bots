@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
 
     steps:
       - name: checkout repo content
@@ -59,23 +60,21 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python src/promote_blog_post.py
   
-      - name: Commit files
-        id: commit
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "github-actions"
-          git add --all
-          if [ -z "$(git status --porcelain)" ]; then
-            echo "push=false" >> $GITHUB_OUTPUT
-          else
-            git commit -m "Update blog post metadata" -a
-            echo "push=true" >> $GITHUB_OUTPUT
-          fi
-        shell: bash
-          
       - name: Push changes
-        if: steps.commit.outputs.push == 'true'
-        uses: ad-m/github-push-action@master
+        id: cpr
+        uses: peter-evans/create-pull-request@v7
         with:
-          github_token: ${{ secrets.SECRET_WRITE }}
-          branch: main
+          token: ${{ secrets.SECRET_WRITE }}
+          commit-message: "Update blog post metadata"
+          branch: bot/pyladies-blog-metadata
+          delete-branch: true
+          title: "Update PyLadies blog post metadata"
+          body: "Automated update of blog post counter and archive metadata."
+
+      - name: Auto-merge PR
+        if: steps.cpr.outputs.pull-request-number != ''
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          token: ${{ secrets.SECRET_WRITE }}
+          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+          merge-method: squash
