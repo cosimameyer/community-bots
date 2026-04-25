@@ -110,7 +110,7 @@ class PromoteBlogPost():
         count_post = 0
 
         # Drop empty rss_feeds
-        feeds = [x for x in feeds if x['rss_feed'] != '']
+        feeds = [x for x in feeds if x['rss_feed']]
 
         if self.no_dry_run:
             self.process_feeds(feeds, counter_name, count_post, client)
