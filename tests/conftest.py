@@ -20,4 +20,10 @@ _MOCKED_MODULES = [
 ]
 
 for _mod in _MOCKED_MODULES:
+    try:
+        __import__(_mod)
+    except ImportError:
+        pass
+
+for _mod in _MOCKED_MODULES:
     sys.modules.setdefault(_mod, MagicMock())
