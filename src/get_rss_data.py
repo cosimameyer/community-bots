@@ -1,5 +1,4 @@
 """Module to get RSS metadata from JSON files."""
-import re
 import os
 import json
 import logging
@@ -24,14 +23,14 @@ class RSSData:
         self.config_dict = config_dict or {}
         self.no_dry_run = no_dry_run
 
-        if self.no_dry_run:
-            self.base_url = os.getenv("BASE_URL")
-            self.github_raw_url = os.getenv("GITHUB_RAW_URL")
-            self.json_file = os.getenv("JSON_FILE")
-        else:
+        if self.config_dict:
             self.base_url = self.config_dict.get("api_base_url")
             self.github_raw_url = self.config_dict.get("github_raw_url")
             self.json_file = self.config_dict.get("json_file")
+        else:
+            self.base_url = os.getenv("BASE_URL")
+            self.github_raw_url = os.getenv("GITHUB_RAW_URL")
+            self.json_file = os.getenv("JSON_FILE")
 
     def get_rss_data(self):
         """
@@ -48,25 +47,13 @@ class RSSData:
                 "Meta data successfully saved to %s",
                 self.json_file
             )
-
-    @staticmethod
-    def extract_elements(string: str, suffix: str) -> list[str]:
-        """
-        Extract matching substrings from a given string.
-
-        The method searches for substrings enclosed in double quotes (`"`)
-        that end with the provided suffix, excluding any that contain the word
-        "blog".
-
-        Args:
-            string (str): Input text to search through.
-            suffix (str): Suffix pattern to match at the end of elements.
-
-        Returns:
-            list[str]: A list of matched substrings.
-        """
-        pattern = rf'"((?!blog)[^"]*{suffix})"'
-        return re.findall(pattern, string)
+        else:
+            self.logger.info(
+                "[DRY RUN] Would write %d entries to %s:\n%s",
+                len(meta_data),
+                self.json_file,
+                json.dumps(meta_data, ensure_ascii=False, indent=2),
+            )
 
     def get_json_file_names(self) -> list[str]:
         """
@@ -92,9 +79,21 @@ class RSSData:
         script_tag = soup.find("react-app").find("script")
 
         payload = json.loads(script_tag.string)
+        try:
+            items = (
+                payload["payload"]["codeViewTreeRoute"]["tree"]["items"]
+            )
+        except KeyError as exc:
+            top_keys = list(payload.get("payload", {}).keys())
+            raise RuntimeError(
+                f"Unexpected GitHub payload structure — missing key {exc}. "
+                f"Available keys under 'payload': {top_keys}. "
+                "Update the key path in get_json_file_names()."
+            ) from exc
         return [
             f"{self.github_raw_url}/{item['path'].split('/')[-1]}"
-            for item in payload["payload"]["tree"]["items"]
+            for item in items
+            if item["path"].endswith(".json")
         ]
 
     def get_json_data(self) -> list[dict]:
@@ -135,8 +134,9 @@ class RSSData:
 
         The method collects:
         - `name`: The author's name (first entry in `authors`).
-        - `rss_feed`: RSS feed URL (prefers `rss_feed`, falls back to
-            `rss_feed_youtube`).
+        - `rss_feed`: List of feed URLs, combining `rss_feed` and
+            `rss_feed_youtube` when both are present. Empty list if
+            neither is set.
         - `mastodon`: Author's Mastodon handle if available.
         - `bluesky`: Author's Bluesky handle if available.
 
@@ -147,16 +147,19 @@ class RSSData:
         Returns:
             dict: A dictionary containing metadata fields.
         """
-        rss_feed = [content.get("rss_feed")]
-        rss_feed_yt = [content.get("rss_feed_youtube")]
-
-        rss_feed = [a or b for a, b in zip(rss_feed, rss_feed_yt)]
-        rss_feed = "" if rss_feed == [None] else rss_feed
+        rss_feed = [
+            url for url in [
+                content.get("rss_feed"),
+                content.get("rss_feed_youtube"),
+            ]
+            if url
+        ]
 
         author = content.get("authors", [{}])[0]
         name = author.get("name", "")
 
-        social_media = author.get("social_media", [{}])[0]
+        social_media_list = author.get("social_media", [])
+        social_media = social_media_list[0] if social_media_list else {}
         mastodon = social_media.get("mastodon", "")
         bluesky = social_media.get("bluesky", "")
 
@@ -183,9 +186,7 @@ class RSSData:
         """
         meta_data = []
         for content in contents_list:
-            content_data = self.extract_info(content)
-            if content_data:
-                meta_data.append(content_data)
+            meta_data.append(self.extract_info(content))
         return meta_data
 
 

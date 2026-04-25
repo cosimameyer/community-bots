@@ -185,7 +185,7 @@ class TestGetConfigRss:
 
     def test_rladies_json_file(self):
         cfg = make_debug(bot='rladies').get_config_rss()
-        assert cfg['json_file'] == '../metadata/rladies_meta_data.json'
+        assert cfg['json_file'] == 'metadata/rladies_meta_data.json'
 
     def test_rladies_has_github_raw_url(self):
         cfg = make_debug(bot='rladies').get_config_rss()

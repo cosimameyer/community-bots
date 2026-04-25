@@ -19,5 +19,15 @@ _MOCKED_MODULES = [
     "mastodon",
 ]
 
+# requests must be the real module so its exception classes remain valid
+# BaseException subclasses. Import it before the setdefault loop so
+# sys.modules["requests"] is already populated and setdefault is a no-op.
+try:
+    import importlib
+    importlib.import_module("requests")
+    importlib.import_module("requests.exceptions")
+except ImportError:
+    pass
+
 for _mod in _MOCKED_MODULES:
     sys.modules.setdefault(_mod, MagicMock())
