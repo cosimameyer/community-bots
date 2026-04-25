@@ -1,5 +1,4 @@
 """Module to get RSS metadata from JSON files."""
-import re
 import os
 import json
 import logging
@@ -49,25 +48,6 @@ class RSSData:
                 self.json_file
             )
 
-    @staticmethod
-    def extract_elements(string: str, suffix: str) -> list[str]:
-        """
-        Extract matching substrings from a given string.
-
-        The method searches for substrings enclosed in double quotes (`"`)
-        that end with the provided suffix, excluding any that contain the word
-        "blog".
-
-        Args:
-            string (str): Input text to search through.
-            suffix (str): Suffix pattern to match at the end of elements.
-
-        Returns:
-            list[str]: A list of matched substrings.
-        """
-        pattern = rf'"((?!blog)[^"]*{suffix})"'
-        return re.findall(pattern, string)
-
     def get_json_file_names(self) -> list[str]:
         """
         Retrieve available JSON file names from the configured base URL.
@@ -92,9 +72,17 @@ class RSSData:
         script_tag = soup.find("react-app").find("script")
 
         payload = json.loads(script_tag.string)
+        try:
+            items = payload["payload"]["tree"]["items"]
+        except KeyError as exc:
+            raise RuntimeError(
+                f"Unexpected GitHub payload structure — missing key {exc}. "
+                "The page layout may have changed."
+            ) from exc
         return [
             f"{self.github_raw_url}/{item['path'].split('/')[-1]}"
-            for item in payload["payload"]["tree"]["items"]
+            for item in items
+            if item["path"].endswith(".json")
         ]
 
     def get_json_data(self) -> list[dict]:
@@ -147,16 +135,13 @@ class RSSData:
         Returns:
             dict: A dictionary containing metadata fields.
         """
-        rss_feed = [content.get("rss_feed")]
-        rss_feed_yt = [content.get("rss_feed_youtube")]
-
-        rss_feed = [a or b for a, b in zip(rss_feed, rss_feed_yt)]
-        rss_feed = "" if rss_feed == [None] else rss_feed
+        rss_feed = content.get("rss_feed") or content.get("rss_feed_youtube") or ""
 
         author = content.get("authors", [{}])[0]
         name = author.get("name", "")
 
-        social_media = author.get("social_media", [{}])[0]
+        social_media_list = author.get("social_media", [])
+        social_media = social_media_list[0] if social_media_list else {}
         mastodon = social_media.get("mastodon", "")
         bluesky = social_media.get("bluesky", "")
 
@@ -183,9 +168,7 @@ class RSSData:
         """
         meta_data = []
         for content in contents_list:
-            content_data = self.extract_info(content)
-            if content_data:
-                meta_data.append(content_data)
+            meta_data.append(self.extract_info(content))
         return meta_data
 
 
