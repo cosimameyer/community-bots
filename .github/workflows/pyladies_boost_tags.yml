@@ -2,7 +2,12 @@ name: Boost posts that the tag pyladies
 
 on:
     schedule:
-    - cron: '5 */6 * * *' #'0 */12 * * *' 
+    - cron: '5 */6 * * *' #'0 */12 * * *'
+    workflow_dispatch:
+        inputs:
+            tags:
+                description: 'Comma-separated tags to boost'
+                default: 'pyladies'
 
 jobs:
     build:
@@ -40,5 +45,5 @@ jobs:
             CLIENT_NAME: "pyladies_bot"
             PASSWORD: ${{ secrets.PYLADIES_BSKY_PASSWORD }}
             USERNAME: ${{ secrets.PYLADIES_BSKY_USERNAME }}
-            TAGS_TO_BOOST: "pyladies"
+            TAGS_TO_BOOST: ${{ github.event.inputs.tags || 'pyladies' }}
           run: python src/boost_tags.py

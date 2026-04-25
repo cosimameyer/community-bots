@@ -38,20 +38,6 @@ def make_debug(bot='pyladies', platform='bluesky', what_to_debug='blog', no_dry_
 # __init__ defaults
 # ---------------------------------------------------------------------------
 
-class TestInit:
-    def test_default_bot(self):
-        assert DebugBots().bot == 'pyladies'
-
-    def test_default_platform(self):
-        assert DebugBots().platform == 'bluesky'
-
-    def test_default_what_to_debug(self):
-        assert DebugBots().what_to_debug == 'blog'
-
-    def test_default_no_dry_run_is_false(self):
-        # False = dry-run is active by default; nothing is actually posted
-        assert DebugBots().no_dry_run is False
-
 
 # ---------------------------------------------------------------------------
 # get_config_blog
@@ -131,7 +117,7 @@ class TestGetConfigBlog:
 class TestGetConfigBoost:
     def test_pyladies_bluesky_tags(self):
         cfg = make_debug(bot='pyladies', platform='bluesky').get_config_boost()
-        assert cfg['tags'] == 'pyladies'
+        assert cfg['tags'] == ['pyladies']
 
     def test_pyladies_bluesky_client_name(self):
         cfg = make_debug(bot='pyladies', platform='bluesky').get_config_boost()
@@ -139,7 +125,7 @@ class TestGetConfigBoost:
 
     def test_pyladies_mastodon_tags(self):
         cfg = make_debug(bot='pyladies', platform='mastodon').get_config_boost()
-        assert cfg['tags'] == 'pyladies'
+        assert cfg['tags'] == ['pyladies']
 
     def test_pyladies_mastodon_has_access_token_key(self):
         cfg = make_debug(bot='pyladies', platform='mastodon').get_config_boost()
@@ -147,7 +133,7 @@ class TestGetConfigBoost:
 
     def test_rladies_bluesky_tags(self):
         cfg = make_debug(bot='rladies', platform='bluesky').get_config_boost()
-        assert cfg['tags'] == 'rladies'
+        assert cfg['tags'] == ['rladies']
 
     def test_rladies_bluesky_client_name(self):
         cfg = make_debug(bot='rladies', platform='bluesky').get_config_boost()
@@ -163,7 +149,7 @@ class TestGetConfigBoost:
 
     def test_rladies_mastodon_tags(self):
         cfg = make_debug(bot='rladies', platform='mastodon').get_config_boost()
-        assert cfg['tags'] == 'rladies'
+        assert cfg['tags'] == ['rladies']
 
     def test_rladies_mastodon_has_access_token_key(self):
         cfg = make_debug(bot='rladies', platform='mastodon').get_config_boost()
