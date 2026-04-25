@@ -7,9 +7,14 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: checkout repo content
-        uses: actions/checkout@v2 # checkout the repository content
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.SECRET_WRITE }}
 
       - name: setup python
         uses: actions/setup-python@v4
@@ -28,26 +33,21 @@ jobs:
           JSON_FILE: "pyladies_meta_data.json"
         run: python src/get_rss_data.py
 
-      - name: Commit files
-        id: commit
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "github-actions"
-          git add --all
-          if ! git diff-index --quiet HEAD --; then 
-            git commit -m "Add changes" -a
-            echo "::set-output name=push::true"
-          fi
-#          if [-z "$(git status --porcelain)"]; then
-#            echo "::set-output name=push::false"
-#          else
-#            git commit -m "Add changes" -a
-#            echo "::set-output name=push::true"
-#          fi
-        shell: bash
-        
       - name: Push changes
-        if: steps.commit.outputs.push == 'true'
-        uses: ad-m/github-push-action@master
+        id: cpr
+        uses: peter-evans/create-pull-request@v7
         with:
-          github_token: ${{ secrets.SECRET_WRITE }}
+          token: ${{ secrets.SECRET_WRITE }}
+          commit-message: "Update PyLadies RSS feed metadata"
+          branch: bot/pyladies-rss-metadata
+          delete-branch: true
+          title: "Update PyLadies RSS feed metadata"
+          body: "Automated update of RSS feed metadata."
+
+      - name: Auto-merge PR
+        if: steps.cpr.outputs.pull-request-number != ''
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          token: ${{ secrets.SECRET_WRITE }}
+          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+          merge-method: squash
