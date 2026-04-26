@@ -30,7 +30,7 @@ def make_handler(config=None, no_dry_run=False):
 
 def make_content(
     rss_feed="https://example.com/feed.xml",
-    rss_feed_youtube=None,
+    content_type="blog",
     name="Alice",
     mastodon="@alice@fosstodon.org",
     bluesky="@alice.bsky.social",
@@ -45,8 +45,8 @@ def make_content(
     content = {}
     if rss_feed is not None:
         content["rss_feed"] = rss_feed
-    if rss_feed_youtube is not None:
-        content["rss_feed_youtube"] = rss_feed_youtube
+    if content_type is not None:
+        content["type"] = content_type
     content["authors"] = [{"name": name, "social_media": [social]}]
     return content
 
@@ -98,47 +98,24 @@ class TestInit:
 
 class TestExtractInfo:
     def test_returns_rss_feed_as_single_item_list(self):
-        """rss_feed is returned as a one-element list when only rss_feed is set."""
-        content = make_content(rss_feed="https://example.com/feed.xml", rss_feed_youtube=None)
+        """rss_feed is returned as a one-element list when set."""
+        content = make_content(rss_feed="https://example.com/feed.xml")
         result = RSSData.extract_info(content)
         assert result["rss_feed"] == ["https://example.com/feed.xml"]
 
-    def test_returns_youtube_as_single_item_list_when_rss_feed_absent(self):
-        """rss_feed_youtube produces a one-element list when rss_feed is missing."""
-        content = make_content(rss_feed=None, rss_feed_youtube="https://yt.example.com/feed")
-        result = RSSData.extract_info(content)
-        assert result["rss_feed"] == ["https://yt.example.com/feed"]
-
-    def test_both_feeds_included_when_present(self):
-        """Both rss_feed and rss_feed_youtube are included when both are set."""
-        content = make_content(
-            rss_feed="https://example.com/feed.xml",
-            rss_feed_youtube="https://yt.example.com/feed",
-        )
-        result = RSSData.extract_info(content)
-        assert result["rss_feed"] == [
-            "https://example.com/feed.xml",
-            "https://yt.example.com/feed",
-        ]
-
-    def test_rss_feed_is_empty_list_when_both_absent(self):
-        """rss_feed is an empty list when both feed fields are missing."""
-        content = make_content(rss_feed=None, rss_feed_youtube=None)
+    def test_rss_feed_is_empty_list_when_absent(self):
+        """rss_feed is an empty list when the field is missing."""
+        content = make_content(rss_feed=None)
         result = RSSData.extract_info(content)
         assert result["rss_feed"] == []
 
     def test_rss_feed_type_is_always_list(self):
-        """rss_feed must always be a list."""
-        for rss, yt in [
-            ("https://example.com/feed.xml", None),
-            (None, "https://yt.example.com/feed"),
-            ("https://example.com/feed.xml", "https://yt.example.com/feed"),
-            (None, None),
-        ]:
-            content = make_content(rss_feed=rss, rss_feed_youtube=yt)
+        """rss_feed must always be a list regardless of whether it is set."""
+        for rss in ["https://example.com/feed.xml", None]:
+            content = make_content(rss_feed=rss)
             result = RSSData.extract_info(content)
             assert isinstance(result["rss_feed"], list), (
-                f"Expected list for rss={rss!r}, yt={yt!r}; got {type(result['rss_feed'])}"
+                f"Expected list for rss={rss!r}; got {type(result['rss_feed'])}"
             )
 
     def test_extracts_author_name(self):
@@ -223,14 +200,34 @@ class TestExtractInfo:
         assert result["mastodon"] == "@first@example.social"
 
     def test_completely_empty_content_dict(self):
-        """Fully empty dict must not raise; all fields default to ''."""
+        """Fully empty dict must not raise; all fields default."""
         result = RSSData.extract_info({})
-        assert result == {"name": "", "rss_feed": [], "mastodon": "", "bluesky": ""}
+        assert result == {"name": "", "content_type": "blog", "rss_feed": [], "mastodon": "", "bluesky": ""}
 
     def test_return_dict_has_expected_keys(self):
-        """Returned dict must always have exactly the four expected keys."""
+        """Returned dict must always have exactly the expected keys."""
         result = RSSData.extract_info(make_content())
-        assert set(result.keys()) == {"name", "rss_feed", "mastodon", "bluesky"}
+        assert set(result.keys()) == {"name", "content_type", "rss_feed", "mastodon", "bluesky"}
+
+    def test_extracts_content_type_blog(self):
+        """type=blog is passed through as content_type."""
+        result = RSSData.extract_info(make_content(content_type="blog"))
+        assert result["content_type"] == "blog"
+
+    def test_extracts_content_type_youtube(self):
+        """type=youtube is passed through as content_type."""
+        result = RSSData.extract_info(make_content(content_type="youtube"))
+        assert result["content_type"] == "youtube"
+
+    def test_extracts_content_type_podcast(self):
+        """type=podcast is passed through as content_type."""
+        result = RSSData.extract_info(make_content(content_type="podcast"))
+        assert result["content_type"] == "podcast"
+
+    def test_content_type_defaults_to_blog_when_absent(self):
+        """Missing type field defaults to 'blog'."""
+        result = RSSData.extract_info(make_content(content_type=None))
+        assert result["content_type"] == "blog"
 
 
 # ---------------------------------------------------------------------------
@@ -265,7 +262,7 @@ class TestGetMetaData:
         handler = make_handler()
         result = handler.get_meta_data([{}])
         assert len(result) == 1
-        assert result[0] == {"name": "", "rss_feed": [], "mastodon": "", "bluesky": ""}
+        assert result[0] == {"name": "", "content_type": "blog", "rss_feed": [], "mastodon": "", "bluesky": ""}
 
 
 # ---------------------------------------------------------------------------
