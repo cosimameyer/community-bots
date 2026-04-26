@@ -698,7 +698,6 @@ class TestBuildPost:
         feed = {"name": "Author", "mastodon": None, "content_type": "youtube"}
         with patch.object(handler, "build_post_mastodon", return_value="post") as m:
             handler.build_post(entry, feed)
-        _, kwargs = m.call_args
         args = m.call_args[0]
         assert "youtube" in args
 
