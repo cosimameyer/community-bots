@@ -20,6 +20,12 @@ from helper.login_bluesky import login_bluesky
 
 import config
 
+CONTENT_TYPE_EMOJI = {
+    "blog": "📝",
+    "youtube": "📺",
+    "podcast": "🎙️",
+}
+
 
 class PromoteBlogPost():
     """
@@ -342,14 +348,15 @@ class PromoteBlogPost():
         return None
 
     def build_post_mastodon(
-        self, title, name, platform_user_handle, tags, entry
+        self, title, name, platform_user_handle, tags, entry, content_type="blog"
     ):
         """
         Build Mastodon post.
         """
         platform_user_handle = self.check_platform_handle(platform_user_handle)
 
-        post = f'📝 "{title}"\n\n' if title else ''
+        emoji = CONTENT_TYPE_EMOJI.get(content_type, "📝")
+        post = f'{emoji} "{title}"\n\n' if title else ''
 
         if self.config_dict.get('gen_ai_support', None):
             summarized_blog_post = self.summarize_text(entry)
@@ -451,7 +458,8 @@ class PromoteBlogPost():
         name,
         platform_user_handle,
         tags,
-        entry
+        entry,
+        content_type="blog"
     ):
         """
         Build post for Bluesky.
@@ -467,12 +475,13 @@ class PromoteBlogPost():
         # Resolve DID once so _build() never makes a duplicate HTTP call
         did = self.get_bluesky_did(platform_user_handle) if platform_user_handle else None
 
+        emoji = CONTENT_TYPE_EMOJI.get(content_type, "📝")
         tag_list = [t.strip() for t in tags.split('#') if t.strip()]
 
         def _build(tag_subset):
             tb = client_utils.TextBuilder()
             if title:
-                tb.text(f'📝 "{title}"\n\n')
+                tb.text(f'{emoji} "{title}"\n\n')
             if summarized_blog_post:
                 tb.text(summarized_blog_post)
                 tb.text('\n\n')
@@ -506,6 +515,7 @@ class PromoteBlogPost():
 
         title = entry.get('title', '')
         name = feed.get('name', '')
+        content_type = feed.get('content_type', 'blog')
 
         if self.config_dict.get('platform', '') == 'mastodon':
             return self.build_post_mastodon(
@@ -513,7 +523,8 @@ class PromoteBlogPost():
                 name,
                 platform_user_handle,
                 tags,
-                entry
+                entry,
+                content_type,
             )
         if self.config_dict.get('platform', '') == 'bluesky':
             return self.build_post_bluesky(
@@ -521,7 +532,8 @@ class PromoteBlogPost():
                 name,
                 platform_user_handle,
                 tags,
-                entry
+                entry,
+                content_type,
             )
         return None
 

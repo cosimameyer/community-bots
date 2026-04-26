@@ -30,6 +30,7 @@ def make_handler(config=None, no_dry_run=False):
 
 def make_content(
     rss_feed="https://example.com/feed.xml",
+    content_type="blog",
     name="Alice",
     mastodon="@alice@fosstodon.org",
     bluesky="@alice.bsky.social",
@@ -44,6 +45,8 @@ def make_content(
     content = {}
     if rss_feed is not None:
         content["rss_feed"] = rss_feed
+    if content_type is not None:
+        content["type"] = content_type
     content["authors"] = [{"name": name, "social_media": [social]}]
     return content
 
@@ -197,14 +200,34 @@ class TestExtractInfo:
         assert result["mastodon"] == "@first@example.social"
 
     def test_completely_empty_content_dict(self):
-        """Fully empty dict must not raise; all fields default to ''."""
+        """Fully empty dict must not raise; all fields default."""
         result = RSSData.extract_info({})
-        assert result == {"name": "", "rss_feed": [], "mastodon": "", "bluesky": ""}
+        assert result == {"name": "", "content_type": "blog", "rss_feed": [], "mastodon": "", "bluesky": ""}
 
     def test_return_dict_has_expected_keys(self):
-        """Returned dict must always have exactly the four expected keys."""
+        """Returned dict must always have exactly the expected keys."""
         result = RSSData.extract_info(make_content())
-        assert set(result.keys()) == {"name", "rss_feed", "mastodon", "bluesky"}
+        assert set(result.keys()) == {"name", "content_type", "rss_feed", "mastodon", "bluesky"}
+
+    def test_extracts_content_type_blog(self):
+        """type=blog is passed through as content_type."""
+        result = RSSData.extract_info(make_content(content_type="blog"))
+        assert result["content_type"] == "blog"
+
+    def test_extracts_content_type_youtube(self):
+        """type=youtube is passed through as content_type."""
+        result = RSSData.extract_info(make_content(content_type="youtube"))
+        assert result["content_type"] == "youtube"
+
+    def test_extracts_content_type_podcast(self):
+        """type=podcast is passed through as content_type."""
+        result = RSSData.extract_info(make_content(content_type="podcast"))
+        assert result["content_type"] == "podcast"
+
+    def test_content_type_defaults_to_blog_when_absent(self):
+        """Missing type field defaults to 'blog'."""
+        result = RSSData.extract_info(make_content(content_type=None))
+        assert result["content_type"] == "blog"
 
 
 # ---------------------------------------------------------------------------
@@ -239,7 +262,7 @@ class TestGetMetaData:
         handler = make_handler()
         result = handler.get_meta_data([{}])
         assert len(result) == 1
-        assert result[0] == {"name": "", "rss_feed": [], "mastodon": "", "bluesky": ""}
+        assert result[0] == {"name": "", "content_type": "blog", "rss_feed": [], "mastodon": "", "bluesky": ""}
 
 
 # ---------------------------------------------------------------------------

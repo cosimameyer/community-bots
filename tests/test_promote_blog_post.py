@@ -508,6 +508,20 @@ class TestBuildPostMastodon:
         result = handler.build_post_mastodon("My Title", "", "", "#tag", entry)
         assert '📝 "My Title"' in result
 
+    def test_youtube_emoji(self):
+        handler = make_handler({"platform": "mastodon", "gen_ai_support": False})
+        entry = {"title": "My Video", "link": "https://x.com", "pub_date": "2024-01-01",
+                 "tags": [], "summary": "", "media_content": []}
+        result = handler.build_post_mastodon("My Video", "", "", "#tag", entry, content_type="youtube")
+        assert '📺 "My Video"' in result
+
+    def test_podcast_emoji(self):
+        handler = make_handler({"platform": "mastodon", "gen_ai_support": False})
+        entry = {"title": "My Episode", "link": "https://x.com", "pub_date": "2024-01-01",
+                 "tags": [], "summary": "", "media_content": []}
+        result = handler.build_post_mastodon("My Episode", "", "", "#tag", entry, content_type="podcast")
+        assert '🎙️ "My Episode"' in result
+
 
 # ---------------------------------------------------------------------------
 # build_post_bluesky
@@ -565,6 +579,22 @@ class TestBuildPostBluesky:
                 "My Title", "Author", "", "#python ", self.BASE_ENTRY
             )
         assert '📝 "My Title"' in builder.build_text()
+
+    def test_youtube_emoji(self):
+        handler = self._make_handler_with_fake_builder()
+        with patch.object(handler, "get_bluesky_did", return_value="did:plc:test"):
+            builder = handler.build_post_bluesky(
+                "My Video", "Author", "", "#python ", self.BASE_ENTRY, content_type="youtube"
+            )
+        assert '📺 "My Video"' in builder.build_text()
+
+    def test_podcast_emoji(self):
+        handler = self._make_handler_with_fake_builder()
+        with patch.object(handler, "get_bluesky_did", return_value="did:plc:test"):
+            builder = handler.build_post_bluesky(
+                "My Episode", "Author", "", "#python ", self.BASE_ENTRY, content_type="podcast"
+            )
+        assert '🎙️ "My Episode"' in builder.build_text()
 
     def test_post_order(self):
         # Verify: title → summary → name+handle → link → tags
@@ -647,7 +677,7 @@ class TestBuildPost:
         handler = make_handler({"platform": "mastodon", "gen_ai_support": False})
         entry = {"title": "T", "link": "https://x.com", "pub_date": "2024-01-01",
                  "tags": [], "summary": "", "media_content": []}
-        feed = {"name": "Author", "mastodon": None}
+        feed = {"name": "Author", "mastodon": None, "content_type": "blog"}
         with patch.object(handler, "build_post_mastodon", return_value="post") as m:
             handler.build_post(entry, feed)
         m.assert_called_once()
@@ -656,10 +686,31 @@ class TestBuildPost:
         handler = make_handler({"platform": "bluesky", "gen_ai_support": False})
         entry = {"title": "T", "link": "https://x.com", "pub_date": "2024-01-01",
                  "tags": [], "summary": "", "media_content": []}
-        feed = {"name": "Author", "bluesky": None}
+        feed = {"name": "Author", "bluesky": None, "content_type": "blog"}
         with patch.object(handler, "build_post_bluesky", return_value=MagicMock()) as m:
             handler.build_post(entry, feed)
         m.assert_called_once()
+
+    def test_content_type_passed_to_mastodon_builder(self):
+        handler = make_handler({"platform": "mastodon", "gen_ai_support": False})
+        entry = {"title": "T", "link": "https://x.com", "pub_date": "2024-01-01",
+                 "tags": [], "summary": "", "media_content": []}
+        feed = {"name": "Author", "mastodon": None, "content_type": "youtube"}
+        with patch.object(handler, "build_post_mastodon", return_value="post") as m:
+            handler.build_post(entry, feed)
+        _, kwargs = m.call_args
+        args = m.call_args[0]
+        assert "youtube" in args
+
+    def test_content_type_passed_to_bluesky_builder(self):
+        handler = make_handler({"platform": "bluesky", "gen_ai_support": False})
+        entry = {"title": "T", "link": "https://x.com", "pub_date": "2024-01-01",
+                 "tags": [], "summary": "", "media_content": []}
+        feed = {"name": "Author", "bluesky": None, "content_type": "podcast"}
+        with patch.object(handler, "build_post_bluesky", return_value=MagicMock()) as m:
+            handler.build_post(entry, feed)
+        args = m.call_args[0]
+        assert "podcast" in args
 
 
 # ---------------------------------------------------------------------------
