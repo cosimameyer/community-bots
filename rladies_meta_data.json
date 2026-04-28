@@ -1,0 +1,383 @@
+[
+  {
+    "name": "Amanda Peterson",
+    "content_type": "blog",
+    "rss_feed": [],
+    "mastodon": "",
+    "bluesky": ""
+  },
+  {
+    "name": "Ariel Muldoon",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://aosmith.rbind.io/index.xml"
+    ],
+    "mastodon": "@aosmith16@fosstodon.org",
+    "bluesky": ""
+  },
+  {
+    "name": "Alison Hill",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://www.apreshill.com/index.xml"
+    ],
+    "mastodon": "@apreshill@fosstodon.org",
+    "bluesky": ""
+  },
+  {
+    "name": "Beatriz Milz",
+    "content_type": "blog",
+    "rss_feed": [],
+    "mastodon": "",
+    "bluesky": "beatrizmilz.bsky.social"
+  },
+  {
+    "name": "Danielle Navarro",
+    "content_type": "blog",
+    "rss_feed": [],
+    "mastodon": "",
+    "bluesky": "djnavarro.bsky.social"
+  },
+  {
+    "name": "Cara Thompson",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://www.cararthompson.com/posts.xml"
+    ],
+    "mastodon": "@cararthompson@fosstodon.org",
+    "bluesky": "cararthompson.bsky.social"
+  },
+  {
+    "name": "Crystal Lewis",
+    "content_type": "blog",
+    "rss_feed": [],
+    "mastodon": "",
+    "bluesky": "cghlewis.bsky.social"
+  },
+  {
+    "name": "Mine Çetinkaya-Rundel",
+    "content_type": "blog",
+    "rss_feed": [
+      "http://www.citizen-statistician.org/categories/rstats/index.xml"
+    ],
+    "mastodon": "@minecr@fosstodon.org",
+    "bluesky": "minecr.bsky.social"
+  },
+  {
+    "name": "Cosima Meyer",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://cosimameyer.com/category/r-post/index.xml"
+    ],
+    "mastodon": "@cosima_meyer@mas.to",
+    "bluesky": "cosima.bsky.social"
+  },
+  {
+    "name": "Darya Vanichkina",
+    "content_type": "blog",
+    "rss_feed": [],
+    "mastodon": "",
+    "bluesky": ""
+  },
+  {
+    "name": "Mine Dogucu",
+    "content_type": "blog",
+    "rss_feed": [],
+    "mastodon": "",
+    "bluesky": "minedogucu.bsky.social"
+  },
+  {
+    "name": "Athanasia Monika Mowinckel",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://drmowinckels.io/tags/r/index.xml"
+    ],
+    "mastodon": "@Drmowinckels@fosstodon.org",
+    "bluesky": "drmowinckels.io"
+  },
+  {
+    "name": "Elena Dudukina",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://www.elenadudukina.com/category/r/index.xml"
+    ],
+    "mastodon": "@evpatora@mstdn.social",
+    "bluesky": ""
+  },
+  {
+    "name": "Ella Kaye",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://ellakaye.co.uk/posts-r.xml"
+    ],
+    "mastodon": "@ellakaye@fosstodon.org",
+    "bluesky": "ellakaye.co.uk"
+  },
+  {
+    "name": "Emily Riederer",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://www.emilyriederer.com/tags/rstats/index.xml"
+    ],
+    "mastodon": "@emilyriederer@mastodon.social",
+    "bluesky": ""
+  },
+  {
+    "name": "Federica Gazzelloni",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://fgazzelloni.quarto.pub/index.xml"
+    ],
+    "mastodon": "@Fgazzelloni@fosstodon.org",
+    "bluesky": ""
+  },
+  {
+    "name": "Florencia D'Andrea",
+    "content_type": "website",
+    "rss_feed": [],
+    "mastodon": "@florencia@techhub.social",
+    "bluesky": ""
+  },
+  {
+    "name": "Veerle van Leemput",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://hypebright.nl/index.php/en/category/r-en/?feed=rss2"
+    ],
+    "mastodon": "",
+    "bluesky": "veerle.hypebright.nl"
+  },
+  {
+    "name": "Isabel Zimmerman",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://isabelizimm.github.io/blog-r.xml"
+    ],
+    "mastodon": "@isabelizimm@fosstodon.org",
+    "bluesky": "isabelizimm.bsky.social"
+  },
+  {
+    "name": "Isabella Velásquez",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://ivelasq.rbind.io/index.xml"
+    ],
+    "mastodon": "@ivelasq3@fosstodon.org",
+    "bluesky": "ivelasq3.bsky.social"
+  },
+  {
+    "name": "Jadey Ryan",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://jadeyryan.com/blog-r.xml"
+    ],
+    "mastodon": "@jadeynryan@fosstodon.org",
+    "bluesky": "jadeynryan.bsky.social"
+  },
+  {
+    "name": "Jennifer HY Lin",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://jhylin.github.io/Data_in_life_blog/index-r.xml"
+    ],
+    "mastodon": "@jhylin@fosstodon.org",
+    "bluesky": "jhylin.bsky.social"
+  },
+  {
+    "name": "Julia Silge",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://juliasilge.com/categories/rstats/index.xml"
+    ],
+    "mastodon": "@juliasilge@fosstodon.org",
+    "bluesky": "juliasilge.com"
+  },
+  {
+    "name": "Karina Bartolome",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://karbartolome-blog.netlify.app/categories/r/index.xml"
+    ],
+    "mastodon": "@karbartolome@mastodon.social",
+    "bluesky": ""
+  },
+  {
+    "name": "Lydia Gibson",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://lgibson7.quarto.pub/once-upon-a-time-series/index.xml"
+    ],
+    "mastodon": "",
+    "bluesky": "lydz-gibby.bsky.social"
+  },
+  {
+    "name": "Lorena Abad",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://loreabad6.github.io/index.xml"
+    ],
+    "mastodon": "@loreabad6@fosstodon.org",
+    "bluesky": ""
+  },
+  {
+    "name": "Macarena Quiroga",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://macarenaquiroga.netlify.app/tag/rstats/index.xml"
+    ],
+    "mastodon": "@macarenaquiroga@datasci.social",
+    "bluesky": ""
+  },
+  {
+    "name": "Maëlle Salmon",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://masalmon.eu/post/index.xml"
+    ],
+    "mastodon": "@maelle@mastodon.social",
+    "bluesky": "@maellesalmon.bsky.social"
+  },
+  {
+    "name": "Nicola Rennie",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://nrennie.rbind.io/categories/r/index.xml"
+    ],
+    "mastodon": "@nrennie@fosstodon.org",
+    "bluesky": "@nrennie.bsky.social"
+  },
+  {
+    "name": "Shannon Pileggi",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://www.pipinghotdata.com/blog.xml"
+    ],
+    "mastodon": "@PipingHotData@fosstodon.org",
+    "bluesky": "@pipinghotdata.com"
+  },
+  {
+    "name": "R-Ladies Gabarone",
+    "content_type": "blog",
+    "rss_feed": [],
+    "mastodon": "@RLadiesGaborone@fosstodon.org",
+    "bluesky": ""
+  },
+  {
+    "name": "R-Ladies Melbourde",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://r-ladiesmelbourne.github.io/blog_index.html"
+    ],
+    "mastodon": "",
+    "bluesky": "@rladiesmelb.bsky.social"
+  },
+  {
+    "name": "R-Ladies São Paulo",
+    "content_type": "blog",
+    "rss_feed": [],
+    "mastodon": "",
+    "bluesky": ""
+  },
+  {
+    "name": "Sabrina Schalz",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://sabrinaschalz.wordpress.com/?feed=rss2"
+    ],
+    "mastodon": "@sabrinaschalz@fediscience.org",
+    "bluesky": "sabrinaschalz.bsky.social"
+  },
+  {
+    "name": "Sarah Gillespie",
+    "content_type": "blog",
+    "rss_feed": [],
+    "mastodon": "",
+    "bluesky": ""
+  },
+  {
+    "name": "Sam Tyner-Monroe",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://sctyner.me/category/r/index.xml"
+    ],
+    "mastodon": "",
+    "bluesky": ""
+  },
+  {
+    "name": "Shel Kariuki",
+    "content_type": "blog",
+    "rss_feed": [],
+    "mastodon": "",
+    "bluesky": ""
+  },
+  {
+    "name": "Silvia Canelón",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://silviacanelon.com/blog/index-r.xml"
+    ],
+    "mastodon": "@spcanelon@hachyderm.io",
+    "bluesky": "silviacanelon.com"
+  },
+  {
+    "name": "Andrea Gómez Vargas",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://soyandrea.netlify.app/tag/r/index.xml"
+    ],
+    "mastodon": "@me_andre@mastodon.social",
+    "bluesky": ""
+  },
+  {
+    "name": "Steph Orellana Bello",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://sporella.xyz/tags/r/index.xml"
+    ],
+    "mastodon": "@sporella@fosstodon.org",
+    "bluesky": "sporella.bsky.social"
+  },
+  {
+    "name": "Steffi LaZerte",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://steffilazerte.ca/tips_and_tricks-r.xml"
+    ],
+    "mastodon": "@steffilazerte@fosstodon.org",
+    "bluesky": ""
+  },
+  {
+    "name": "Veerle van Son",
+    "content_type": "blog",
+    "rss_feed": [],
+    "mastodon": "",
+    "bluesky": ""
+  },
+  {
+    "name": "Meghan Harris",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://thetidytrekker.com/blog.xml"
+    ],
+    "mastodon": "@meghansharris@fosstodon.org",
+    "bluesky": ""
+  },
+  {
+    "name": "Yanina Bellini Saibene",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://yabellini.netlify.app/categories/rstats/index.xml"
+    ],
+    "mastodon": "@yabellini@fosstodon.org",
+    "bluesky": "yabellini.bsky.social"
+  },
+  {
+    "name": "Melissa Van Bussel",
+    "content_type": "youtube",
+    "rss_feed": [
+      "https://www.youtube.com/feeds/videos.xml?channel_id=UCWPCd6tPtoLJYzQQ681pe5Q"
+    ],
+    "mastodon": "",
+    "bluesky": ""
+  }
+]
