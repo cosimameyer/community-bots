@@ -3,10 +3,10 @@ name: Check JSON Length in anniversary posts
 on:
   push:
     paths:
-      - 'metadata/events.json'
+      - '../metadata/events.json'
   pull_request:
     paths:
-      - 'metadata/events.json'
+      - '../metadata/events.json'
 
 jobs:
   check-length:
