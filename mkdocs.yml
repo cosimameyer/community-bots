@@ -5,6 +5,7 @@ repo_name: cosimameyer/community-bots
 
 theme:
   name: "material"
+  language: en
   icon:
     logo: material/heart
     repo: material/github
@@ -33,8 +34,8 @@ extra_css:
 extra:
   consent:
     title: Cookie consent
-    description: >- 
-      I took great care to disable all third party cookies and scripts. However, there might be some cookies left which would like to be used. 
+    description: >-
+      I took great care to disable all third-party cookies and scripts. There may still be a few residual cookies — please choose your preference below.
     actions:
       - accept
       - reject
@@ -48,7 +49,7 @@ extra:
         checked: false
 
 copyright: >
-  Copyright &copy; 2023 –
+  Copyright &copy; 2023 – present &nbsp;|&nbsp;
   <a href="#__consent">Change cookie settings</a>
 
 plugins:
@@ -83,6 +84,9 @@ nav:
   - Welcome:
       - About the Project: index.md
       - Amazing Women in Tech Gallery: https://gallery.cosimameyer.com/amazing-women-in-tech/
-      - Contribute: contribute.md
+  - Contribute:
+      - Contribute: contribute/contribute.md
+      - Architecture: contribute/architecture.md
+      - Debug Guide: contribute/debug_guide.md
   - API Reference: reference.md
   - News: https://github.com/cosimameyer/community-bots/releases

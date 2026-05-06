@@ -1,6 +1,8 @@
 """ This script aims at making debugging easier """
 import os
+import logging
 from dotenv import load_dotenv
+import config
 
 from promote_blog_post import PromoteBlogPost
 from get_rss_data import RSSData
@@ -9,6 +11,7 @@ from promote_anniversaries import PromoteAnniversary
 from boost_mentions import BoostMentions
 
 load_dotenv()
+logging.basicConfig(level=logging.INFO)
 
 
 class DebugBots:
@@ -17,14 +20,22 @@ class DebugBots:
     """
     def __init__(self):
         self.bot = 'rladies'  # 'pyladies' or 'rladies'
-        self.what_to_debug = 'blog'  # 'blog' or 'boost_tags' or 'rss' or 'anniversary
+        self.what_to_debug = 'rss'  # 'blog', 'boost_tags', 'rss', 'anniversary', 'boost_mentions'
         self.platform = 'bluesky'  # 'bluesky' or 'mastodon'
-        self.no_dry_run = False
+        self.no_dry_run = True  # True to actually post
 
     def start_debug(self):
         """Start debugging."""
+        logger = logging.getLogger(__name__)
+
         if self.what_to_debug == 'blog':
             config_dict = self.get_config_blog()
+            if config_dict is None:
+                logger.error(
+                    "No config for bot=%r platform=%r — check bot/platform settings.",
+                    self.bot, self.platform
+                )
+                return
             promote_blog_post_handler = PromoteBlogPost(
                 config_dict,
                 self.no_dry_run
@@ -33,6 +44,12 @@ class DebugBots:
 
         elif self.what_to_debug == 'rss':
             config_dict = self.get_config_rss()
+            if config_dict is None:
+                logger.error(
+                    "No config for bot=%r platform=%r — check bot/platform settings.",
+                    self.bot, self.platform
+                )
+                return
             rss_data_handler = RSSData(
                 config_dict,
                 self.no_dry_run
@@ -41,6 +58,12 @@ class DebugBots:
 
         elif self.what_to_debug == 'boost_tags':
             config_dict = self.get_config_boost()
+            if config_dict is None:
+                logger.error(
+                    "No config for bot=%r platform=%r — check bot/platform settings.",
+                    self.bot, self.platform
+                )
+                return
             boost_tags_handler = BoostTags(
                 config_dict,
                 self.no_dry_run
@@ -49,14 +72,26 @@ class DebugBots:
 
         elif self.what_to_debug == 'boost_mentions':
             config_dict = self.get_config_boost()
-            boost_tags_handler = BoostMentions(
+            if config_dict is None:
+                logger.error(
+                    "No config for bot=%r platform=%r — check bot/platform settings.",
+                    self.bot, self.platform
+                )
+                return
+            boost_mentions_handler = BoostMentions(
                 config_dict,
                 self.no_dry_run
             )
-            boost_tags_handler.boost_mentions()
+            boost_mentions_handler.boost_mentions()
 
         elif self.what_to_debug == 'anniversary':
             config_dict = self.get_config_anniversary()
+            if config_dict is None:
+                logger.error(
+                    "No config for bot=%r platform=%r — check bot/platform settings.",
+                    self.bot, self.platform
+                )
+                return
             promote_anniversary_handler = PromoteAnniversary(
                 config_dict,
                 self.no_dry_run
@@ -71,7 +106,7 @@ class DebugBots:
                     "archive": "pyladies_archive_directory_bluesky",
                     "counter": "metadata/pyladies_counter_bluesky.txt",
                     "json_file": "metadata/pyladies_meta_data.json",
-                    "client_name": "pyladies_self.bot",
+                    "client_name": "pyladies_bot",
                     "images": "pyladies_images",
                     "api_base_url": self.platform,
                     "mastodon": None,
@@ -81,13 +116,22 @@ class DebugBots:
                     "username": os.getenv("PYLADIES_BSKY_USERNAME"),
                     "platform": self.platform,
                 }
-            return {
-                'archive': 'pyladies_archive_directory',
-                'counter': 'pyladies_counter.txt',
-                'json_file': 'metadata/pyladies_meta_data.json',
-                'client_name': 'pyladies_self.bot',
-                'mastodon': None,
-            }
+            if self.platform == 'mastodon':
+                return {
+                    "archive": "pyladies_archive_directory",
+                    "counter": "metadata/pyladies_counter.txt",
+                    "json_file": "metadata/pyladies_meta_data.json",
+                    "client_name": "pyladies_bot",
+                    "images": "pyladies_images",
+                    "api_base_url": config.API_BASE_URL,
+                    "mastodon": None,
+                    "password": os.getenv("PYLADIES_MASTODON_PASSWORD"),
+                    "username": os.getenv("PYLADIES_MASTODON_USERNAME"),
+                    "access_token": os.getenv("PYLADIES_MASTODON_ACCESS_TOKEN"),
+                    "client_cred_file": os.getenv("PYLADIES_BOT_CLIENTCRED_SECRET"),
+                    "mastodon_visibility": config.MASTODON_VISIBILITY,
+                    "platform": self.platform,
+                }
 
         if self.bot == 'rladies':
             if self.platform == 'bluesky':
@@ -95,42 +139,113 @@ class DebugBots:
                     "archive": "rladies_archive_directory_bluesky",
                     "counter": "../metadata/rladies_counter_bluesky.txt",
                     "json_file": "../metadata/rladies_meta_data.json",
-                    "client_name": "rladies_self.bot",
+                    "client_name": "rladies_bot",
                     "images": "rladies_images",
                     "api_base_url": self.platform,
                     "mastodon": None,
+                    "gen_ai_support": True,
+                    "gemini_model_name": "gemini-2.5-flash",
                     "password": os.getenv("RLADIES_BSKY_PASSWORD"),
                     "username": os.getenv("RLADIES_BSKY_USERNAME"),
                     "platform": self.platform,
                 }
-            return {
-                "archive": "rladies_archive_directory",
-                "counter": "../metadata/rladies_counter.txt",
-                "json_file": "../metadata/rladies_meta_data.json",
-                "client_name": "rladies_self.bot",
-                "mastodon": None,
-            }
+            if self.platform == 'mastodon':
+                return {
+                    "archive": "rladies_archive_directory",
+                    "counter": "../metadata/rladies_counter.txt",
+                    "json_file": "../metadata/rladies_meta_data.json",
+                    "client_name": "rladies_bot",
+                    "images": "rladies_images",
+                    "api_base_url": config.API_BASE_URL,
+                    "mastodon": None,
+                    "password": os.getenv("RLADIES_MASTODON_PASSWORD"),
+                    "username": os.getenv("RLADIES_MASTODON_USERNAME"),
+                    "access_token": os.getenv("RLADIES_MASTODON_ACCESS_TOKEN"),
+                    "client_cred_file": os.getenv("RLADIES_BOT_CLIENTCRED_SECRET"),
+                    "mastodon_visibility": config.MASTODON_VISIBILITY,
+                    "platform": self.platform,
+                }
 
         return None
 
     def get_config_boost(self):
         """Method to generate config for boosting tags"""
         if self.bot == 'pyladies':
-            return {"client_name": "pyladies_self.bot", "mastodon": None}
+            if self.platform == 'bluesky':
+                return {
+                    "client_name": "pyladies_bot",
+                    "mastodon": None,
+                    "password": os.getenv("PYLADIES_BSKY_PASSWORD"),
+                    "username": os.getenv("PYLADIES_BSKY_USERNAME"),
+                    "platform": self.platform,
+                    "tags": ["pyladies"],
+                }
+            if self.platform == 'mastodon':
+                return {
+                    "client_name": "pyladies_bot",
+                    "api_base_url": config.API_BASE_URL,
+                    "mastodon": None,
+                    "password": os.getenv("PYLADIES_MASTODON_PASSWORD"),
+                    "username": os.getenv("PYLADIES_MASTODON_USERNAME"),
+                    "access_token": os.getenv("PYLADIES_MASTODON_ACCESS_TOKEN"),
+                    "client_cred_file": os.getenv("PYLADIES_BOT_CLIENTCRED_SECRET"),
+                    "platform": self.platform,
+                    "mastodon_visibility": config.MASTODON_VISIBILITY,
+                    "tags": ["pyladies"],
+                }
 
         if self.bot == 'rladies':
             if self.platform == "bluesky":
                 return {
-                    "client_name": "rladies_self.bot",
-                    "api_base_url": self.platform,
+                    "client_name": "rladies_bot",
                     "mastodon": None,
-                    "password": os.getenv("PASSWORD"),
-                    "username": os.getenv("USERNAME"),
+                    "password": os.getenv("RLADIES_BSKY_PASSWORD"),
+                    "username": os.getenv("RLADIES_BSKY_USERNAME"),
                     "platform": self.platform,
-                    "tags": "rladies",
+                    "tags": ["rladies"],
                 }
-            return {"client_name": "rladies_self.bot", "mastodon": None}
+            if self.platform == 'mastodon':
+                return {
+                    "client_name": "rladies_bot",
+                    "api_base_url": config.API_BASE_URL,
+                    "mastodon": None,
+                    "password": os.getenv("RLADIES_MASTODON_PASSWORD"),
+                    "username": os.getenv("RLADIES_MASTODON_USERNAME"),
+                    "access_token": os.getenv("RLADIES_MASTODON_ACCESS_TOKEN"),
+                    "client_cred_file": os.getenv("RLADIES_BOT_CLIENTCRED_SECRET"),
+                    "platform": self.platform,
+                    "mastodon_visibility": config.MASTODON_VISIBILITY,
+                    "tags": ["rladies"],
+                }
 
+        return None
+
+    def get_config_rss(self):
+        """Method to generate config for fetching RSS data"""
+        if self.bot == 'pyladies':
+            return {
+                "json_file": "metadata/pyladies_meta_data.json",
+                "api_base_url": (
+                    "https://github.com/cosimameyer/"
+                    "awesome-pyladies-blogs/tree/main/blogs"
+                ),
+                "github_raw_url": (
+                    "https://raw.githubusercontent.com/cosimameyer/"
+                    "awesome-pyladies-blogs/main/blogs"
+                ),
+            }
+        if self.bot == 'rladies':
+            return {
+                "json_file": "metadata/rladies_meta_data.json",
+                "api_base_url": (
+                    "https://github.com/rladies/"
+                    "awesome-rladies-blogs/tree/main/blogs"
+                ),
+                "github_raw_url": (
+                    "https://raw.githubusercontent.com/rladies/"
+                    "awesome-rladies-blogs/main/blogs"
+                ),
+            }
         return None
 
     def get_config_anniversary(self):
@@ -138,7 +253,7 @@ class DebugBots:
         if self.bot == 'pyladies':
             if self.platform == 'bluesky':
                 return {
-                    'client_name': 'pyladies_self.bot',
+                    'client_name': 'pyladies_bot',
                     'api_base_url': self.platform,
                     'mastodon': None,
                     'password': os.getenv('PYLADIES_BSKY_PASSWORD'),
@@ -146,12 +261,24 @@ class DebugBots:
                     'images': 'anniversary_images',
                     'platform': self.platform,
                 }
-            return {'client_name': 'pyladies_self.bot', 'mastodon': None}
+            if self.platform == 'mastodon':
+                return {
+                    'client_name': 'pyladies_bot',
+                    'api_base_url': config.API_BASE_URL,
+                    'mastodon': None,
+                    'password': os.getenv('PYLADIES_MASTODON_PASSWORD'),
+                    'username': os.getenv('PYLADIES_MASTODON_USERNAME'),
+                    'access_token': os.getenv('PYLADIES_MASTODON_ACCESS_TOKEN'),
+                    'client_cred_file': os.getenv('PYLADIES_BOT_CLIENTCRED_SECRET'),
+                    'images': 'anniversary_images',
+                    'platform': self.platform,
+                    'mastodon_visibility': config.MASTODON_VISIBILITY,
+                }
 
         if self.bot == 'rladies':
             if self.platform == 'bluesky':
                 return {
-                    'client_name': 'rladies_self.bot',
+                    'client_name': 'rladies_bot',
                     'api_base_url': self.platform,
                     'mastodon': None,
                     'password': os.getenv('RLADIES_BSKY_PASSWORD'),
@@ -159,7 +286,19 @@ class DebugBots:
                     'images': 'anniversary_images',
                     'platform': self.platform,
                 }
-            return {'client_name': 'rladies_self.bot', 'mastodon': None}
+            if self.platform == 'mastodon':
+                return {
+                    'client_name': 'rladies_bot',
+                    'api_base_url': config.API_BASE_URL,
+                    'mastodon': None,
+                    'password': os.getenv('RLADIES_MASTODON_PASSWORD'),
+                    'username': os.getenv('RLADIES_MASTODON_USERNAME'),
+                    'access_token': os.getenv('RLADIES_MASTODON_ACCESS_TOKEN'),
+                    'client_cred_file': os.getenv('RLADIES_BOT_CLIENTCRED_SECRET'),
+                    'images': 'anniversary_images',
+                    'platform': self.platform,
+                    'mastodon_visibility': config.MASTODON_VISIBILITY,
+                }
 
         return None
 

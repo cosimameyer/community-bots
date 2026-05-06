@@ -3,13 +3,12 @@
 import time
 import os
 import logging
-from urllib.parse import urlparse
+from typing import Optional, Dict, Any, cast
 from dotenv import load_dotenv
 
 import config
-from helper.login_bluesky import login_bluesky
+from helper.login_bluesky import login_bluesky, BlueskyConfig
 
-# Try to import platform-specific exceptions; provide safe fallbacks if unavailable.
 try:
     from mastodon import MastodonNetworkError, MastodonAPIError  # type: ignore
 except ImportError:  # pragma: no cover - optional dependency
@@ -21,9 +20,13 @@ except ImportError:  # pragma: no cover - optional dependency
 
 try:
     from atproto.exceptions import AtProtocolError  # type: ignore
+    from atproto_client.exceptions import InvokeTimeoutError  # type: ignore
 except ImportError:  # pragma: no cover - optional dependency
     class AtProtocolError(Exception):
         """Fallback Bluesky/AtProto error."""
+
+    class InvokeTimeoutError(Exception):
+        """Fallback Bluesky timeout error."""
 
 
 load_dotenv()
@@ -35,76 +38,32 @@ class BoostTags:
     Currently supports Bluesky. Mastodon support is stubbed.
     """
 
-    def __init__(self, config_dict: dict | None = None, no_dry_run: bool = True) -> None:
+    def __init__(
+        self,
+        config_dict: Optional[Dict[str, Any]] = None,
+        no_dry_run: bool = True,
+    ) -> None:
         """
         Initialize the BoostTags handler.
 
         Args:
-            config_dict (dict | None): Configuration dictionary for the bot.
-                If None, values will be loaded from environment variables.
-            no_dry_run (bool): If True, actually perform reposts instead of dry-run.
+            config_dict: Optional configuration dictionary for the bot.
+            no_dry_run: If True, actually perform reposts; if False, dry run.
         """
         self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.INFO)
 
-        self.config_dict = config_dict
         self.no_dry_run = no_dry_run
+        self.config_dict = config_dict
 
-    def repost_tags_mastodon(self, client) -> None:
-        """
-        Repost Mastodon statuses containing the configured tags.
-
-        Args:
-            client: Authenticated Mastodon client instance.
-
-        Notes:
-            Currently non-functional since account fetching is commented out.
-        """
-        if "tags" not in self.config_dict:
-            self.logger.warning("No tags configured for Mastodon reposts.")
-            return
-
-        for tag in self.config_dict["tags"]:
-            tag = tag.lower().strip("# ")
-            self.logger.info("Reading timeline for new toots tagged #%s", tag)
-
-            try:
-                statuses = client.timeline_hashtag(
-                    tag,
-                    limit=self.config_dict.get("timeline_depth_limit", 40),
-                )
-            except (
-                MastodonNetworkError,
-                MastodonAPIError,
-                ConnectionError,
-                TimeoutError
-            ) as e:
-                # NOTE: Replace/extend with library-specific 
-                # exceptions as needed.
-                self.logger.error(
-                    "Network/API error when fetching statuses: %s. Retrying...",
-                    e
-                )
-                time.sleep(30)
-                continue
-
-            time.sleep(0.1)  # rate limiting
-
-            for status in statuses:
-                domain = urlparse(status.url).netloc
-                if (
-                    not getattr(status, "favourited", False)
-                    and domain not in config.IGNORE_SERVERS
-                    and getattr(status.account, "acct", None) != self.config_dict.get("username")
-                ):
-                    self.logger.info(
-                        "Boosting toot by %s tagged #%s (%s)",
-                        status.account.username,
-                        tag,
-                        status.url,
-                    )
-                    client.status_reblog(status.id)
-                    client.status_favourite(status.id)
+    @property
+    def cfg(self) -> Dict[str, Any]:
+        """Property to ensure that the dictionary is initialized."""
+        if self.config_dict is None:
+            raise RuntimeError(
+                "config_dict is not set; call boost_tags() or pass "
+                "config_dict to the constructor before accessing cfg"
+            )
+        return self.config_dict
 
     def boost_tags(self) -> None:
         """
@@ -113,102 +72,151 @@ class BoostTags:
         Loads configuration from environment variables if not provided.
         Handles platform-specific reposting logic.
         """
-        if self.config_dict is None and self.no_dry_run:
-            self._load_config_from_env()
+        self.set_up_config_dict()
 
-        platform = self.config_dict.get("platform")
-        client_name = self.config_dict.get("client_name", "Unknown")
+        client_name = self.cfg.get("client_name", "Unknown")
         self.logger.info("========")
         self.logger.info("Initializing %s Bot", client_name)
         self.logger.info("=" * (20 + len(client_name)))
-        self.logger.info("Connecting to %s", self.config_dict["api_base_url"])
+        self.logger.info(" > Connecting to %s", self.cfg["api_base_url"])
 
-        if platform == "mastodon":
+        if self.cfg["platform"] == "mastodon":
             self._boost_tags_mastodon()
-            self.logger.warning("Mastodon support is currently not implemented.")
-        elif platform == "bluesky":
+        elif self.cfg["platform"] == "bluesky":
             self._boost_tags_bluesky()
-        else:
-            self.logger.error("Unsupported platform: %s", platform)
 
-    def _load_config_from_env(self) -> None:
-        """Load configuration values from environment variables into self.config_dict."""
-        self.config_dict = {
-            "platform": os.getenv("PLATFORM", "").lower(),
-            "password": os.getenv("PASSWORD"),
-            "username": os.getenv("USERNAME"),
-            "client_name": os.getenv("CLIENT_NAME", "CommunityBot"),
-            "tags": os.getenv("TAGS_TO_BOOST", "").split(","),
-        }
+    def set_up_config_dict(self) -> None:
+        """
+        Populate the configuration dictionary with required parameters.
+
+        Loads environment variables and values from `config` to prepare
+        platform-specific settings.
+        """
+        if self.config_dict is None:
+            self.config_dict = {}
+        platform = (os.getenv("PLATFORM") or "").lower()
+        if not platform and not self.config_dict.get("platform"):
+            raise ValueError("PLATFORM environment variable is not set.")
+        self.config_dict.setdefault("platform", platform)
+        self.config_dict.setdefault("password", os.getenv("PASSWORD"))
+        self.config_dict.setdefault("username", os.getenv("USERNAME"))
+        self.config_dict.setdefault("client_name", os.getenv("CLIENT_NAME", "CommunityBot"))
+        self.config_dict.setdefault(
+            "tags",
+            [t.strip() for t in os.getenv("TAGS_TO_BOOST", "").split(",") if t.strip()],
+        )
+        self.config_dict.setdefault("max_boosts_per_run", 5)
         if self.config_dict["platform"] == "mastodon":
-            self.config_dict.update({
-                "mastodon_visibility": config.MASTODON_VISIBILITY,
-                "api_base_url": config.API_BASE_URL,
-                "access_token": os.getenv("ACCESS_TOKEN"),
-                "client_cred_file": os.getenv("BOT_CLIENTCRED_SECRET"),
-                "timeline_depth_limit": 40,
-            })
+            self.config_dict.setdefault("mastodon_visibility", config.MASTODON_VISIBILITY)
+            self.config_dict.setdefault("api_base_url", config.API_BASE_URL)
+            self.config_dict.setdefault("access_token", os.getenv("ACCESS_TOKEN"))
+            self.config_dict.setdefault(
+                "client_cred_file", os.getenv("BOT_CLIENTCRED_SECRET")
+            )
+            self.config_dict.setdefault("timeline_depth_limit", 40)
+        elif self.config_dict["platform"] == "bluesky":
+            self.config_dict.setdefault("api_base_url", "https://bsky.social")
         else:
-            self.config_dict["api_base_url"] = "bluesky"
+            raise ValueError(
+                f"Unknown platform: {self.config_dict['platform']!r}. "
+                "Expected 'mastodon' or 'bluesky'."
+            )
 
     def _boost_tags_mastodon(self) -> None:
         """Handle reposting tags on Mastodon."""
-        # # Commented because it wasn't fully working
-
-        # account, client = login_mastodon(config_dict)
-        # self.logger.info(f" > Fetched account data for {account.acct}")
-
-        # repost_tags_mastodon(client, config_dict)
-        self.logger.info(
-            """
-            This feature currently doesn't work for Mastodon.
-            It's deployed using AWS.
-            """
-        )
+        raise NotImplementedError("Mastodon tag boosting is not yet implemented.")
 
     def _boost_tags_bluesky(self) -> None:
         """Handle reposting tags on Bluesky."""
-        if not self.no_dry_run:
-            self.logger.info("Dry-run mode: no reposts will be made.")
+        try:
+            client = login_bluesky(cast(BlueskyConfig, self.config_dict))
+        except InvokeTimeoutError:
+            self.logger.error("Timed out while logging in to Bluesky. Aborting.")
             return
+        self.logger.info(" > Fetched Bluesky account data.")
+        self.logger.info(" > Starting search-loop for reposting.")
 
-        client = login_bluesky(self.config_dict)
-        self.logger.info("Fetched Bluesky account data.")
-        self.logger.info("Starting search-loop for reposting.")
-
-        timeline = client.get_timeline(algorithm="reverse-chronological")
+        try:
+            timeline = client.get_timeline(algorithm="reverse-chronological")
+        except InvokeTimeoutError:
+            self.logger.error("Timed out fetching timeline. Aborting.")
+            return
         seen_cids = {post.post.cid for post in timeline.feed}
 
-        for tag in self.config_dict["tags"]:
-            response = client.app.bsky.feed.search_posts(
-                params={"q": tag, "tag": [tag], "sort": "top", "limit": 50}
-            )
-            for post in response.posts:
-                tags_in_post = {
-                    t.strip("#").lower()
-                    for t in post.record.text.split()
-                    if t.startswith("#")
-                }
+        max_boosts = self.cfg.get("max_boosts_per_run", 5)
+        boost_count = 0
 
-                if tag.lower() in tags_in_post and post.cid not in seen_cids:
-                    try:
-                        result = client.repost(uri=post.uri, cid=post.cid)
+        for tag in self.cfg["tags"]:
+            tag = tag.lower().strip("# ")
+            self.logger.info(" > Searching for tag #%s", tag)
+            if boost_count >= max_boosts:
+                self.logger.info(
+                    " > Reached max boosts per run (%d), stopping.", max_boosts
+                )
+                break
+
+            try:
+                response = client.app.bsky.feed.search_posts(
+                    params={"q": tag, "tag": [tag], "sort": "top", "limit": 50}
+                )
+            except InvokeTimeoutError:
+                self.logger.error("Timed out searching posts for tag #%s. Skipping.", tag)
+                continue
+            for post in response.posts:
+                if boost_count >= max_boosts:
+                    break
+
+                # Prefer facets (structured ATProto tags) over text parsing.
+                tags_in_post: set = set()
+                for facet in (getattr(post.record, "facets", None) or []):
+                    for feature in facet.features:
+                        if hasattr(feature, "tag"):
+                            tags_in_post.add(feature.tag.lower())
+                if not tags_in_post:
+                    tags_in_post = {
+                        t.strip("#.,!?").lower()
+                        for t in post.record.text.split()
+                        if t.startswith("#")
+                    }
+
+                own_handle = (self.cfg.get("username") or "").lower()
+                if (
+                    tag in tags_in_post
+                    and post.cid not in seen_cids
+                    and post.author.handle.lower() != own_handle
+                ):
+                    if not self.no_dry_run:
                         self.logger.info(
-                            "Reposted post by %s (ref: %s)",
-                            post.author.handle, result
-                        )
-                    except AtProtocolError as e:
-                        self.logger.error(
-                            "Failed to repost URI %s, CID %s: %s",
+                            "   * [DRY RUN] Would repost URI %s CID %s by %s",
                             post.uri,
                             post.cid,
-                            e,
+                            post.author.handle,
                         )
+                        seen_cids.add(post.cid)
+                        boost_count += 1
+                    else:
+                        try:
+                            result = client.repost(uri=post.uri, cid=post.cid)
+                            self.logger.info(
+                                "   * Reposted post by %s (ref: %s)",
+                                post.author.handle,
+                                result,
+                            )
+                            seen_cids.add(post.cid)
+                            boost_count += 1
+                        except AtProtocolError as e:
+                            self.logger.error(
+                                "   * Failed to repost URI %s, CID %s: %s",
+                                post.uri,
+                                post.cid,
+                                e,
+                            )
                     time.sleep(0.1)  # avoid hammering API
 
         self.logger.info("Finished processing Bluesky reposts.")
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     bot = BoostTags()
     bot.boost_tags()

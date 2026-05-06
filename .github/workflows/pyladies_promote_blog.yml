@@ -2,17 +2,25 @@ name: Promote PyLadies' blog posts
 
 on:
   schedule:
-    - cron: '0 7 1-31/2 * *' # will only run on odd days #'0 7 */3 * *' # '0 7 */3 * *' #'0 0 1 * *'  # "At 07:00 UTC every third day (which is 10 CET)"
+    - cron: '0 7 1-31/2 * *'
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
     steps:
       - name: checkout repo content
-        uses: actions/checkout@v2 # checkout the repository content
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.SECRET_WRITE }}
+          fetch-depth: 0
 
       - name: setup python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version-file: 'pyproject.toml'
 
@@ -52,22 +60,19 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python src/promote_blog_post.py
   
-      - name: Commit files
-        id: commit
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "github-actions"
-          git add --all
-          if [-z "$(git status --porcelain)"]; then
-            echo "::set-output name=push::false"
-          else
-            git commit -m "Add changes" -a
-            echo "::set-output name=push::true"
-          fi
-        shell: bash
-          
       - name: Push changes
-        if: steps.commit.outputs.push == 'true'
-        uses: ad-m/github-push-action@master
+        id: cpr
+        uses: peter-evans/create-pull-request@v7
         with:
-          github_token: ${{ secrets.SECRET_WRITE }}
+          token: ${{ secrets.SECRET_WRITE }}
+          commit-message: "Update blog post metadata"
+          branch: bot/pyladies-blog-metadata
+          delete-branch: true
+          title: "Update PyLadies blog post metadata"
+          body: "Automated update of blog post counter and archive metadata."
+
+      - name: Auto-merge PR
+        if: steps.cpr.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ secrets.SECRET_WRITE }}
+        run: gh pr merge --squash "${{ steps.cpr.outputs.pull-request-number }}" -R cosimameyer/community-bots

@@ -1,15 +1,24 @@
-name: Promote R-Ladies' anniversaries
+name: Promote RLadies' anniversaries
 
 on:
   schedule:
-    - cron: '15 11 * * *' # will run every day at quarter past noon CET
+    - cron: '0 10 * * *' # runs every day at 11 CET
+  workflow_dispatch: # allows you to run it manually for testing
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+      pull-requests: write
+
     steps:
       - name: Checkout repo content
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.SECRET_WRITE }} # Uses PAT for checkout to handle protected branch
+          fetch-depth: 0 
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -44,22 +53,19 @@ jobs:
           USERNAME: ${{ secrets.RLADIES_BSKY_USERNAME }}
         run: python src/promote_anniversaries.py
 
-      - name: Commit files
-        id: commit
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "github-actions"
-          git add --all
-          if [ -z "$(git status --porcelain)" ]; then
-            echo "push=false" >> $GITHUB_OUTPUT
-          else
-            git commit -m "Add changes" -a
-            echo "push=true" >> $GITHUB_OUTPUT
-          fi
-        shell: bash
-
       - name: Push changes
-        if: steps.commit.outputs.push == 'true'
-        uses: ad-m/github-push-action@master
+        id: cpr
+        uses: peter-evans/create-pull-request@v7
         with:
-          github_token: ${{ secrets.SECRET_WRITE }}
+          token: ${{ secrets.SECRET_WRITE }}
+          commit-message: "Automated anniversary update"
+          branch: bot/rladies-anniversary-update
+          delete-branch: true
+          title: "Update RLadies anniversary data"
+          body: "Automated anniversary update."
+
+      - name: Auto-merge PR
+        if: steps.cpr.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ secrets.SECRET_WRITE }}
+        run: gh pr merge --squash "${{ steps.cpr.outputs.pull-request-number }}" -R cosimameyer/community-bots
