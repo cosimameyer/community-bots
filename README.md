@@ -1,10 +1,10 @@
-# PyLadies and R-Ladies Bots
+# PyLadies and RLadies+ Bots
 
-![PyLadies & R-Ladies Bots](docs/img/rladies-pyladies-bots.png)
+![PyLadies & RLadies+ Bots](docs/img/rladies-pyladies-bots.png)
 
 👋 Welcome to the repository!
 
-This project hosts bots for the PyLadies and R-Ladies communities.  
+This project hosts bots for the PyLadies and RLadies+ communities.  
 
 Want to learn more? Check out the [website](https://cosimameyer.github.io/community-bots) for background information, contribution guidelines, and ways to get involved.  
 
