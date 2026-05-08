@@ -7,7 +7,7 @@
 This project focuses on building community-driven bots for Bluesky and Mastodon to support and grow the Python, R, and data community. The bots help by 
 
 - Boosting posts tagged with #pyladies or #rladies, 
-- Posting useful resources by PyLadies and R-Ladies,  
+- Posting useful resources by PyLadies and RLadies+,  
 - Sharing portraits of amazing women in tech, and
 - Celebrating community achievements. 
 
@@ -19,7 +19,7 @@ Designed to increase engagement and visibility, the bots run automatically open-
 
 This project marries multiple components:
 
-- Sharing content by [**PyLadies**](https://github.com/cosimameyer/awesome-pyladies-blogs) and [**R-Ladies**](https://github.com/rladies/awesome-rladies-blogs)
+- Sharing content by [**PyLadies**](https://github.com/cosimameyer/awesome-pyladies-blogs) and [**RLadies+**](https://github.com/rladies/awesome-rladies-blogs)
 - [**Sharing Amazing Women in Tech**](https://gallery.cosimameyer.com/amazing-women-in-tech/)
 
 Here is more about the project:
@@ -60,9 +60,9 @@ You can find the bots on Bluesky (and formerly also on Mastodon). I'd love to ex
     [![PyLadies bot Bluesky profile](img/pyladies_bot.png)](https://bsky.app/profile/did:plc:cyhjdt4mp7h4c2ufw3nwcqqx)
     [:octicons-arrow-right-24: Hop over to Bluesky and meet the bot](https://bsky.app/profile/did:plc:cyhjdt4mp7h4c2ufw3nwcqqx)
 
--   __R-Ladies Bot__
+-   __RLadies+ Bot__
 
-    [![R-Ladies bot Bluesky profile](img/rladies_bot.png)](https://bsky.app/profile/rladies-bot.bsky.social)
+    [![RLadies+ bot Bluesky profile](img/rladies_bot.png)](https://bsky.app/profile/rladies-bot.bsky.social)
     [:octicons-arrow-right-24: Hop over to Bluesky and meet the bot](https://bsky.app/profile/rladies-bot.bsky.social)
 
 

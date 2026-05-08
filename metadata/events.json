@@ -20,8 +20,8 @@
 "date": "02-11",
 "bluesky": "@ledell.bsky.social",
 "description_bluesky": "Erin\n✨ is Chief Scientist at Distributional, driving AI strategy\n✨ holds a PhD in Biostatistics from UC Berkeley\n✨ is keynote speaker & open-source contributor\n✨ is leader in AutoML",
-"description_mastodon": "Erin\n✨ is Chief Scientist at Distributional, driving AI strategy\n✨ co-founded R-Ladies Global and founded WiMLDS to support diversity in tech\n✨ holds a PhD in Biostatistics from UC Berkeley, specializing in scalable machine learning\n✨ has keynoted top conferences and contributes to open-source\n✨ is a leader in advancing AutoML\n✨ and much more!",
-"alt": "Image of Erin LeDell (a person with medium-length, brown hair, wearing a green sweater). The image has a darker background with nebula and words 'autoML', 'machine learning', 'WiMLDS', and 'R-Ladies'.",
+"description_mastodon": "Erin\n✨ is Chief Scientist at Distributional, driving AI strategy\n✨ co-founded RLadies+ Global and founded WiMLDS to support diversity in tech\n✨ holds a PhD in Biostatistics from UC Berkeley, specializing in scalable machine learning\n✨ has keynoted top conferences and contributes to open-source\n✨ is a leader in advancing AutoML\n✨ and much more!",
+"alt": "Image of Erin LeDell (a person with medium-length, brown hair, wearing a green sweater). The image has a darker background with nebula and words 'autoML', 'machine learning', 'WiMLDS', and 'RLadies+'.",
 "img": "erin_ledell_small.png",
 "wiki_link": "https://distributional.com/blog/erin-ledell-chief-scientist-distributional/"},
 
@@ -230,13 +230,13 @@
 "alt": "Image of Dorothy Vaughan (a dark-haired person wearing glasses and a pearl necklace). The image has a darker background with fog and images of rockets, planets, and satellites.",
 "wiki_link": "https://en.wikipedia.org/wiki/Dorothy_Vaughan"},
 
-{"name":"R-Ladies",
+{"name":"RLadies+",
 "date":"10-01",
 "bluesky": "",
 "description_bluesky": "✨ founded in October 2012\n✨ a global organization dedicated to promoting greater diversity in the #rstats community",
 "description_mastodon": "✨ were founded in October 2012\n ✨ are a worldwide organization that seek to promote greater diversity in the #rstats community",
-"img":"r-ladies_small.png",
-"wiki_link":"https://en.wikipedia.org/wiki/R-Ladies"},
+"img":"RLadies+_small.png",
+"wiki_link":"https://en.wikipedia.org/wiki/RLadies+"},
 
 {"name": "Gabriela de Queiroz",
 "date": "10-02",
@@ -244,8 +244,8 @@
 "description_bluesky": "Gabriela\n✨ Director of AI at Microsoft, previously in AI strategy at IBM\n✨ advocate for diversity, founder of #RLadies and #AI Inclusive\n✨ named one of the 100 Brilliant Women in AI Ethics in 2023",
 "description_mastodon": "Gabriela\n✨ is the Director of AI at Microsoft and previously worked in AI strategy and innovation at IBM\n✨ is a strong advocate for diversity in the field, having founded #RLadies and #AI Inclusive\n✨ has won several awards for her work (including being named one of the 100 Brilliant Women in AI Ethics™ in 2023)\n✨ and much more!",
 "img": "gabriela_de_queiroz_small.png",
-"alt": "Image of Gabriela de Queiroz (a black-haired person wearing a dark pullover). The image has a darker background with nebula and the words R-Ladies and AI Inclusive.",
-"wiki_link": "https://en.m.wikipedia.org/wiki/R-Ladies#Gabriela_de_Queiroz"},
+"alt": "Image of Gabriela de Queiroz (a black-haired person wearing a dark pullover). The image has a darker background with nebula and the words RLadies+ and AI Inclusive.",
+"wiki_link": "https://en.m.wikipedia.org/wiki/RLadies+#Gabriela_de_Queiroz"},
 
 {"name":"Ellie King",
 "date":"10-02",
@@ -403,5 +403,5 @@
 "description_mastodon": "Emily\n✨ is a senior data scientist at Game Data Pros, managing the full #ML pipeline\n✨ co-authored 'Build Your Career in Data Science' (with Jacqueline Nolis), offering tips on careers in #datascience and a related #podcast\n✨ avid #OSS contributor and involved with #rladies and #rstats\n✨ and much more!",
 "img": "emily_robinson_small.png",
 "wiki_link": "https://medium.com/ai4allorg/role-models-in-ai-erin-ledell-5dcdbc217202",
-"alt": "Image of Emily Robinson (a brown-haired person wearing a big red-colored scarf). The image has a darker background with nebula and R-Ladies signs as well as the words 'design your career in data'."}
+"alt": "Image of Emily Robinson (a brown-haired person wearing a big red-colored scarf). The image has a darker background with nebula and RLadies+ signs as well as the words 'design your career in data'."}
 ]
