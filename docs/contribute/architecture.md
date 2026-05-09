@@ -160,7 +160,7 @@ The repository is organised as follows: bot source code lives in `src/`, persist
 ├── metadata/
 │   ├── events.json                 # Women-in-tech profiles (anniversary bot)
 │   ├── pyladies_meta_data.json     # PyLadies members + RSS feeds
-│   ├── rladies_meta_data.json      # R-Ladies members + RSS feeds
+│   ├── rladies_meta_data.json      # RLadies+ members + RSS feeds
 │   └── *_counter_*.txt             # Rotation state for blog-post bot
 ├── archive/                        # Audit copies of posted content
 ├── docs/                           # MkDocs documentation source

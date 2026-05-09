@@ -1,4 +1,4 @@
-name: Boost posts that mention the R-Ladies' bot
+name: Boost posts that mention the RLadies+' bot
 
 on:
   schedule:

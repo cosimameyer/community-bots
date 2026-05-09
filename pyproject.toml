@@ -1,7 +1,7 @@
 [project]
 name = "community-bots"
 version = "0.1.0"
-description = "Community Bots - PyLadies and R-Ladies Bots"
+description = "Community Bots - PyLadies and RLadies+ Bots"
 authors = [
     {name = "cosimameyer", email = "cosima.meyer@gmail.com"},
 ]

@@ -1,4 +1,4 @@
-name: Update meta data for RSS feeds for R-Ladies
+name: Update meta data for RSS feeds for RLadies+
 
 on:
   schedule:

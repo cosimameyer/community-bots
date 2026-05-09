@@ -256,23 +256,23 @@
     "bluesky": "@pipinghotdata.com"
   },
   {
-    "name": "R-Ladies Gabarone",
+    "name": "RLadies+ Gabarone",
     "content_type": "blog",
     "rss_feed": [],
     "mastodon": "@RLadiesGaborone@fosstodon.org",
     "bluesky": ""
   },
   {
-    "name": "R-Ladies Melbourde",
+    "name": "RLadies+ Melbourne",
     "content_type": "blog",
     "rss_feed": [
-      "https://r-ladiesmelbourne.github.io/blog_index.html"
+      "https://RLadies+melbourne.github.io/blog_index.html"
     ],
     "mastodon": "",
     "bluesky": "@rladiesmelb.bsky.social"
   },
   {
-    "name": "R-Ladies São Paulo",
+    "name": "RLadies+ São Paulo",
     "content_type": "blog",
     "rss_feed": [],
     "mastodon": "",

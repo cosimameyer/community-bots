@@ -3,10 +3,10 @@
 
 Contributions are highly welcomed! Expand a section below to jump to the relevant instructions.
 
-??? questions "I have PyLadies/R-Ladies content (blog, YouTube channel, ...), how do I contribute it to the bot?"
+??? questions "I have PyLadies/RLadies+ content (blog, YouTube channel, ...), how do I contribute it to the bot?"
 
     - [Awesome PyLadies' Repository](https://github.com/cosimameyer/awesome-pyladies-blogs)
-    - [Awesome R-Ladies' Repository](https://github.com/rladies/awesome-rladies-blogs)
+    - [Awesome RLadies+' Repository](https://github.com/rladies/awesome-rladies-blogs)
 
 ??? questions "I have an idea how to improve the code - how can I share it?"
 
