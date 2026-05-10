@@ -152,6 +152,12 @@ class TestUpdateCounter:
 # ---------------------------------------------------------------------------
 
 class TestReadMetadataJson:
+    def test_missing_file_returns_empty_list(self):
+        handler = make_handler()
+        with patch("builtins.open", side_effect=FileNotFoundError):
+            result = handler.read_metadata_json()
+        assert result == []
+
     def test_returns_parsed_packages(self):
         packages = [make_package(name="CiteLang"), make_package(name="artpack")]
         handler = make_handler()

@@ -150,13 +150,20 @@ class PromotePackage():
             return ""
 
     def read_metadata_json(self) -> list[dict]:
-        """Read package metadata JSON."""
-        with open(self.config_dict["json_file"], "rb") as fp:
-            self.logger.info("=============================================")
-            packages = json.load(fp)
-            self.logger.info("Package meta data successfully loaded.")
-            self.logger.info("=============================================")
-            return packages
+        """Read package metadata JSON. Returns [] if the file doesn't exist yet."""
+        try:
+            with open(self.config_dict["json_file"], "rb") as fp:
+                self.logger.info("=============================================")
+                packages = json.load(fp)
+                self.logger.info("Package meta data successfully loaded.")
+                self.logger.info("=============================================")
+                return packages
+        except FileNotFoundError:
+            self.logger.warning(
+                "Metadata file %s not found — run the packages data workflow first.",
+                self.config_dict["json_file"],
+            )
+            return []
 
     def define_tags(self) -> str:
         """Return community-specific hashtags."""
