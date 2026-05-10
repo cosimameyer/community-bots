@@ -1,12 +1,14 @@
 [
   {
     "name": "Amanda Peterson",
+    "content_type": "blog",
     "rss_feed": [],
     "mastodon": "",
     "bluesky": ""
   },
   {
     "name": "Ariel Muldoon",
+    "content_type": "blog",
     "rss_feed": [
       "https://aosmith.rbind.io/index.xml"
     ],
@@ -15,6 +17,7 @@
   },
   {
     "name": "Alison Hill",
+    "content_type": "blog",
     "rss_feed": [
       "https://www.apreshill.com/index.xml"
     ],
@@ -23,18 +26,21 @@
   },
   {
     "name": "Beatriz Milz",
+    "content_type": "blog",
     "rss_feed": [],
     "mastodon": "",
     "bluesky": "beatrizmilz.bsky.social"
   },
   {
     "name": "Danielle Navarro",
+    "content_type": "blog",
     "rss_feed": [],
     "mastodon": "",
     "bluesky": "djnavarro.bsky.social"
   },
   {
     "name": "Cara Thompson",
+    "content_type": "blog",
     "rss_feed": [
       "https://www.cararthompson.com/posts.xml"
     ],
@@ -43,12 +49,14 @@
   },
   {
     "name": "Crystal Lewis",
+    "content_type": "blog",
     "rss_feed": [],
     "mastodon": "",
     "bluesky": "cghlewis.bsky.social"
   },
   {
     "name": "Mine Çetinkaya-Rundel",
+    "content_type": "blog",
     "rss_feed": [
       "http://www.citizen-statistician.org/categories/rstats/index.xml"
     ],
@@ -57,6 +65,7 @@
   },
   {
     "name": "Cosima Meyer",
+    "content_type": "blog",
     "rss_feed": [
       "https://cosimameyer.com/category/r-post/index.xml"
     ],
@@ -65,18 +74,21 @@
   },
   {
     "name": "Darya Vanichkina",
+    "content_type": "blog",
     "rss_feed": [],
     "mastodon": "",
     "bluesky": ""
   },
   {
     "name": "Mine Dogucu",
+    "content_type": "blog",
     "rss_feed": [],
     "mastodon": "",
     "bluesky": "minedogucu.bsky.social"
   },
   {
     "name": "Athanasia Monika Mowinckel",
+    "content_type": "blog",
     "rss_feed": [
       "https://drmowinckels.io/tags/r/index.xml"
     ],
@@ -85,6 +97,7 @@
   },
   {
     "name": "Elena Dudukina",
+    "content_type": "blog",
     "rss_feed": [
       "https://www.elenadudukina.com/category/r/index.xml"
     ],
@@ -93,6 +106,7 @@
   },
   {
     "name": "Ella Kaye",
+    "content_type": "blog",
     "rss_feed": [
       "https://ellakaye.co.uk/posts-r.xml"
     ],
@@ -101,14 +115,16 @@
   },
   {
     "name": "Emily Riederer",
+    "content_type": "blog",
     "rss_feed": [
       "https://www.emilyriederer.com/tags/rstats/index.xml"
     ],
     "mastodon": "@emilyriederer@mastodon.social",
-    "bluesky": ""
+    "bluesky": "emilyriederer.bsky.social"
   },
   {
     "name": "Federica Gazzelloni",
+    "content_type": "blog",
     "rss_feed": [
       "https://fgazzelloni.quarto.pub/index.xml"
     ],
@@ -117,12 +133,14 @@
   },
   {
     "name": "Florencia D'Andrea",
+    "content_type": "website",
     "rss_feed": [],
     "mastodon": "@florencia@techhub.social",
     "bluesky": ""
   },
   {
     "name": "Veerle van Leemput",
+    "content_type": "blog",
     "rss_feed": [
       "https://hypebright.nl/index.php/en/category/r-en/?feed=rss2"
     ],
@@ -131,6 +149,7 @@
   },
   {
     "name": "Isabel Zimmerman",
+    "content_type": "blog",
     "rss_feed": [
       "https://isabelizimm.github.io/blog-r.xml"
     ],
@@ -139,6 +158,7 @@
   },
   {
     "name": "Isabella Velásquez",
+    "content_type": "blog",
     "rss_feed": [
       "https://ivelasq.rbind.io/index.xml"
     ],
@@ -147,6 +167,7 @@
   },
   {
     "name": "Jadey Ryan",
+    "content_type": "blog",
     "rss_feed": [
       "https://jadeyryan.com/blog-r.xml"
     ],
@@ -155,6 +176,7 @@
   },
   {
     "name": "Jennifer HY Lin",
+    "content_type": "blog",
     "rss_feed": [
       "https://jhylin.github.io/Data_in_life_blog/index-r.xml"
     ],
@@ -163,6 +185,7 @@
   },
   {
     "name": "Julia Silge",
+    "content_type": "blog",
     "rss_feed": [
       "https://juliasilge.com/categories/rstats/index.xml"
     ],
@@ -171,6 +194,7 @@
   },
   {
     "name": "Karina Bartolome",
+    "content_type": "blog",
     "rss_feed": [
       "https://karbartolome-blog.netlify.app/categories/r/index.xml"
     ],
@@ -179,6 +203,7 @@
   },
   {
     "name": "Lydia Gibson",
+    "content_type": "blog",
     "rss_feed": [
       "https://lgibson7.quarto.pub/once-upon-a-time-series/index.xml"
     ],
@@ -187,6 +212,7 @@
   },
   {
     "name": "Lorena Abad",
+    "content_type": "blog",
     "rss_feed": [
       "https://loreabad6.github.io/index.xml"
     ],
@@ -195,6 +221,7 @@
   },
   {
     "name": "Macarena Quiroga",
+    "content_type": "blog",
     "rss_feed": [
       "https://macarenaquiroga.netlify.app/tag/rstats/index.xml"
     ],
@@ -203,6 +230,7 @@
   },
   {
     "name": "Maëlle Salmon",
+    "content_type": "blog",
     "rss_feed": [
       "https://masalmon.eu/post/index.xml"
     ],
@@ -211,6 +239,7 @@
   },
   {
     "name": "Nicola Rennie",
+    "content_type": "blog",
     "rss_feed": [
       "https://nrennie.rbind.io/categories/r/index.xml"
     ],
@@ -219,6 +248,7 @@
   },
   {
     "name": "Shannon Pileggi",
+    "content_type": "blog",
     "rss_feed": [
       "https://www.pipinghotdata.com/blog.xml"
     ],
@@ -227,12 +257,14 @@
   },
   {
     "name": "RLadies+ Gabarone",
+    "content_type": "blog",
     "rss_feed": [],
     "mastodon": "@RLadiesGaborone@fosstodon.org",
     "bluesky": ""
   },
   {
-    "name": "RLadies+ Melbourde",
+    "name": "RLadies+ Melbourne",
+    "content_type": "blog",
     "rss_feed": [
       "https://RLadies+melbourne.github.io/blog_index.html"
     ],
@@ -241,12 +273,14 @@
   },
   {
     "name": "RLadies+ São Paulo",
+    "content_type": "blog",
     "rss_feed": [],
     "mastodon": "",
     "bluesky": ""
   },
   {
     "name": "Sabrina Schalz",
+    "content_type": "blog",
     "rss_feed": [
       "https://sabrinaschalz.wordpress.com/?feed=rss2"
     ],
@@ -255,12 +289,14 @@
   },
   {
     "name": "Sarah Gillespie",
+    "content_type": "blog",
     "rss_feed": [],
     "mastodon": "",
     "bluesky": ""
   },
   {
     "name": "Sam Tyner-Monroe",
+    "content_type": "blog",
     "rss_feed": [
       "https://sctyner.me/category/r/index.xml"
     ],
@@ -269,12 +305,14 @@
   },
   {
     "name": "Shel Kariuki",
+    "content_type": "blog",
     "rss_feed": [],
     "mastodon": "",
     "bluesky": ""
   },
   {
     "name": "Silvia Canelón",
+    "content_type": "blog",
     "rss_feed": [
       "https://silviacanelon.com/blog/index-r.xml"
     ],
@@ -283,6 +321,7 @@
   },
   {
     "name": "Andrea Gómez Vargas",
+    "content_type": "blog",
     "rss_feed": [
       "https://soyandrea.netlify.app/tag/r/index.xml"
     ],
@@ -291,6 +330,7 @@
   },
   {
     "name": "Steph Orellana Bello",
+    "content_type": "blog",
     "rss_feed": [
       "https://sporella.xyz/tags/r/index.xml"
     ],
@@ -299,6 +339,7 @@
   },
   {
     "name": "Steffi LaZerte",
+    "content_type": "blog",
     "rss_feed": [
       "https://steffilazerte.ca/tips_and_tricks-r.xml"
     ],
@@ -307,12 +348,14 @@
   },
   {
     "name": "Veerle van Son",
+    "content_type": "blog",
     "rss_feed": [],
     "mastodon": "",
     "bluesky": ""
   },
   {
     "name": "Meghan Harris",
+    "content_type": "blog",
     "rss_feed": [
       "https://thetidytrekker.com/blog.xml"
     ],
@@ -321,6 +364,7 @@
   },
   {
     "name": "Yanina Bellini Saibene",
+    "content_type": "blog",
     "rss_feed": [
       "https://yabellini.netlify.app/categories/rstats/index.xml"
     ],
@@ -329,6 +373,7 @@
   },
   {
     "name": "Melissa Van Bussel",
+    "content_type": "youtube",
     "rss_feed": [
       "https://www.youtube.com/feeds/videos.xml?channel_id=UCWPCd6tPtoLJYzQQ681pe5Q"
     ],
