@@ -34,7 +34,7 @@ jobs:
         env:
           BASE_URL: "https://github.com/cosimameyer/awesome-pyladies-creations/tree/main/data/content"
           GITHUB_RAW_URL: "https://raw.githubusercontent.com/cosimameyer/awesome-pyladies-creations/main/data/content"
-          JSON_FILE: "pyladies_meta_data.json"
+          JSON_FILE: "metadata/pyladies_meta_data.json"
         run: python src/get_rss_data.py
 
       - name: Push changes
