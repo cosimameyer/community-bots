@@ -2,7 +2,7 @@ name: Promote PyLadies' libraries
 
 on:
   schedule:
-    - cron: '0 9 1-31/3 * *'
+    - cron: '0 9 1-31/7 * *'
   workflow_dispatch:
 
 jobs:
