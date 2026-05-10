@@ -8,6 +8,7 @@ This project focuses on building community-driven bots for Bluesky and Mastodon 
 
 - Boosting posts tagged with #pyladies or #rladies, 
 - Posting useful resources by PyLadies and RLadies+,  
+- Promoting community-built open-source libraries,
 - Sharing portraits of amazing women in tech, and
 - Celebrating community achievements. 
 
@@ -20,6 +21,7 @@ Designed to increase engagement and visibility, the bots run automatically open-
 This project marries multiple components:
 
 - Sharing content by [**PyLadies**](https://github.com/cosimameyer/awesome-pyladies-blogs) and [**RLadies+**](https://github.com/rladies/awesome-rladies-blogs)
+- Promoting libraries from [**awesome-pyladies-creations**](https://github.com/cosimameyer/awesome-pyladies-creations) and [**awesome-rladies-creations**](https://github.com/rladies/awesome-rladies-creations)
 - [**Sharing Amazing Women in Tech**](https://gallery.cosimameyer.com/amazing-women-in-tech/)
 
 Here is more about the project:

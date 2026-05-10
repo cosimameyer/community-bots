@@ -192,8 +192,6 @@ class PromoteLibrary():
         name = package.get("name", "")
         description = package.get("description", "")
         repo_url = package.get("repo_url", "")
-        pypi_url = package.get("pypi_url", "")
-        pkdown_url = package.get("pkdown_url", "")
         maintainer_name = package.get("maintainer_name", "")
         mastodon_handle = self._check_handle(package.get("mastodon", ""))
         tags = self.define_tags()
@@ -208,12 +206,7 @@ class PromoteLibrary():
                 post += f" ({mastodon_handle})"
             post += "\n\n"
 
-        post += f"🔗 {repo_url}"
-        if pypi_url:
-            post += f"\n📦 PyPI: {pypi_url}"
-        if pkdown_url:
-            post += f"\n📖 Docs: {pkdown_url}"
-        post += f"\n\n{tags}"
+        post += f"🔗 {repo_url}\n\n{tags}"
 
         self.logger.info("*****************************")
         self.logger.info(post)
@@ -227,8 +220,6 @@ class PromoteLibrary():
         name = package.get("name", "")
         description = package.get("description", "")
         repo_url = package.get("repo_url", "")
-        pypi_url = package.get("pypi_url", "")
-        pkdown_url = package.get("pkdown_url", "")
         maintainer_name = package.get("maintainer_name", "")
         bluesky_handle = self._check_handle(package.get("bluesky", ""))
         tags = self.define_tags()
@@ -253,12 +244,6 @@ class PromoteLibrary():
                 tb.text("\n\n")
             tb.text("🔗 ")
             tb.link(repo_url, repo_url)
-            if pypi_url:
-                tb.text("\n📦 PyPI: ")
-                tb.link(pypi_url, pypi_url)
-            if pkdown_url:
-                tb.text("\n📖 Docs: ")
-                tb.link(pkdown_url, pkdown_url)
             tb.text("\n\n")
             for tag_clean in tag_subset:
                 tb.tag(f"#{tag_clean} ", tag_clean)
