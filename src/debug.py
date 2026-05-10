@@ -21,10 +21,10 @@ class DebugBots:
     Class to handle debugging of all modules.
     """
     def __init__(self):
-        self.bot = 'rladies'  # 'pyladies' or 'rladies'
-        self.what_to_debug = 'rss'  # 'blog', 'boost_tags', 'rss', 'anniversary', 'boost_mentions', 'packages', 'package'
+        self.bot = 'pyladies'  # 'pyladies' or 'rladies'
+        self.what_to_debug = 'package'  # 'blog', 'boost_tags', 'rss', 'anniversary', 'boost_mentions', 'packages', 'package'
         self.platform = 'bluesky'  # 'bluesky' or 'mastodon'
-        self.no_dry_run = True  # True to actually post
+        self.no_dry_run = False  # True to actually post
 
     def start_debug(self):
         """Start debugging."""
@@ -344,7 +344,7 @@ class DebugBots:
                     "https://raw.githubusercontent.com/cosimameyer/"
                     "awesome-pyladies-creations/main/data/packages"
                 ),
-                "json_file": "metadata/pyladies_packages_meta_data.json",
+                "json_file": "../metadata/pyladies_packages_meta_data.json",
             }
         if self.bot == 'rladies':
             return {
@@ -356,7 +356,7 @@ class DebugBots:
                     "https://raw.githubusercontent.com/rladies/"
                     "awesome-rladies-creations/main/data/packages"
                 ),
-                "json_file": "metadata/rladies_packages_meta_data.json",
+                "json_file": "../metadata/rladies_packages_meta_data.json",
             }
         return None
 
@@ -365,8 +365,8 @@ class DebugBots:
         if self.bot == 'pyladies':
             if self.platform == 'bluesky':
                 return {
-                    "counter": "metadata/pyladies_packages_counter_bluesky.txt",
-                    "json_file": "metadata/pyladies_packages_meta_data.json",
+                    "counter": "pyladies_packages_counter_bluesky.txt",
+                    "json_file": "pyladies_packages_meta_data.json",
                     "client_name": "pyladies_bot",
                     "api_base_url": self.platform,
                     "password": os.getenv("PYLADIES_BSKY_PASSWORD"),
@@ -375,8 +375,8 @@ class DebugBots:
                 }
             if self.platform == 'mastodon':
                 return {
-                    "counter": "metadata/pyladies_packages_counter_mastodon.txt",
-                    "json_file": "metadata/pyladies_packages_meta_data.json",
+                    "counter": "pyladies_packages_counter_mastodon.txt",
+                    "json_file": "pyladies_packages_meta_data.json",
                     "client_name": "pyladies_bot",
                     "api_base_url": config.API_BASE_URL,
                     "password": os.getenv("PYLADIES_MASTODON_PASSWORD"),
@@ -390,8 +390,8 @@ class DebugBots:
         if self.bot == 'rladies':
             if self.platform == 'bluesky':
                 return {
-                    "counter": "metadata/rladies_packages_counter_bluesky.txt",
-                    "json_file": "metadata/rladies_packages_meta_data.json",
+                    "counter": "rladies_packages_counter_bluesky.txt",
+                    "json_file": "rladies_packages_meta_data.json",
                     "client_name": "rladies_bot",
                     "api_base_url": self.platform,
                     "password": os.getenv("RLADIES_BSKY_PASSWORD"),
@@ -400,8 +400,8 @@ class DebugBots:
                 }
             if self.platform == 'mastodon':
                 return {
-                    "counter": "metadata/rladies_packages_counter_mastodon.txt",
-                    "json_file": "metadata/rladies_packages_meta_data.json",
+                    "counter": "rladies_packages_counter_mastodon.txt",
+                    "json_file": "rladies_packages_meta_data.json",
                     "client_name": "rladies_bot",
                     "api_base_url": config.API_BASE_URL,
                     "password": os.getenv("RLADIES_MASTODON_PASSWORD"),

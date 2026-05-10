@@ -1,1 +1,134 @@
-[]
+[
+  {
+    "name": "CiteLang",
+    "description": "Generate credit summaries and badges for software packages to ensure proper attribution.",
+    "repo_url": "https://github.com/vsoch/citelang",
+    "pypi_url": "https://pypi.org/project/citelang/",
+    "pkdown_url": "",
+    "logo_url": "https://raw.githubusercontent.com/vsoch/citelang/refs/heads/main/docs/assets/img/citelang.png",
+    "maintainer_name": "Vanessa Sochat",
+    "mastodon": "@vsoch@mastodon.social",
+    "bluesky": "vsoch.bsky.social"
+  },
+  {
+    "name": "axe-playwright-python",
+    "description": "Automated web accessibility testing using axe-core engine and Playwright.",
+    "repo_url": "https://github.com/pamelafox/axe-playwright-python",
+    "pypi_url": "https://pypi.org/project/axe-playwright-python/",
+    "pkdown_url": "",
+    "logo_url": null,
+    "maintainer_name": "Pamela Fox",
+    "mastodon": "@pamelafox@fosstodon.org",
+    "bluesky": ""
+  },
+  {
+    "name": "expfactory",
+    "description": "Software to generate a reproducible container with a battery of experiments.",
+    "repo_url": "https://github.com/expfactory/expfactory",
+    "pypi_url": "https://pypi.org/project/expfactory/",
+    "pkdown_url": "",
+    "logo_url": "https://raw.githubusercontent.com/expfactory/expfactory/refs/heads/master/docs/img/expfactoryticketyellow.png",
+    "maintainer_name": "Vanessa Sochat",
+    "mastodon": "@vsoch@mastodon.social",
+    "bluesky": "vsoch.bsky.social"
+  },
+  {
+    "name": "flask-talisman",
+    "description": "A small Flask extension that handles HTTP security headers for you.",
+    "repo_url": "https://github.com/wntrblm/flask-talisman",
+    "pypi_url": "https://pypi.org/project/flask-talisman/",
+    "pkdown_url": "",
+    "logo_url": null,
+    "maintainer_name": "Thea Flowers",
+    "mastodon": "stargirl@hachyderm.io",
+    "bluesky": "theacodes.bsky.social"
+  },
+  {
+    "name": "gidgethub",
+    "description": "An async GitHub API library for Python.",
+    "repo_url": "https://github.com/gidgethub/gidgethub",
+    "pypi_url": "https://pypi.org/project/gidgethub/",
+    "pkdown_url": "",
+    "logo_url": null,
+    "maintainer_name": "Mariatta Wijaya",
+    "mastodon": "@mariatta@fosstodon.org",
+    "bluesky": ""
+  },
+  {
+    "name": "Kedro",
+    "description": "An open-source Python framework for creating reproducible, maintainable and modular data science code.",
+    "repo_url": "https://github.com/kedro-org/kedro",
+    "pypi_url": "https://pypi.org/project/kedro/",
+    "pkdown_url": "",
+    "logo_url": "https://raw.githubusercontent.com/kedro-org/kedro/main/docs/source/_static/kedro_logo.png",
+    "maintainer_name": "Merel Theisen",
+    "mastodon": "",
+    "bluesky": ""
+  },
+  {
+    "name": "Nox",
+    "description": "Flexible test automation for Python.",
+    "repo_url": "https://github.com/wntrblm/nox",
+    "pypi_url": "https://pypi.org/project/nox/",
+    "pkdown_url": "",
+    "logo_url": "https://raw.githubusercontent.com/wntrblm/nox/refs/heads/main/docs/_static/alice.png",
+    "maintainer_name": "Thea Flowers",
+    "mastodon": "stargirl@hachyderm.io",
+    "bluesky": "theacodes.bsky.social"
+  },
+  {
+    "name": "overviewpy",
+    "description": "Easily Extracting Information About Your Data",
+    "repo_url": "https://github.com/cosimameyer/overviewpy",
+    "pypi_url": "https://pypi.org/project/overviewpy/",
+    "pkdown_url": "",
+    "logo_url": "https://raw.githubusercontent.com/cosimameyer/overviewpy/main/docs/img/overviewpy.png",
+    "maintainer_name": "Cosima Meyer",
+    "mastodon": "@cosima_meyer@mas.to",
+    "bluesky": "@cosima.bsky.social"
+  },
+  {
+    "name": "pokemon",
+    "description": "ascii database of pokemon in Python!",
+    "repo_url": "https://github.com/vsoch/pokemon",
+    "pypi_url": "https://pypi.org/project/pokemon/",
+    "pkdown_url": "",
+    "logo_url": "https://raw.githubusercontent.com/vsoch/pokemon/master/img/avatar.png",
+    "maintainer_name": "Vanessa Sochat",
+    "mastodon": "@vsoch@mastodon.social",
+    "bluesky": "vsoch.bsky.social"
+  },
+  {
+    "name": "pull-request-action",
+    "description": "GitHub Action to open a pull request when a branch is pushed or updated.",
+    "repo_url": "https://github.com/vsoch/pull-request-action",
+    "pypi_url": "https://pypi.org/project/pull-request-action/",
+    "pkdown_url": "",
+    "logo_url": null,
+    "maintainer_name": "Vanessa Sochat",
+    "mastodon": "@vsoch@mastodon.social",
+    "bluesky": "vsoch.bsky.social"
+  },
+  {
+    "name": "singularity-compose",
+    "description": "A simple orchestration library for Singularity containers, akin to Docker Compose.",
+    "repo_url": "https://github.com/singularityhub/singularity-compose",
+    "pypi_url": "https://pypi.org/project/singularity-compose/",
+    "pkdown_url": "",
+    "logo_url": null,
+    "maintainer_name": "Vanessa Sochat",
+    "mastodon": "@vsoch@mastodon.social",
+    "bluesky": "vsoch.bsky.social"
+  },
+  {
+    "name": "singularity-hpc",
+    "description": "Local filesystem registry for containers (intended for HPC) using Lmod or Environment Modules.",
+    "repo_url": "https://github.com/singularityhub/singularity-hpc",
+    "pypi_url": "https://pypi.org/project/singularity-hpc/",
+    "pkdown_url": "",
+    "logo_url": "https://raw.githubusercontent.com/singularityhub/singularity-hpc/refs/heads/main/docs/assets/img/shpc.svg",
+    "maintainer_name": "Vanessa Sochat",
+    "mastodon": "@vsoch@mastodon.social",
+    "bluesky": "vsoch.bsky.social"
+  }
+]
