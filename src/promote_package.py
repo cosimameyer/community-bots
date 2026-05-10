@@ -62,9 +62,9 @@ class PromotePackage():
 
     @staticmethod
     def _ensure_metadata_prefix(value: str, prefix: str = "metadata/") -> str:
-        if not value.startswith(prefix):
-            return prefix + value
-        return value
+        if not value or prefix in value:
+            return value
+        return prefix + value
 
     def promote_package(self):
         """Core method: read metadata, pick next library, post about it."""

@@ -66,8 +66,12 @@ class TestEnsureMetadataPrefix:
     def test_leaves_existing_prefix_intact(self):
         assert PromotePackage._ensure_metadata_prefix("metadata/counter.txt") == "metadata/counter.txt"
 
-    def test_empty_string_gets_prefix(self):
-        assert PromotePackage._ensure_metadata_prefix("") == "metadata/"
+    def test_leaves_relative_metadata_path_intact(self):
+        """../metadata/file.txt already contains 'metadata/' so must not be double-prefixed."""
+        assert PromotePackage._ensure_metadata_prefix("../metadata/counter.txt") == "../metadata/counter.txt"
+
+    def test_empty_string_unchanged(self):
+        assert PromotePackage._ensure_metadata_prefix("") == ""
 
 
 # ---------------------------------------------------------------------------

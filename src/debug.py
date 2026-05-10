@@ -361,12 +361,12 @@ class DebugBots:
         return None
 
     def get_config_package(self):
-        """Method to generate config for promoting libraries."""
+        """Method to generate config for promoting packages."""
         if self.bot == 'pyladies':
             if self.platform == 'bluesky':
                 return {
-                    "counter": "pyladies_packages_counter_bluesky.txt",
-                    "json_file": "pyladies_packages_meta_data.json",
+                    "counter": "../metadata/pyladies_packages_counter_bluesky.txt",
+                    "json_file": "../metadata/pyladies_packages_meta_data.json",
                     "client_name": "pyladies_bot",
                     "api_base_url": self.platform,
                     "password": os.getenv("PYLADIES_BSKY_PASSWORD"),
@@ -375,8 +375,8 @@ class DebugBots:
                 }
             if self.platform == 'mastodon':
                 return {
-                    "counter": "pyladies_packages_counter_mastodon.txt",
-                    "json_file": "pyladies_packages_meta_data.json",
+                    "counter": "../metadata/pyladies_packages_counter_mastodon.txt",
+                    "json_file": "../metadata/pyladies_packages_meta_data.json",
                     "client_name": "pyladies_bot",
                     "api_base_url": config.API_BASE_URL,
                     "password": os.getenv("PYLADIES_MASTODON_PASSWORD"),
@@ -390,8 +390,8 @@ class DebugBots:
         if self.bot == 'rladies':
             if self.platform == 'bluesky':
                 return {
-                    "counter": "rladies_packages_counter_bluesky.txt",
-                    "json_file": "rladies_packages_meta_data.json",
+                    "counter": "../metadata/rladies_packages_counter_bluesky.txt",
+                    "json_file": "../metadata/rladies_packages_meta_data.json",
                     "client_name": "rladies_bot",
                     "api_base_url": self.platform,
                     "password": os.getenv("RLADIES_BSKY_PASSWORD"),
@@ -400,8 +400,8 @@ class DebugBots:
                 }
             if self.platform == 'mastodon':
                 return {
-                    "counter": "rladies_packages_counter_mastodon.txt",
-                    "json_file": "rladies_packages_meta_data.json",
+                    "counter": "../metadata/rladies_packages_counter_mastodon.txt",
+                    "json_file": "../metadata/rladies_packages_meta_data.json",
                     "client_name": "rladies_bot",
                     "api_base_url": config.API_BASE_URL,
                     "password": os.getenv("RLADIES_MASTODON_PASSWORD"),
