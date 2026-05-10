@@ -1,14 +1,14 @@
 # pylint: disable=missing-class-docstring,missing-function-docstring,protected-access
 # pylint: disable=too-few-public-methods,unused-argument
 """
-Tests for src/promote_library.py
+Tests for src/promote_package.py
 """
 
 import json
 import pytest
 from unittest.mock import MagicMock, patch, mock_open
 
-from promote_library import PromoteLibrary
+from promote_package import PromotePackage
 
 
 # ---------------------------------------------------------------------------
@@ -28,7 +28,7 @@ BASE_CONFIG = {
 
 def make_handler(config=None, no_dry_run=False):
     cfg = {**BASE_CONFIG, **(config or {})}
-    return PromoteLibrary(config_dict=cfg, no_dry_run=no_dry_run)
+    return PromotePackage(config_dict=cfg, no_dry_run=no_dry_run)
 
 
 def make_package(
@@ -61,13 +61,13 @@ def make_package(
 
 class TestEnsureMetadataPrefix:
     def test_adds_prefix_when_absent(self):
-        assert PromoteLibrary._ensure_metadata_prefix("counter.txt") == "metadata/counter.txt"
+        assert PromotePackage._ensure_metadata_prefix("counter.txt") == "metadata/counter.txt"
 
     def test_leaves_existing_prefix_intact(self):
-        assert PromoteLibrary._ensure_metadata_prefix("metadata/counter.txt") == "metadata/counter.txt"
+        assert PromotePackage._ensure_metadata_prefix("metadata/counter.txt") == "metadata/counter.txt"
 
     def test_empty_string_gets_prefix(self):
-        assert PromoteLibrary._ensure_metadata_prefix("") == "metadata/"
+        assert PromotePackage._ensure_metadata_prefix("") == "metadata/"
 
 
 # ---------------------------------------------------------------------------
@@ -76,16 +76,16 @@ class TestEnsureMetadataPrefix:
 
 class TestCheckHandle:
     def test_adds_at_sign_when_missing(self):
-        assert PromoteLibrary._check_handle("alice.bsky.social") == "@alice.bsky.social"
+        assert PromotePackage._check_handle("alice.bsky.social") == "@alice.bsky.social"
 
     def test_preserves_existing_at_sign(self):
-        assert PromoteLibrary._check_handle("@alice.bsky.social") == "@alice.bsky.social"
+        assert PromotePackage._check_handle("@alice.bsky.social") == "@alice.bsky.social"
 
     def test_empty_string_unchanged(self):
-        assert PromoteLibrary._check_handle("") == ""
+        assert PromotePackage._check_handle("") == ""
 
     def test_single_char_unchanged(self):
-        assert PromoteLibrary._check_handle("a") == "a"
+        assert PromotePackage._check_handle("a") == "a"
 
 
 # ---------------------------------------------------------------------------
@@ -310,7 +310,7 @@ class TestBuildPostBluesky:
     def _make_handler_with_fake_builder(self, config=None):
         """Return a handler whose client_utils.TextBuilder uses FakeTextBuilder."""
         handler = make_handler(config or {"platform": "bluesky"})
-        import promote_library as pl
+        import promote_package as pl
         pl.client_utils.TextBuilder.side_effect = FakeTextBuilder
         return handler
 
@@ -372,10 +372,10 @@ class TestBuildPostBluesky:
 
 
 # ---------------------------------------------------------------------------
-# promote_library — integration-level
+# promote_package — integration-level
 # ---------------------------------------------------------------------------
 
-class TestPromoteLibrary:
+class TestPromotePackage:
     def test_no_packages_exits_early(self, caplog):
         import logging
         handler = make_handler()
@@ -384,7 +384,7 @@ class TestPromoteLibrary:
         with patch.object(handler, "read_metadata_json", return_value=packages), \
              patch.object(handler, "read_counter_name", return_value=""), \
              caplog.at_level(logging.INFO):
-            handler.promote_library()
+            handler.promote_package()
         assert any("nothing to do" in msg.lower() for msg in caplog.messages)
 
     def test_dry_run_logs_would_promote(self, caplog):
@@ -395,5 +395,5 @@ class TestPromoteLibrary:
              patch.object(handler, "read_counter_name", return_value=""), \
              patch.object(handler, "update_counter"), \
              caplog.at_level(logging.INFO):
-            handler.promote_library()
+            handler.promote_package()
         assert any("[DRY RUN]" in msg for msg in caplog.messages)

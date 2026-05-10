@@ -43,7 +43,7 @@ jobs:
       #     USERNAME: ${{ secrets.RLADIES_MASTODON_USERNAME }}
       #     RLADIES_MASTODON_CLIENTCRED_SECRET: ${{ secrets.RLADIES_MASTODON_CLIENTCRED_SECRET }}
       #     GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-      #   run: python src/promote_library.py
+      #   run: python src/promote_package.py
 
       - name: Execute py script for Bluesky 🦋
         env:
@@ -53,7 +53,7 @@ jobs:
           CLIENT_NAME: "rladies_bot"
           PASSWORD: ${{ secrets.RLADIES_BSKY_PASSWORD }}
           USERNAME: ${{ secrets.RLADIES_BSKY_USERNAME }}
-        run: python src/promote_library.py
+        run: python src/promote_package.py
 
       - name: Push changes
         id: cpr

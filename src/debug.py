@@ -7,7 +7,7 @@ import config
 from promote_blog_post import PromoteBlogPost
 from get_rss_data import RSSData
 from get_packages_data import PackagesData
-from promote_library import PromoteLibrary
+from promote_package import PromotePackage
 from boost_tags import BoostTags
 from promote_anniversaries import PromoteAnniversary
 from boost_mentions import BoostMentions
@@ -22,7 +22,7 @@ class DebugBots:
     """
     def __init__(self):
         self.bot = 'rladies'  # 'pyladies' or 'rladies'
-        self.what_to_debug = 'rss'  # 'blog', 'boost_tags', 'rss', 'anniversary', 'boost_mentions', 'packages', 'library'
+        self.what_to_debug = 'rss'  # 'blog', 'boost_tags', 'rss', 'anniversary', 'boost_mentions', 'packages', 'package'
         self.platform = 'bluesky'  # 'bluesky' or 'mastodon'
         self.no_dry_run = True  # True to actually post
 
@@ -114,19 +114,19 @@ class DebugBots:
             )
             packages_data_handler.get_packages_data()
 
-        elif self.what_to_debug == 'library':
-            config_dict = self.get_config_library()
+        elif self.what_to_debug == 'package':
+            config_dict = self.get_config_package()
             if config_dict is None:
                 logger.error(
                     "No config for bot=%r platform=%r — check bot/platform settings.",
                     self.bot, self.platform
                 )
                 return
-            promote_library_handler = PromoteLibrary(
+            promote_package_handler = PromotePackage(
                 config_dict,
                 self.no_dry_run
             )
-            promote_library_handler.promote_library()
+            promote_package_handler.promote_package()
 
     def get_config_blog(self):
         """Method to generate config for promoting blog posts"""
@@ -360,7 +360,7 @@ class DebugBots:
             }
         return None
 
-    def get_config_library(self):
+    def get_config_package(self):
         """Method to generate config for promoting libraries."""
         if self.bot == 'pyladies':
             if self.platform == 'bluesky':

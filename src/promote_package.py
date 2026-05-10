@@ -11,7 +11,7 @@ from helper.login_bluesky import login_bluesky
 import config
 
 
-class PromoteLibrary():
+class PromotePackage():
     """
     Cycle through package metadata and promote one library per run.
     """
@@ -66,7 +66,7 @@ class PromoteLibrary():
             return prefix + value
         return value
 
-    def promote_library(self):
+    def promote_package(self):
         """Core method: read metadata, pick next library, post about it."""
         self.get_config()
 
@@ -290,7 +290,7 @@ class PromoteLibrary():
 
 
 if __name__ == "__main__":
-    promote_library_handler = PromoteLibrary(
+    promote_package_handler = PromotePackage(
         config_dict=None, no_dry_run=True
     )
-    promote_library_handler.promote_library()
+    promote_package_handler.promote_package()
