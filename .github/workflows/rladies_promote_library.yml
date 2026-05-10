@@ -2,7 +2,7 @@ name: Promote RLadies' libraries
 
 on:
   schedule:
-    - cron: '0 9 * * 4'
+    - cron: '0 9 2-30/3 * *'
   workflow_dispatch:
 
 jobs:
