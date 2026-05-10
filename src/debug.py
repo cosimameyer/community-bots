@@ -367,6 +367,7 @@ class DebugBots:
                 return {
                     "counter": "../metadata/pyladies_packages_counter_bluesky.txt",
                     "json_file": "../metadata/pyladies_packages_meta_data.json",
+                    "archive_file": "../metadata/pyladies_packages_archive.json",
                     "client_name": "pyladies_bot",
                     "api_base_url": self.platform,
                     "password": os.getenv("PYLADIES_BSKY_PASSWORD"),
@@ -377,6 +378,7 @@ class DebugBots:
                 return {
                     "counter": "../metadata/pyladies_packages_counter_mastodon.txt",
                     "json_file": "../metadata/pyladies_packages_meta_data.json",
+                    "archive_file": "../metadata/pyladies_packages_archive.json",
                     "client_name": "pyladies_bot",
                     "api_base_url": config.API_BASE_URL,
                     "password": os.getenv("PYLADIES_MASTODON_PASSWORD"),
@@ -392,6 +394,7 @@ class DebugBots:
                 return {
                     "counter": "../metadata/rladies_packages_counter_bluesky.txt",
                     "json_file": "../metadata/rladies_packages_meta_data.json",
+                    "archive_file": "../metadata/rladies_packages_archive.json",
                     "client_name": "rladies_bot",
                     "api_base_url": self.platform,
                     "password": os.getenv("RLADIES_BSKY_PASSWORD"),
@@ -402,6 +405,7 @@ class DebugBots:
                 return {
                     "counter": "../metadata/rladies_packages_counter_mastodon.txt",
                     "json_file": "../metadata/rladies_packages_meta_data.json",
+                    "archive_file": "../metadata/rladies_packages_archive.json",
                     "client_name": "rladies_bot",
                     "api_base_url": config.API_BASE_URL,
                     "password": os.getenv("RLADIES_MASTODON_PASSWORD"),

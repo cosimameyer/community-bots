@@ -149,7 +149,7 @@ class TestExtractInfoPyLadies:
         result = PackagesData.extract_info(make_pyladies_package())
         assert set(result.keys()) == {
             "name", "description", "repo_url", "pypi_url",
-            "pkdown_url", "logo_url", "maintainer_name", "mastodon", "bluesky",
+            "pkdown_url", "logo_url", "last_updated", "maintainer_name", "mastodon", "bluesky",
         }
 
 
@@ -179,6 +179,15 @@ class TestExtractInfoRLadies:
     def test_pypi_url_empty_for_rladies_package(self):
         content = make_rladies_package()
         assert PackagesData.extract_info(content)["pypi_url"] == ""
+
+    def test_extracts_last_updated(self):
+        content = make_rladies_package()
+        content["last_updated"] = "2024-06-01"
+        assert PackagesData.extract_info(content)["last_updated"] == "2024-06-01"
+
+    def test_last_updated_empty_when_absent(self):
+        content = make_rladies_package()
+        assert PackagesData.extract_info(content)["last_updated"] == ""
 
 
 # ---------------------------------------------------------------------------

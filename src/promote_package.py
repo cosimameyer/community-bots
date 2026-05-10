@@ -14,6 +14,10 @@ import config
 class PromotePackage():
     """
     Cycle through package metadata and promote one library per run.
+
+    Skips packages that have already been promoted at the same version.
+    Re-promotes when a newer version is detected (PyPI version for PyLadies
+    packages; ``last_updated`` timestamp for RLadies packages).
     """
 
     def __init__(self, config_dict=None, no_dry_run=True):
@@ -37,6 +41,9 @@ class PromotePackage():
                 "json_file": self._ensure_metadata_prefix(
                     os.getenv("JSON_FILE", "")
                 ),
+                "archive_file": self._ensure_metadata_prefix(
+                    os.getenv("ARCHIVE_FILE", "")
+                ),
             }
             if self.config_dict["platform"] == "mastodon":
                 self.config_dict["api_base_url"] = config.API_BASE_URL
@@ -58,6 +65,9 @@ class PromotePackage():
                 )
                 self.config_dict["counter"] = self._ensure_metadata_prefix(
                     self.config_dict.get("counter", "")
+                )
+                self.config_dict["archive_file"] = self._ensure_metadata_prefix(
+                    self.config_dict.get("archive_file", "")
                 )
 
     @staticmethod
@@ -108,29 +118,118 @@ class PromotePackage():
 
         next_index = (start_index + 1) % n
         package = packages[next_index]
+        package_name = package.get("name", "unknown")
 
-        self.logger.info(
-            "Promoting library: %s", package.get("name", "unknown")
-        )
+        self.logger.info("Considering package: %s", package_name)
+
+        # --- version / archive check ---
+        archive = self.read_archive()
+        current_version = self.get_current_version(package)
+        archived_version = archive.get(package_name)
+
+        if current_version and current_version == archived_version:
+            self.logger.info(
+                "Skipping %s — already promoted at version %s.",
+                package_name,
+                current_version,
+            )
+            self.update_counter(package_name)
+            return
+
+        self.logger.info("Promoting package: %s", package_name)
+        if current_version:
+            self.logger.info("  Version: %s", current_version)
 
         if self.no_dry_run:
             result = self.send_post(package, client)
             if result == "success":
                 self.logger.info(
-                    "Successfully promoted %s.", package.get("name", "")
+                    "Successfully promoted %s.", package_name
                 )
+                archive[package_name] = current_version or ""
+                self.write_archive(archive)
             else:
                 self.logger.warning(
-                    "Post failed for %s.", package.get("name", "")
+                    "Post failed for %s.", package_name
                 )
         else:
+            # Show the formatted post text in dry-run mode
+            platform = self.config_dict.get("platform", "")
+            if platform == "mastodon":
+                post_text = self.build_post_mastodon(package)
+            elif platform == "bluesky":
+                post_text = self.build_post_bluesky(package).build_text()
+            else:
+                post_text = ""
+
             self.logger.info(
-                "[DRY RUN] Would promote: %s (%s)",
-                package.get("name", "unknown"),
+                "[DRY RUN] Would promote: %s (%s)\n%s",
+                package_name,
                 package.get("repo_url", ""),
+                post_text,
             )
 
-        self.update_counter(package["name"])
+        self.update_counter(package_name)
+
+    # ------------------------------------------------------------------
+    # Archive helpers
+    # ------------------------------------------------------------------
+
+    def read_archive(self) -> dict:
+        """Read the promotion archive. Returns {} if not found."""
+        archive_file = self.config_dict.get("archive_file", "")
+        if not archive_file:
+            return {}
+        try:
+            with open(archive_file, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            return {}
+
+    def write_archive(self, archive: dict):
+        """Persist the promotion archive."""
+        archive_file = self.config_dict.get("archive_file", "")
+        if not archive_file:
+            return
+        with open(archive_file, "w", encoding="utf-8") as f:
+            json.dump(archive, f, ensure_ascii=False, indent=2)
+
+    # ------------------------------------------------------------------
+    # Version helpers
+    # ------------------------------------------------------------------
+
+    def get_pypi_version(self, pypi_url: str) -> str | None:
+        """Fetch the latest version of a package from the PyPI JSON API."""
+        if not pypi_url:
+            return None
+        package_name = pypi_url.rstrip("/").split("/")[-1]
+        url = f"https://pypi.org/pypi/{package_name}/json"
+        try:
+            response = requests.get(url, timeout=10)
+            if response.status_code == 200:
+                return response.json().get("info", {}).get("version")
+        except requests.RequestException as e:
+            self.logger.info("Could not fetch PyPI version for %s: %s", package_name, e)
+        return None
+
+    def get_current_version(self, package: dict) -> str | None:
+        """
+        Return the current version string for a package.
+
+        - PyLadies packages: latest version from PyPI (via pypi_url).
+        - RLadies packages: last_updated timestamp from metadata.
+        """
+        client_name = self.config_dict.get("client_name", "")
+        if client_name == "pyladies_bot":
+            return self.get_pypi_version(package.get("pypi_url", ""))
+        if client_name == "rladies_bot":
+            last_updated = package.get("last_updated", "")
+            return last_updated if last_updated else None
+        return None
+
+    # ------------------------------------------------------------------
+    # Counter helpers
+    # ------------------------------------------------------------------
 
     def update_counter(self, counter_name):
         """Write the name of the just-promoted library to the counter file."""

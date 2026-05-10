@@ -137,6 +137,7 @@ class PackagesData:
             "pypi_url": content.get("pypi_url", ""),
             "pkdown_url": content.get("pkdown_url", ""),
             "logo_url": content.get("logo_url", ""),
+            "last_updated": content.get("last_updated", ""),
             "maintainer_name": name,
             "mastodon": mastodon,
             "bluesky": bluesky,
