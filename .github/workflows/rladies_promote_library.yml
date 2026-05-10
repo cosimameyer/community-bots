@@ -1,0 +1,73 @@
+name: Promote RLadies' libraries
+
+on:
+  schedule:
+    - cron: '0 9 * * 4'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: checkout repo content
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.SECRET_WRITE }}
+          fetch-depth: 0
+
+      - name: setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: 'pyproject.toml'
+
+      - name: install python packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # - name: Execute py script for Mastodon 🦣
+      #   continue-on-error: true
+      #   env:
+      #     PLATFORM: "mastodon"
+      #     COUNTER: "rladies_packages_counter_mastodon.txt"
+      #     JSON_FILE: "rladies_packages_meta_data.json"
+      #     CLIENT_NAME: "rladies_bot"
+      #     ACCESS_TOKEN: ${{ secrets.RLADIES_MASTODON_ACCESS_TOKEN }}
+      #     CLIENT_ID: ${{ secrets.RLADIES_MASTODON_CLIENT_ID }}
+      #     CLIENT_SECRET: ${{ secrets.RLADIES_MASTODON_CLIENT_SECRET }}
+      #     PASSWORD: ${{ secrets.RLADIES_MASTODON_PASSWORD }}
+      #     USERNAME: ${{ secrets.RLADIES_MASTODON_USERNAME }}
+      #     RLADIES_MASTODON_CLIENTCRED_SECRET: ${{ secrets.RLADIES_MASTODON_CLIENTCRED_SECRET }}
+      #     GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      #   run: python src/promote_library.py
+
+      - name: Execute py script for Bluesky 🦋
+        env:
+          PLATFORM: "bluesky"
+          COUNTER: "rladies_packages_counter_bluesky.txt"
+          JSON_FILE: "rladies_packages_meta_data.json"
+          CLIENT_NAME: "rladies_bot"
+          PASSWORD: ${{ secrets.RLADIES_BSKY_PASSWORD }}
+          USERNAME: ${{ secrets.RLADIES_BSKY_USERNAME }}
+        run: python src/promote_library.py
+
+      - name: Push changes
+        id: cpr
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.SECRET_WRITE }}
+          commit-message: "Update RLadies library counter metadata"
+          branch: bot/rladies-library-metadata
+          delete-branch: true
+          title: "Update RLadies library counter metadata"
+          body: "Automated update of library promotion counter."
+
+      - name: Auto-merge PR
+        if: steps.cpr.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ secrets.SECRET_WRITE }}
+        run: gh pr merge --squash "${{ steps.cpr.outputs.pull-request-number }}" -R cosimameyer/community-bots
