@@ -199,10 +199,13 @@ class TestArchive:
         with patch("builtins.open", mock_open(read_data=json.dumps(data))):
             assert handler.read_archive() == data
 
-    def test_read_archive_no_op_when_archive_file_empty(self):
+    def test_read_archive_warns_when_archive_file_empty(self, caplog):
+        import logging
         handler = make_handler({"archive_file": ""})
-        # Should return {} without touching the filesystem
-        assert handler.read_archive() == {}
+        with caplog.at_level(logging.WARNING):
+            result = handler.read_archive()
+        assert result == {}
+        assert any("ARCHIVE_FILE" in msg for msg in caplog.messages)
 
     def test_write_archive_persists_data(self):
         handler = make_handler()
@@ -253,6 +256,17 @@ class TestGetPypiVersion:
     def test_returns_none_for_empty_pypi_url(self):
         handler = make_handler()
         assert handler.get_pypi_version("") is None
+
+    def test_extracts_name_correctly_from_url_with_version_segment(self):
+        """URLs like /project/foo/1.0/ must resolve to 'foo', not '1.0'."""
+        handler = make_handler()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = {"info": {"version": "1.0"}}
+        with patch("promote_package.requests.get", return_value=mock_resp) as mock_get:
+            handler.get_pypi_version("https://pypi.org/project/mylib/1.0/")
+        called_url = mock_get.call_args[0][0]
+        assert called_url == "https://pypi.org/pypi/mylib/json"
 
 
 # ---------------------------------------------------------------------------

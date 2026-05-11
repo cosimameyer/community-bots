@@ -2,6 +2,7 @@
 import logging
 import os
 import json
+import re
 from atproto import client_utils
 
 import requests
@@ -215,6 +216,10 @@ class PromotePackage():
         """Read the promotion archive. Returns {} if not found."""
         archive_file = self.config_dict.get("archive_file", "")
         if not archive_file:
+            self.logger.warning(
+                "ARCHIVE_FILE not configured — version tracking disabled. "
+                "Packages may be re-promoted every cycle."
+            )
             return {}
         try:
             with open(archive_file, "r", encoding="utf-8") as f:
@@ -238,7 +243,10 @@ class PromotePackage():
         """Fetch the latest version of a package from the PyPI JSON API."""
         if not pypi_url:
             return None
-        package_name = pypi_url.rstrip("/").split("/")[-1]
+        # Extract the package name from the canonical PyPI URL pattern
+        # "/project/<name>/", guarding against version segments like "/project/foo/1.0/".
+        match = re.search(r"/project/([^/]+)", pypi_url)
+        package_name = match.group(1) if match else pypi_url.rstrip("/").split("/")[-1]
         url = f"https://pypi.org/pypi/{package_name}/json"
         try:
             response = requests.get(url, timeout=10)
