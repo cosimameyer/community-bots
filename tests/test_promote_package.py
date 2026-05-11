@@ -76,6 +76,10 @@ class TestEnsureMetadataPrefix:
     def test_empty_string_unchanged(self):
         assert PromotePackage._ensure_metadata_prefix("") == ""
 
+    def test_does_not_false_positive_on_substring(self):
+        """'my-metadata/' contains 'metadata/' as a substring but not as a segment."""
+        assert PromotePackage._ensure_metadata_prefix("my-metadata/file.txt") == "metadata/my-metadata/file.txt"
+
 
 # ---------------------------------------------------------------------------
 # _check_handle
@@ -346,11 +350,32 @@ class TestProcessPackages:
             handler.process_packages(packages, "A", client=None)
         mock_send.assert_not_called()
 
-    def test_skips_when_version_unchanged(self):
-        """Package already promoted at same version → skip (no send_post, counter still advances)."""
+    def test_skips_when_version_unchanged_promotes_next(self):
+        """Next package already promoted at same version → loop finds the one after."""
         handler = make_handler(no_dry_run=True)
-        packages = [make_package(name="A"), make_package(name="B")]
+        packages = self._make_packages(["A", "B", "C"])
+        # B is up-to-date, C is not in archive → should promote C
         archive = {"B": "1.0.0"}
+
+        def _version(pkg):
+            return "1.0.0" if pkg["name"] == "B" else None
+
+        with patch.object(handler, "send_post", return_value="success") as mock_send, \
+             patch.object(handler, "update_counter") as mock_update, \
+             patch.object(handler, "read_archive", return_value=archive), \
+             patch.object(handler, "write_archive"), \
+             patch.object(handler, "get_current_version", side_effect=_version):
+            handler.process_packages(packages, "A", client=None)
+        mock_send.assert_called_once()
+        assert mock_send.call_args[0][0]["name"] == "C"
+        mock_update.assert_called_once_with("C")
+
+    def test_all_packages_skipped_no_post_no_counter_update(self):
+        """When every package is already at its current version, nothing is posted
+        and the counter is not updated."""
+        handler = make_handler(no_dry_run=True)
+        packages = self._make_packages(["A", "B", "C"])
+        archive = {"A": "1.0.0", "B": "1.0.0", "C": "1.0.0"}
         with patch.object(handler, "send_post") as mock_send, \
              patch.object(handler, "update_counter") as mock_update, \
              patch.object(handler, "read_archive", return_value=archive), \
@@ -358,7 +383,7 @@ class TestProcessPackages:
              patch.object(handler, "get_current_version", return_value="1.0.0"):
             handler.process_packages(packages, "A", client=None)
         mock_send.assert_not_called()
-        mock_update.assert_called_once_with("B")
+        mock_update.assert_not_called()
 
     def test_promotes_when_version_updated(self):
         """Package in archive but with a newer version → should promote."""
@@ -373,6 +398,35 @@ class TestProcessPackages:
             handler.process_packages(packages, "A", client=None)
         mock_send.assert_called_once()
 
+    def test_package_without_version_promoted_once_then_skipped(self):
+        """A package whose version cannot be determined (None) is promoted the
+        first time (not in archive), then skipped on subsequent runs
+        (sentinel '' stored in archive)."""
+        handler = make_handler(no_dry_run=True)
+        packages = [make_package(name="A"), make_package(name="B")]
+
+        # First run: B not in archive → promote
+        with patch.object(handler, "send_post", return_value="success") as mock_send, \
+             patch.object(handler, "update_counter"), \
+             patch.object(handler, "read_archive", return_value={}), \
+             patch.object(handler, "write_archive") as mock_write, \
+             patch.object(handler, "get_current_version", return_value=None):
+            handler.process_packages(packages, "A", client=None)
+        mock_send.assert_called_once()
+        written = mock_write.call_args[0][0]
+        assert written.get("B") == ""  # sentinel stored
+
+        # Second run: B in archive with sentinel "" → skip, fall through to A
+        archive_after = {"B": "", "A": ""}  # both already promoted
+        with patch.object(handler, "send_post") as mock_send2, \
+             patch.object(handler, "update_counter") as mock_update2, \
+             patch.object(handler, "read_archive", return_value=archive_after), \
+             patch.object(handler, "write_archive"), \
+             patch.object(handler, "get_current_version", return_value=None):
+            handler.process_packages(packages, "A", client=None)
+        mock_send2.assert_not_called()
+        mock_update2.assert_not_called()
+
     def test_archive_updated_on_successful_post(self):
         """After successful post, archive should be updated with current version."""
         handler = make_handler(no_dry_run=True)
@@ -385,6 +439,19 @@ class TestProcessPackages:
             handler.process_packages(packages, "A", client=None)
         written_archive = mock_write.call_args[0][0]
         assert written_archive.get("B") == "2.0.0"
+
+    def test_archive_stores_empty_sentinel_when_no_version(self):
+        """When version is None (not determinable), '' is stored as a sentinel."""
+        handler = make_handler(no_dry_run=True)
+        packages = [make_package(name="A"), make_package(name="B")]
+        with patch.object(handler, "send_post", return_value="success"), \
+             patch.object(handler, "update_counter"), \
+             patch.object(handler, "read_archive", return_value={}), \
+             patch.object(handler, "write_archive") as mock_write, \
+             patch.object(handler, "get_current_version", return_value=None):
+            handler.process_packages(packages, "A", client=None)
+        written_archive = mock_write.call_args[0][0]
+        assert written_archive.get("B") == ""
 
     def test_archive_not_updated_on_failed_post(self):
         """After failed post, archive should NOT be updated."""

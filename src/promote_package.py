@@ -72,7 +72,13 @@ class PromotePackage():
 
     @staticmethod
     def _ensure_metadata_prefix(value: str, prefix: str = "metadata/") -> str:
-        if not value or prefix in value:
+        if not value:
+            return value
+        # Check whether the path already contains 'metadata' as a proper segment
+        # (e.g. "metadata/file.txt" or "../metadata/file.txt"), not just as a
+        # substring (e.g. "my-metadata/file.txt" would previously be a false positive).
+        segments = value.replace("\\", "/").split("/")
+        if prefix.rstrip("/") in segments:
             return value
         return prefix + value
 
@@ -107,7 +113,17 @@ class PromotePackage():
         self.process_packages(packages, counter_name, client)
 
     def process_packages(self, packages, counter_name, client):
-        """Find the next package to promote and post it."""
+        """Find the next package to promote and post it.
+
+        Starting from the package after ``counter_name``, iterates through the
+        full list (wrapping around) until it finds one that is due for promotion.
+        A package is skipped when:
+          - Its version is known and matches the archived version (version-tracked).
+          - Its version cannot be determined but it has been promoted before
+            (no-version sentinel: archived value is "").
+        If every package is already up-to-date, nothing is posted and the
+        counter is left unchanged.
+        """
         n = len(packages)
 
         start_index = 0
@@ -116,60 +132,80 @@ class PromotePackage():
                 start_index = i
                 break
 
-        next_index = (start_index + 1) % n
-        package = packages[next_index]
-        package_name = package.get("name", "unknown")
-
-        self.logger.info("Considering package: %s", package_name)
-
-        # --- version / archive check ---
         archive = self.read_archive()
-        current_version = self.get_current_version(package)
-        archived_version = archive.get(package_name)
 
-        if current_version and current_version == archived_version:
-            self.logger.info(
-                "Skipping %s — already promoted at version %s.",
-                package_name,
-                current_version,
-            )
+        for offset in range(1, n + 1):
+            candidate_index = (start_index + offset) % n
+            package = packages[candidate_index]
+            package_name = package.get("name", "unknown")
+
+            self.logger.info("Considering package: %s", package_name)
+
+            current_version = self.get_current_version(package)
+            archived_value = archive.get(package_name)  # None = not yet promoted
+
+            # Decide whether to skip this package.
+            # Case A: version is deterministic and unchanged.
+            if current_version is not None and current_version == archived_value:
+                self.logger.info(
+                    "Skipping %s — already promoted at version %s.",
+                    package_name,
+                    current_version,
+                )
+                continue
+            # Case B: version cannot be determined but package was promoted before
+            # (sentinel "" stored in archive to signal "promoted, no version info").
+            if current_version is None and archived_value is not None:
+                self.logger.info(
+                    "Skipping %s — already promoted (no version info available).",
+                    package_name,
+                )
+                continue
+
+            # ── Found a package to promote ──────────────────────────────────
+            self.logger.info("Promoting package: %s", package_name)
+            if current_version:
+                self.logger.info("  Version: %s", current_version)
+
+            if self.no_dry_run:
+                result = self.send_post(package, client)
+                if result == "success":
+                    self.logger.info(
+                        "Successfully promoted %s.", package_name
+                    )
+                    # Store version string, or "" as a sentinel when unavailable.
+                    archive[package_name] = (
+                        current_version if current_version is not None else ""
+                    )
+                    self.write_archive(archive)
+                else:
+                    self.logger.warning(
+                        "Post failed for %s.", package_name
+                    )
+            else:
+                # Show the formatted post text in dry-run mode
+                platform = self.config_dict.get("platform", "")
+                if platform == "mastodon":
+                    post_text = self.build_post_mastodon(package)
+                elif platform == "bluesky":
+                    post_text = self.build_post_bluesky(package).build_text()
+                else:
+                    post_text = ""
+
+                self.logger.info(
+                    "[DRY RUN] Would promote: %s (%s)\n%s",
+                    package_name,
+                    package.get("repo_url", ""),
+                    post_text,
+                )
+
             self.update_counter(package_name)
             return
 
-        self.logger.info("Promoting package: %s", package_name)
-        if current_version:
-            self.logger.info("  Version: %s", current_version)
-
-        if self.no_dry_run:
-            result = self.send_post(package, client)
-            if result == "success":
-                self.logger.info(
-                    "Successfully promoted %s.", package_name
-                )
-                archive[package_name] = current_version or ""
-                self.write_archive(archive)
-            else:
-                self.logger.warning(
-                    "Post failed for %s.", package_name
-                )
-        else:
-            # Show the formatted post text in dry-run mode
-            platform = self.config_dict.get("platform", "")
-            if platform == "mastodon":
-                post_text = self.build_post_mastodon(package)
-            elif platform == "bluesky":
-                post_text = self.build_post_bluesky(package).build_text()
-            else:
-                post_text = ""
-
-            self.logger.info(
-                "[DRY RUN] Would promote: %s (%s)\n%s",
-                package_name,
-                package.get("repo_url", ""),
-                post_text,
-            )
-
-        self.update_counter(package_name)
+        # All packages are already up-to-date — nothing to post this run.
+        self.logger.info(
+            "All packages already promoted at their current version — nothing to post."
+        )
 
     # ------------------------------------------------------------------
     # Archive helpers
