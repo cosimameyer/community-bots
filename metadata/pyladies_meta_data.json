@@ -16,6 +16,13 @@
     "bluesky": ""
   },
   {
+    "name": "Thea Flowers",
+    "content_type": "blog",
+    "rss_feed": [],
+    "mastodon": "stargirl@hachyderm.io",
+    "bluesky": "theacodes.bsky.social"
+  },
+  {
     "name": "Victoria Slocum",
     "content_type": "blog",
     "rss_feed": [],
