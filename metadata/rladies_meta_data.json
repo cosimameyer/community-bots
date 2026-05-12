@@ -39,6 +39,15 @@
     "bluesky": "djnavarro.bsky.social"
   },
   {
+    "name": "Emma Rand",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://buzzrbeeline.blog/feed/"
+    ],
+    "mastodon": "",
+    "bluesky": "3mmarand.bsky.social"
+  },
+  {
     "name": "Cara Thompson",
     "content_type": "blog",
     "rss_feed": [
@@ -71,6 +80,15 @@
     ],
     "mastodon": "@cosima_meyer@mas.to",
     "bluesky": "cosima.bsky.social"
+  },
+  {
+    "name": "Cynthia D'Angelo",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://cynthiadangelo.com/feed/"
+    ],
+    "mastodon": "@dapostrophe@mastodon.social",
+    "bluesky": "cmdangelo.bsky.social"
   },
   {
     "name": "Darya Vanichkina",
@@ -123,6 +141,15 @@
     "bluesky": "emilyriederer.bsky.social"
   },
   {
+    "name": "Fernanda Kelly Romeiro Silva",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://www.fernandakellyrs.com/blog-feed.xml"
+    ],
+    "mastodon": "",
+    "bluesky": ""
+  },
+  {
     "name": "Federica Gazzelloni",
     "content_type": "blog",
     "rss_feed": [
@@ -130,6 +157,15 @@
     ],
     "mastodon": "@Fgazzelloni@fosstodon.org",
     "bluesky": ""
+  },
+  {
+    "name": "Florencia Grattarola",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://flograttarola.com/index.xml"
+    ],
+    "mastodon": "@flograttarola@ecoevo.social/",
+    "bluesky": "flograttarola.bsky.social"
   },
   {
     "name": "Florencia D'Andrea",
@@ -182,6 +218,15 @@
     ],
     "mastodon": "@jhylin@fosstodon.org",
     "bluesky": "jhylin.bsky.social"
+  },
+  {
+    "name": "Janani Ravi",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://jravilab.github.io/index.xml"
+    ],
+    "mastodon": "@JananiRavi@genomic.social",
+    "bluesky": "jananiravi.bsky.social"
   },
   {
     "name": "Julia Silge",
@@ -247,6 +292,15 @@
     "bluesky": "@nrennie.bsky.social"
   },
   {
+    "name": "Pao Corrales",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://paocorrales.github.io/index.xml"
+    ],
+    "mastodon": "@paocorrales@fosstodon.org",
+    "bluesky": ""
+  },
+  {
     "name": "Shannon Pileggi",
     "content_type": "blog",
     "rss_feed": [
@@ -256,25 +310,52 @@
     "bluesky": "@pipinghotdata.com"
   },
   {
-    "name": "RLadies+ Gabarone",
+    "name": "R-Ladies Gabarone",
     "content_type": "blog",
     "rss_feed": [],
     "mastodon": "@RLadiesGaborone@fosstodon.org",
     "bluesky": ""
   },
   {
-    "name": "RLadies+ Melbourne",
+    "name": "R-Ladies Melbourde",
     "content_type": "blog",
     "rss_feed": [
-      "https://RLadies+melbourne.github.io/blog_index.html"
+      "https://r-ladiesmelbourne.github.io/blog_index.html"
     ],
     "mastodon": "",
     "bluesky": "@rladiesmelb.bsky.social"
   },
   {
-    "name": "RLadies+ São Paulo",
+    "name": "Rizqy Amelia Zein",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://rameliaz.github.io/index.xml"
+    ],
+    "mastodon": "",
+    "bluesky": "ameliazein.bsky.social"
+  },
+  {
+    "name": "Riinu Pius",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://www.riinu.me/index.xml"
+    ],
+    "mastodon": "",
+    "bluesky": "pius.cloud"
+  },
+  {
+    "name": "R-Ladies São Paulo",
     "content_type": "blog",
     "rss_feed": [],
+    "mastodon": "",
+    "bluesky": ""
+  },
+  {
+    "name": "R-Ladies Global",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://rladies.org/blog/index.xml"
+    ],
     "mastodon": "",
     "bluesky": ""
   },
@@ -351,7 +432,7 @@
     "content_type": "blog",
     "rss_feed": [],
     "mastodon": "",
-    "bluesky": ""
+    "bluesky": "veerlevanson.bsky.social"
   },
   {
     "name": "Meghan Harris",
@@ -361,6 +442,15 @@
     ],
     "mastodon": "@meghansharris@fosstodon.org",
     "bluesky": ""
+  },
+  {
+    "name": "Carol Willing",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://www.willingconsulting.com/index.xml"
+    ],
+    "mastodon": "@willingc@hachyderm.io",
+    "bluesky": "willingc.bsky.social"
   },
   {
     "name": "Yanina Bellini Saibene",
