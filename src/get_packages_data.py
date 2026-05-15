@@ -5,6 +5,7 @@ import logging
 import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
+from pathlib import Path
 
 load_dotenv()
 
@@ -32,6 +33,30 @@ class PackagesData:
             self.github_raw_url = os.getenv("GITHUB_RAW_URL")
             self.json_file = os.getenv("JSON_FILE")
 
+    _ALLOWED_URL_PREFIXES = (
+        "https://github.com/",
+        "https://raw.githubusercontent.com/",
+    )
+
+    def _validate_urls(self) -> None:
+        """Validate that base_url and github_raw_url are allowed GitHub URLs."""
+        for attr_name in ("base_url", "github_raw_url"):
+            url = getattr(self, attr_name, None) or ""
+            if not any(url.startswith(prefix) for prefix in self._ALLOWED_URL_PREFIXES):
+                raise ValueError(
+                    f"{attr_name} {url!r} is not an allowed URL — must start with "
+                    f"'https://github.com/' or 'https://raw.githubusercontent.com/'"
+                )
+
+    def _validate_json_file_path(self) -> None:
+        """Validate that json_file is within the project root."""
+        safe_root = Path.cwd().resolve()
+        target = Path(self.json_file).resolve()
+        if not str(target).startswith(str(safe_root)):
+            raise ValueError(
+                f"json_file path {self.json_file!r} escapes the project root — refusing to write."
+            )
+
     def get_packages_data(self):
         """
         Retrieve and save package metadata.
@@ -40,6 +65,7 @@ class PackagesData:
         meta_data = self.get_meta_data(contents_list)
 
         if self.no_dry_run:
+            self._validate_json_file_path()
             with open(self.json_file, "w", encoding="utf-8") as fp:
                 json.dump(meta_data, fp, ensure_ascii=False, indent=2)
 
@@ -62,6 +88,7 @@ class PackagesData:
         Returns:
             list[str]: A list of JSON file URLs.
         """
+        self._validate_urls()
         response = requests.get(self.base_url, timeout=REQUEST_TIMEOUT)
         response.raise_for_status()
 

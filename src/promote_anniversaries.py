@@ -86,7 +86,8 @@ class PromoteAnniversary:
             self.logger.error("Failed to connect to %s", self.cfg["platform"])
             return
 
-        with open("metadata/events.json", encoding="utf-8") as f:
+        events_file = self.cfg.get("events_file", "metadata/events.json") if self.config_dict else "metadata/events.json"
+        with open(events_file, encoding="utf-8") as f:
             events = json.load(f)
 
         for event in events:
@@ -118,6 +119,9 @@ class PromoteAnniversary:
             self.config_dict["client_cred_file"] = os.getenv("BOT_CLIENTCRED_SECRET")
         else:
             self.config_dict["api_base_url"] = "https://bsky.social"
+        self.config_dict.setdefault(
+            "events_file", os.getenv("EVENTS_FILE", "metadata/events.json")
+        )
 
     def _connect_client(self):
         """Connect to the configured platform and return the client."""
@@ -294,6 +298,11 @@ class PromoteAnniversary:
             img_data = f.read()
 
         img_data = self._compress_for_bluesky(img_data)
+        if len(img_data) > self._BLUESKY_MAX_BLOB_BYTES:
+            self.logger.warning(
+                "Image still exceeds Bluesky blob limit (%d bytes) after compression — upload may fail.",
+                len(img_data),
+            )
         thumb = client.upload_blob(img_data)
 
         return models.AppBskyEmbedExternal.Main(
