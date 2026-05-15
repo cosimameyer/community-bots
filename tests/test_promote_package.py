@@ -343,8 +343,8 @@ class TestProcessPackages:
             handler.process_packages(packages, "UNKNOWN", client=None)
         mock_update.assert_called_once_with("Q")
 
-    def test_update_counter_called_even_on_failed_post(self):
-        """Counter advances even if the post fails."""
+    def test_counter_not_updated_on_failed_post(self):
+        """Counter must NOT advance when the post fails, so the package is retried next run."""
         handler = make_handler(no_dry_run=True)
         packages = self._make_packages(["A", "B"])
         with patch.object(handler, "send_post", return_value="failed"), \
@@ -353,17 +353,18 @@ class TestProcessPackages:
              patch.object(handler, "write_archive"), \
              patch.object(handler, "get_current_version", return_value=None):
             handler.process_packages(packages, "A", client=None)
-        mock_update.assert_called_once_with("B")
+        mock_update.assert_not_called()
 
-    def test_dry_run_does_not_call_send_post(self):
+    def test_dry_run_does_not_call_send_post_or_update_counter(self):
         handler = make_handler(no_dry_run=False)
         packages = self._make_packages(["A", "B"])
         with patch.object(handler, "send_post") as mock_send, \
-             patch.object(handler, "update_counter"), \
+             patch.object(handler, "update_counter") as mock_update, \
              patch.object(handler, "read_archive", return_value={}), \
              patch.object(handler, "get_current_version", return_value=None):
             handler.process_packages(packages, "A", client=None)
         mock_send.assert_not_called()
+        mock_update.assert_not_called()
 
     def test_skips_when_version_unchanged_promotes_next(self):
         """Next package already promoted at same version → loop finds the one after."""

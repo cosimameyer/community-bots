@@ -179,12 +179,14 @@ class PromotePackage():
                         current_version if current_version is not None else ""
                     )
                     self.write_archive(archive)
+                    self.update_counter(package_name)
                 else:
                     self.logger.warning(
-                        "Post failed for %s.", package_name
+                        "Post failed for %s — counter not advanced, will retry next run.",
+                        package_name
                     )
             else:
-                # Show the formatted post text in dry-run mode
+                # Dry run: preview only, do not touch counter or archive.
                 platform = self.config_dict.get("platform", "")
                 if platform == "mastodon":
                     post_text = self.build_post_mastodon(package)
@@ -200,7 +202,6 @@ class PromotePackage():
                     post_text,
                 )
 
-            self.update_counter(package_name)
             return
 
         # All packages are already up-to-date — nothing to post this run.
