@@ -1,0 +1,52 @@
+name: Update package metadata for PyLadies
+
+on:
+  schedule:
+    - cron: '0 1 * * 1'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: checkout repo content
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.SECRET_WRITE }}
+
+      - name: setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: 'pyproject.toml'
+
+      - name: install python packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Execute py script
+        env:
+          BASE_URL: "https://github.com/cosimameyer/awesome-pyladies-creations/tree/main/data/packages"
+          GITHUB_RAW_URL: "https://raw.githubusercontent.com/cosimameyer/awesome-pyladies-creations/main/data/packages"
+          JSON_FILE: "metadata/pyladies_packages_meta_data.json"
+        run: python src/get_packages_data.py
+
+      - name: Push changes
+        id: cpr
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.SECRET_WRITE }}
+          commit-message: "Update PyLadies package metadata"
+          branch: bot/pyladies-packages-metadata
+          delete-branch: true
+          title: "Update PyLadies package metadata"
+          body: "Automated update of PyLadies package metadata."
+
+      - name: Auto-merge PR
+        if: steps.cpr.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ secrets.SECRET_WRITE }}
+        run: gh pr merge --squash "${{ steps.cpr.outputs.pull-request-number }}" -R cosimameyer/community-bots

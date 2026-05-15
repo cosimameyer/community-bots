@@ -6,6 +6,8 @@ import config
 
 from promote_blog_post import PromoteBlogPost
 from get_rss_data import RSSData
+from get_packages_data import PackagesData
+from promote_package import PromotePackage
 from boost_tags import BoostTags
 from promote_anniversaries import PromoteAnniversary
 from boost_mentions import BoostMentions
@@ -13,14 +15,18 @@ from boost_mentions import BoostMentions
 load_dotenv()
 logging.basicConfig(level=logging.INFO)
 
+# Resolve paths relative to this file so the script works regardless of cwd.
+_SRC_DIR = os.path.dirname(os.path.abspath(__file__))
+_METADATA_DIR = os.path.join(_SRC_DIR, "..", "metadata")
+
 
 class DebugBots:
     """
     Class to handle debugging of all modules.
     """
     def __init__(self):
-        self.bot = 'rladies'  # 'pyladies' or 'rladies'
-        self.what_to_debug = 'rss'  # 'blog', 'boost_tags', 'rss', 'anniversary', 'boost_mentions'
+        self.bot = 'pyladies'  # 'pyladies' or 'rladies'
+        self.what_to_debug = 'package'  # 'blog', 'boost_tags', 'rss', 'anniversary', 'boost_mentions', 'get_packages', 'package'
         self.platform = 'bluesky'  # 'bluesky' or 'mastodon'
         self.no_dry_run = True  # True to actually post
 
@@ -98,6 +104,34 @@ class DebugBots:
             )
             promote_anniversary_handler.promote_anniversary()
 
+        elif self.what_to_debug == 'get_packages':
+            config_dict = self.get_config_packages()
+            if config_dict is None:
+                logger.error(
+                    "No config for bot=%r — check bot settings.",
+                    self.bot
+                )
+                return
+            packages_data_handler = PackagesData(
+                config_dict,
+                self.no_dry_run
+            )
+            packages_data_handler.get_packages_data()
+
+        elif self.what_to_debug == 'package':
+            config_dict = self.get_config_package()
+            if config_dict is None:
+                logger.error(
+                    "No config for bot=%r platform=%r — check bot/platform settings.",
+                    self.bot, self.platform
+                )
+                return
+            promote_package_handler = PromotePackage(
+                config_dict,
+                self.no_dry_run
+            )
+            promote_package_handler.promote_package()
+
     def get_config_blog(self):
         """Method to generate config for promoting blog posts"""
         if self.bot == 'pyladies':
@@ -137,8 +171,8 @@ class DebugBots:
             if self.platform == 'bluesky':
                 return {
                     "archive": "rladies_archive_directory_bluesky",
-                    "counter": "../metadata/rladies_counter_bluesky.txt",
-                    "json_file": "../metadata/rladies_meta_data.json",
+                    "counter": os.path.join(_METADATA_DIR, "rladies_counter_bluesky.txt"),
+                    "json_file": os.path.join(_METADATA_DIR, "rladies_meta_data.json"),
                     "client_name": "rladies_bot",
                     "images": "rladies_images",
                     "api_base_url": self.platform,
@@ -152,8 +186,8 @@ class DebugBots:
             if self.platform == 'mastodon':
                 return {
                     "archive": "rladies_archive_directory",
-                    "counter": "../metadata/rladies_counter.txt",
-                    "json_file": "../metadata/rladies_meta_data.json",
+                    "counter": os.path.join(_METADATA_DIR, "rladies_counter.txt"),
+                    "json_file": os.path.join(_METADATA_DIR, "rladies_meta_data.json"),
                     "client_name": "rladies_bot",
                     "images": "rladies_images",
                     "api_base_url": config.API_BASE_URL,
@@ -298,6 +332,92 @@ class DebugBots:
                     'images': 'anniversary_images',
                     'platform': self.platform,
                     'mastodon_visibility': config.MASTODON_VISIBILITY,
+                }
+
+        return None
+
+    def get_config_packages(self):
+        """Method to generate config for fetching package metadata."""
+        if self.bot == 'pyladies':
+            return {
+                "base_url": (
+                    "https://github.com/cosimameyer/"
+                    "awesome-pyladies-creations/tree/main/data/packages"
+                ),
+                "github_raw_url": (
+                    "https://raw.githubusercontent.com/cosimameyer/"
+                    "awesome-pyladies-creations/main/data/packages"
+                ),
+                "json_file": os.path.join(_METADATA_DIR, "pyladies_packages_meta_data.json"),
+            }
+        if self.bot == 'rladies':
+            return {
+                "base_url": (
+                    "https://github.com/rladies/"
+                    "awesome-rladies-creations/tree/main/data/packages"
+                ),
+                "github_raw_url": (
+                    "https://raw.githubusercontent.com/rladies/"
+                    "awesome-rladies-creations/main/data/packages"
+                ),
+                "json_file": os.path.join(_METADATA_DIR, "rladies_packages_meta_data.json"),
+            }
+        return None
+
+    def get_config_package(self):
+        """Method to generate config for promoting packages."""
+        if self.bot == 'pyladies':
+            if self.platform == 'bluesky':
+                return {
+                    "counter": os.path.join(_METADATA_DIR, "pyladies_packages_counter_bluesky.txt"),
+                    "json_file": os.path.join(_METADATA_DIR, "pyladies_packages_meta_data.json"),
+                    "archive_file": os.path.join(_METADATA_DIR, "pyladies_packages_archive.json"),
+                    "client_name": "pyladies_bot",
+                    "api_base_url": self.platform,
+                    "password": os.getenv("PYLADIES_BSKY_PASSWORD"),
+                    "username": os.getenv("PYLADIES_BSKY_USERNAME"),
+                    "platform": self.platform,
+                }
+            if self.platform == 'mastodon':
+                return {
+                    "counter": os.path.join(_METADATA_DIR, "pyladies_packages_counter_mastodon.txt"),
+                    "json_file": os.path.join(_METADATA_DIR, "pyladies_packages_meta_data.json"),
+                    "archive_file": os.path.join(_METADATA_DIR, "pyladies_packages_archive.json"),
+                    "client_name": "pyladies_bot",
+                    "api_base_url": config.API_BASE_URL,
+                    "password": os.getenv("PYLADIES_MASTODON_PASSWORD"),
+                    "username": os.getenv("PYLADIES_MASTODON_USERNAME"),
+                    "access_token": os.getenv("PYLADIES_MASTODON_ACCESS_TOKEN"),
+                    "client_cred_file": os.getenv("PYLADIES_BOT_CLIENTCRED_SECRET"),
+                    "mastodon_visibility": config.MASTODON_VISIBILITY,
+                    "platform": self.platform,
+                }
+
+        if self.bot == 'rladies':
+            if self.platform == 'bluesky':
+                return {
+                    "counter": os.path.join(_METADATA_DIR, "rladies_packages_counter_bluesky.txt"),
+                    "json_file": os.path.join(_METADATA_DIR, "rladies_packages_meta_data.json"),
+                    "archive_file": os.path.join(_METADATA_DIR, "rladies_packages_archive.json"),
+                    "client_name": "rladies_bot",
+                    "api_base_url": self.platform,
+                    "password": os.getenv("RLADIES_BSKY_PASSWORD"),
+                    "username": os.getenv("RLADIES_BSKY_USERNAME"),
+                    "platform": self.platform,
+                }
+            if self.platform == 'mastodon':
+                return {
+                    "counter": os.path.join(_METADATA_DIR, "rladies_packages_counter_mastodon.txt"),
+                    "json_file": os.path.join(_METADATA_DIR, "rladies_packages_meta_data.json"),
+                    "archive_file": os.path.join(_METADATA_DIR, "rladies_packages_archive.json"),
+                    "client_name": "rladies_bot",
+                    "api_base_url": config.API_BASE_URL,
+                    "password": os.getenv("RLADIES_MASTODON_PASSWORD"),
+                    "username": os.getenv("RLADIES_MASTODON_USERNAME"),
+                    "access_token": os.getenv("RLADIES_MASTODON_ACCESS_TOKEN"),
+                    "client_cred_file": os.getenv("RLADIES_BOT_CLIENTCRED_SECRET"),
+                    "mastodon_visibility": config.MASTODON_VISIBILITY,
+                    "platform": self.platform,
                 }
 
         return None

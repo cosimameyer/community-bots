@@ -91,14 +91,21 @@ class TestEnsureMetadataPrefix:
         result = PromoteBlogPost._ensure_metadata_prefix("metadata/counter.txt")
         assert result == "metadata/counter.txt"
 
-    def test_empty_string_gets_prefix(self):
-        # Edge: empty string should still receive the prefix
-        assert PromoteBlogPost._ensure_metadata_prefix("") == "metadata/"
+    def test_empty_string_unchanged(self):
+        assert PromoteBlogPost._ensure_metadata_prefix("") == ""
+
+    def test_leaves_relative_metadata_path_intact(self):
+        """../metadata/file.txt already has 'metadata' as a segment — must not be double-prefixed."""
+        assert PromoteBlogPost._ensure_metadata_prefix("../metadata/counter.txt") == "../metadata/counter.txt"
 
     def test_custom_prefix_not_matched(self):
-        # "data/counter.txt" does NOT start with "metadata/" so prefix is added
+        # "data/counter.txt" does NOT contain 'metadata' as a segment so prefix is added
         result = PromoteBlogPost._ensure_metadata_prefix("data/counter.txt")
         assert result == "metadata/data/counter.txt"
+
+    def test_does_not_false_positive_on_substring(self):
+        """'my-metadata/' contains 'metadata' as a substring but not as its own segment."""
+        assert PromoteBlogPost._ensure_metadata_prefix("my-metadata/file.txt") == "metadata/my-metadata/file.txt"
 
 
 # ---------------------------------------------------------------------------
