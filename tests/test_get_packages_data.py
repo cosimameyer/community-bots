@@ -34,23 +34,23 @@ def make_pyladies_package(
     repo_url="https://github.com/vsoch/citelang",
     pypi_url="https://pypi.org/project/citelang/",
     logo_url="https://example.com/logo.png",
-    maintainer_name="Vanessa Sochat",
-    mastodon="@vsoch@mastodon.social",
-    bluesky="vsoch.bsky.social",
+    maintainers=None,
 ):
     """Build a minimal PyLadies-style package dict."""
-    social = {}
-    if mastodon is not None:
-        social["mastodon"] = mastodon
-    if bluesky is not None:
-        social["bluesky"] = bluesky
+    if maintainers is None:
+        maintainers = [
+            {
+                "name": "Vanessa Sochat",
+                "social_media": [{"mastodon": "@vsoch@mastodon.social", "bluesky": "vsoch.bsky.social"}],
+            }
+        ]
     return {
         "name": name,
         "description": description,
         "repo_url": repo_url,
         "pypi_url": pypi_url,
         "logo_url": logo_url,
-        "maintainers": [{"name": maintainer_name, "social_media": [social]}],
+        "maintainers": maintainers,
     }
 
 
@@ -60,16 +60,20 @@ def make_rladies_package(
     repo_url="https://github.com/Meghansaha/artpack",
     pkdown_url="https://meghansaha.github.io/artpack/",
     logo_url="https://meghansaha.github.io/artpack/logo.png",
-    author_name="Meghan Harris",
+    authors=None,
 ):
-    """Build a minimal RLadies-style package dict (no social handles)."""
+    """Build a minimal RLadies-style package dict."""
+    if authors is None:
+        authors = [
+            {"name": "Meghan Harris", "roles": ["aut", "cre"], "directory_id": "meghan-harris"},
+        ]
     return {
         "name": name,
         "description": description,
         "repo_url": repo_url,
         "pkdown_url": pkdown_url,
         "logo_url": logo_url,
-        "authors": [{"name": author_name, "roles": ["aut", "cre"]}],
+        "authors": authors,
     }
 
 
@@ -129,32 +133,64 @@ class TestExtractInfoPyLadies:
         content = make_pyladies_package(logo_url="https://example.com/logo.png")
         assert PackagesData.extract_info(content)["logo_url"] == "https://example.com/logo.png"
 
-    def test_extracts_maintainer_name(self):
-        content = make_pyladies_package(maintainer_name="Alice")
-        assert PackagesData.extract_info(content)["maintainer_name"] == "Alice"
+    def test_single_maintainer_extracted(self):
+        content = make_pyladies_package()
+        contributors = PackagesData.extract_info(content)["contributors"]
+        assert len(contributors) == 1
+        assert contributors[0]["name"] == "Vanessa Sochat"
+
+    def test_pyladies_contributor_has_no_directory_id(self):
+        """PyLadies maintainers carry no directory_id — membership is inferred by the bot."""
+        content = make_pyladies_package()
+        contributors = PackagesData.extract_info(content)["contributors"]
+        assert "directory_id" not in contributors[0]
 
     def test_extracts_mastodon_handle(self):
-        content = make_pyladies_package(mastodon="@alice@fosstodon.org")
-        assert PackagesData.extract_info(content)["mastodon"] == "@alice@fosstodon.org"
+        content = make_pyladies_package(
+            maintainers=[{"name": "Alice", "social_media": [{"mastodon": "@alice@fosstodon.org"}]}]
+        )
+        contributors = PackagesData.extract_info(content)["contributors"]
+        assert contributors[0]["mastodon"] == "@alice@fosstodon.org"
 
     def test_extracts_bluesky_handle(self):
-        content = make_pyladies_package(bluesky="alice.bsky.social")
-        assert PackagesData.extract_info(content)["bluesky"] == "alice.bsky.social"
+        content = make_pyladies_package(
+            maintainers=[{"name": "Alice", "social_media": [{"bluesky": "alice.bsky.social"}]}]
+        )
+        contributors = PackagesData.extract_info(content)["contributors"]
+        assert contributors[0]["bluesky"] == "alice.bsky.social"
+
+    def test_multiple_maintainers_all_extracted(self):
+        content = make_pyladies_package(
+            maintainers=[
+                {"name": "Alice", "social_media": [{"mastodon": "@alice@fosstodon.org"}]},
+                {"name": "Bob", "social_media": [{"bluesky": "bob.bsky.social"}]},
+            ]
+        )
+        contributors = PackagesData.extract_info(content)["contributors"]
+        assert len(contributors) == 2
+        assert contributors[0]["name"] == "Alice"
+        assert contributors[1]["name"] == "Bob"
 
     def test_pkdown_url_empty_for_pyladies_package(self):
         content = make_pyladies_package()
         assert PackagesData.extract_info(content)["pkdown_url"] == ""
 
+    def test_docs_url_mapped_to_pkdown_url(self):
+        content = make_pyladies_package()
+        content["docs_url"] = "https://docs.example.com/"
+        assert PackagesData.extract_info(content)["pkdown_url"] == "https://docs.example.com/"
+
     def test_return_dict_has_expected_keys(self):
         result = PackagesData.extract_info(make_pyladies_package())
         assert set(result.keys()) == {
-            "name", "description", "repo_url", "pypi_url",
-            "pkdown_url", "logo_url", "maintainer_name", "mastodon", "bluesky",
+            "name", "title", "description", "repo_url", "pypi_url",
+            "pkdown_url", "bug_reports_url", "logo_url", "last_updated",
+            "contributors",
         }
 
 
 # ---------------------------------------------------------------------------
-# extract_info — RLadies format (authors, no social handles)
+# extract_info — RLadies format (authors, directory_id marks R-Ladies member)
 # ---------------------------------------------------------------------------
 
 class TestExtractInfoRLadies:
@@ -162,23 +198,84 @@ class TestExtractInfoRLadies:
         content = make_rladies_package(name="artpack")
         assert PackagesData.extract_info(content)["name"] == "artpack"
 
-    def test_extracts_author_name(self):
-        content = make_rladies_package(author_name="Meghan Harris")
-        assert PackagesData.extract_info(content)["maintainer_name"] == "Meghan Harris"
+    def test_rladies_member_carries_directory_id(self):
+        content = make_rladies_package(
+            authors=[{"name": "Meghan Harris", "roles": ["aut", "cre"], "directory_id": "meghan-harris"}]
+        )
+        contributors = PackagesData.extract_info(content)["contributors"]
+        assert contributors[0]["directory_id"] == "meghan-harris"
+
+    def test_non_member_author_has_no_directory_id(self):
+        content = make_rladies_package(
+            authors=[{"name": "Szymon Maksymiuk", "roles": ["aut", "cre"]}]
+        )
+        contributors = PackagesData.extract_info(content)["contributors"]
+        assert len(contributors) == 1
+        assert contributors[0]["name"] == "Szymon Maksymiuk"
+        assert "directory_id" not in contributors[0]
+
+    def test_all_authors_extracted(self):
+        """Every author appears in contributors regardless of directory_id."""
+        content = make_rladies_package(
+            authors=[
+                {"name": "Szymon Maksymiuk", "roles": ["aut", "cre"]},
+                {"name": "Anna Kozak", "roles": ["ctb"], "directory_id": "anna-kozak"},
+            ]
+        )
+        contributors = PackagesData.extract_info(content)["contributors"]
+        assert len(contributors) == 2
+        assert contributors[0]["name"] == "Szymon Maksymiuk"
+        assert "directory_id" not in contributors[0]
+        assert contributors[1]["name"] == "Anna Kozak"
+        assert contributors[1]["directory_id"] == "anna-kozak"
+
+    def test_multiple_rladies_members_all_carry_directory_id(self):
+        content = make_rladies_package(
+            authors=[
+                {"name": "Non Member", "roles": ["aut"]},
+                {"name": "Alice", "roles": ["ctb"], "directory_id": "alice"},
+                {"name": "Bob", "roles": ["ctb"], "directory_id": "bob"},
+            ]
+        )
+        contributors = PackagesData.extract_info(content)["contributors"]
+        assert len(contributors) == 3
+        assert "directory_id" not in contributors[0]
+        assert contributors[1]["directory_id"] == "alice"
+        assert contributors[2]["directory_id"] == "bob"
+
+    def test_rladies_contributors_have_empty_social_handles(self):
+        """R-Ladies package JSONs carry no social media — handles are always empty."""
+        content = make_rladies_package()
+        contributors = PackagesData.extract_info(content)["contributors"]
+        assert contributors[0]["mastodon"] == ""
+        assert contributors[0]["bluesky"] == ""
 
     def test_extracts_pkdown_url(self):
         content = make_rladies_package(pkdown_url="https://pkg.example.com/")
         assert PackagesData.extract_info(content)["pkdown_url"] == "https://pkg.example.com/"
 
-    def test_no_social_media_gives_empty_handles(self):
-        content = make_rladies_package()
-        result = PackagesData.extract_info(content)
-        assert result["mastodon"] == ""
-        assert result["bluesky"] == ""
-
     def test_pypi_url_empty_for_rladies_package(self):
         content = make_rladies_package()
         assert PackagesData.extract_info(content)["pypi_url"] == ""
+
+    def test_extracts_last_updated(self):
+        content = make_rladies_package()
+        content["last_updated"] = "2024-06-01"
+        assert PackagesData.extract_info(content)["last_updated"] == "2024-06-01"
+
+    def test_last_updated_empty_when_absent(self):
+        content = make_rladies_package()
+        assert PackagesData.extract_info(content)["last_updated"] == ""
+
+    def test_extracts_title(self):
+        content = make_rladies_package()
+        content["title"] = "Art Pack"
+        assert PackagesData.extract_info(content)["title"] == "Art Pack"
+
+    def test_extracts_bug_reports_url(self):
+        content = make_rladies_package()
+        content["bug_reports_url"] = "https://github.com/Meghansaha/artpack/issues"
+        assert PackagesData.extract_info(content)["bug_reports_url"] == "https://github.com/Meghansaha/artpack/issues"
 
 
 # ---------------------------------------------------------------------------
@@ -191,41 +288,38 @@ class TestExtractInfoEdgeCases:
         assert result["name"] == ""
         assert result["description"] == ""
         assert result["repo_url"] == ""
-        assert result["maintainer_name"] == ""
-        assert result["mastodon"] == ""
-        assert result["bluesky"] == ""
+        assert result["contributors"] == []
 
-    def test_empty_maintainers_list_defaults_name_to_empty(self):
+    def test_empty_maintainers_list_gives_no_contributors(self):
         content = {"name": "lib", "maintainers": []}
-        result = PackagesData.extract_info(content)
-        assert result["maintainer_name"] == ""
+        assert PackagesData.extract_info(content)["contributors"] == []
 
-    def test_empty_authors_list_defaults_name_to_empty(self):
+    def test_empty_authors_list_gives_no_contributors(self):
         content = {"name": "lib", "authors": []}
-        result = PackagesData.extract_info(content)
-        assert result["maintainer_name"] == ""
+        assert PackagesData.extract_info(content)["contributors"] == []
 
     def test_maintainers_takes_priority_over_authors(self):
-        """When both keys exist, maintainers is used (it appears first)."""
+        """When both keys exist, maintainers is used."""
         content = {
             "name": "lib",
             "maintainers": [{"name": "MaintainerPerson", "social_media": []}],
-            "authors": [{"name": "AuthorPerson"}],
+            "authors": [{"name": "AuthorPerson", "directory_id": "author-person"}],
         }
-        result = PackagesData.extract_info(content)
-        assert result["maintainer_name"] == "MaintainerPerson"
+        contributors = PackagesData.extract_info(content)["contributors"]
+        assert len(contributors) == 1
+        assert contributors[0]["name"] == "MaintainerPerson"
 
-    def test_empty_social_media_list_does_not_raise(self):
+    def test_empty_social_media_list_gives_empty_handles(self):
         content = {"name": "lib", "maintainers": [{"name": "Bob", "social_media": []}]}
-        result = PackagesData.extract_info(content)
-        assert result["mastodon"] == ""
-        assert result["bluesky"] == ""
+        contributors = PackagesData.extract_info(content)["contributors"]
+        assert contributors[0]["mastodon"] == ""
+        assert contributors[0]["bluesky"] == ""
 
-    def test_missing_social_media_key_does_not_raise(self):
+    def test_missing_social_media_key_gives_empty_handles(self):
         content = {"name": "lib", "maintainers": [{"name": "Carol"}]}
-        result = PackagesData.extract_info(content)
-        assert result["mastodon"] == ""
-        assert result["bluesky"] == ""
+        contributors = PackagesData.extract_info(content)["contributors"]
+        assert contributors[0]["mastodon"] == ""
+        assert contributors[0]["bluesky"] == ""
 
 
 # ---------------------------------------------------------------------------

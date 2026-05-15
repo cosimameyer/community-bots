@@ -4,7 +4,7 @@ This page describes how the community bots are structured and how data flows thr
 
 ## Overview
 
-The project contains four automation bots that run on Bluesky (and historically Mastodon). Each bot is a standalone Python class triggered by a scheduled GitHub Actions workflow.
+The project contains six automation bots that run on Bluesky (and historically Mastodon). Each bot is a standalone Python class triggered by a scheduled GitHub Actions workflow.
 
 Each bot is a Python class in `src/`, triggered by a GitHub Actions cron job. The class then calls the appropriate platform API — `Mastodon.py` for Mastodon and `atproto` for Bluesky.
 
@@ -139,6 +139,72 @@ This bot runs on a daily schedule and keeps the member list fresh.
 
 ---
 
+### Package Data Collector (`get_packages_data.py`)
+
+Scrapes community package listings and regenerates the metadata JSON files used by the package-promotion bot.
+
+**Flow:** The bot fetches the `data/packages/` directory listing from the awesome-\*-creations GitHub repository, downloads each package JSON, normalises the fields (handling both PyLadies and RLadies+ schema variants), and writes an updated metadata file.
+
+```
+PackagesData.get_packages_data()
+        │
+        ├─ get_json_file_names() ← scrape GitHub tree for .json file URLs
+        ├─ get_json_data()       ← download each package JSON
+        ├─ get_meta_data()
+        │     └─ extract_info()  ← normalise PyLadies / RLadies+ fields
+        └─ write updated JSON    ← metadata/{pyladies,rladies}_packages_meta_data.json
+```
+
+`extract_info` handles the schema difference between communities: PyLadies packages carry `maintainers`, `pypi_url`, and `social_media` (Mastodon + Bluesky handles); RLadies+ packages carry `authors`, `pkdown_url`, and `last_updated`.
+
+This bot runs weekly (Monday for PyLadies, Tuesday for RLadies+) and keeps the package list fresh.
+
+---
+
+### Promote Packages (`promote_package.py`)
+
+Cycles through community-built open-source packages and shares one per run, skipping packages that have already been promoted at their current version.
+
+**Flow:** The bot reads the package metadata, finds the next unvisited package, checks whether it has been updated since the last promotion, builds a post, and (if live) sends it. The counter and archive are committed back to the repository.
+
+```
+metadata/{pyladies,rladies}_packages_meta_data.json   ← package list
+metadata/*_packages_counter_*.txt                     ← tracks current position
+metadata/{pyladies,rladies}_packages_archive.json     ← promoted versions
+
+        │
+        ▼
+PromotePackage.promote_package()
+        │
+        ├─ read_metadata_json()       ← load package list
+        ├─ read_counter_name()        ← determine starting position
+        ├─ process_packages()
+        │     ├─ read_archive()       ← load promoted-version history
+        │     ├─ get_current_version()
+        │     │     ├─ [PyLadies] get_pypi_version()   ← PyPI JSON API
+        │     │     └─ [RLadies+] last_updated field   ← from metadata
+        │     ├─ skip if version unchanged
+        │     ├─ build_post_mastodon() / build_post_bluesky()
+        │     ├─ send_post()
+        │     ├─ write_archive()      ← record new version
+        │     └─ update_counter()     ← advance position
+        └─ push changes to repo       ← commit updated counter + archive
+```
+
+**Version tracking:**
+
+| Community | Version source | Skip condition |
+|---|---|---|
+| PyLadies | Latest release from PyPI JSON API | Same version already in archive |
+| RLadies+ | `last_updated` field in the package JSON | Same timestamp already in archive |
+| Either | No version available (no `pypi_url`, no `last_updated`) | Already in archive at any value (promote once per cycle) |
+
+If every package in the list is already up-to-date, nothing is posted and the counter is left unchanged.
+
+This bot runs weekly with a 3-day offset between communities (PyLadies on days 1/8/15/22/29, RLadies+ on days 4/11/18/25).
+
+---
+
 ## Directory Structure
 
 The repository is organised as follows: bot source code lives in `src/`, persistent state in `metadata/`, documentation in `docs/`, and scheduled triggers in `.github/workflows/`.
@@ -149,9 +215,11 @@ The repository is organised as follows: bot source code lives in `src/`, persist
 │   ├── config.py                   # Shared constants (tags, API URLs, ignored servers)
 │   ├── promote_anniversaries.py    # Anniversary bot
 │   ├── promote_blog_post.py        # Blog-post promotion bot
+│   ├── promote_package.py          # Package promotion bot
 │   ├── boost_tags.py               # Hashtag boost bot
 │   ├── boost_mentions.py           # Mention boost bot
 │   ├── get_rss_data.py             # RSS metadata collector
+│   ├── get_packages_data.py        # Package metadata collector
 │   ├── debug.py                    # Dry-run / testing helper
 │   └── helper/
 │       ├── login_mastodon.py       # Mastodon authentication
@@ -161,7 +229,11 @@ The repository is organised as follows: bot source code lives in `src/`, persist
 │   ├── events.json                 # Women-in-tech profiles (anniversary bot)
 │   ├── pyladies_meta_data.json     # PyLadies members + RSS feeds
 │   ├── rladies_meta_data.json      # RLadies+ members + RSS feeds
-│   └── *_counter_*.txt             # Rotation state for blog-post bot
+│   ├── *_counter_*.txt             # Rotation state for blog-post and package bots
+│   ├── pyladies_packages_meta_data.json   # PyLadies packages
+│   ├── rladies_packages_meta_data.json    # RLadies+ packages
+│   ├── pyladies_packages_archive.json     # Promoted versions (PyLadies packages)
+│   └── rladies_packages_archive.json      # Promoted versions (RLadies+ packages)
 ├── archive/                        # Audit copies of posted content
 ├── docs/                           # MkDocs documentation source
 ├── .github/workflows/              # Scheduled GitHub Actions (one per bot × community)
@@ -185,6 +257,10 @@ All bots are triggered by GitHub Actions cron schedules. The table below shows e
 | `rladies_boost_mentions.yml` | Every 30 minutes | Boost Mentions |
 | `pyladies_rss_feed.yml` | Daily | RSS Data Collector |
 | `rladies_rss_feed.yml` | Daily | RSS Data Collector |
+| `pyladies_packages_data.yml` | Weekly (Monday @ 01:00 UTC) | Package Data Collector |
+| `rladies_packages_data.yml` | Weekly (Tuesday @ 01:00 UTC) | Package Data Collector |
+| `pyladies_promote_package.yml` | Weekly (days 1/8/15/22/29 @ 09:00 UTC) | Promote Packages |
+| `rladies_promote_package.yml` | Weekly (days 4/11/18/25 @ 09:00 UTC) | Promote Packages |
 
 ## Configuration & Authentication
 
@@ -192,12 +268,14 @@ Environment variables (stored as GitHub Secrets) drive all credentials and paths
 
 | Variable | Used by |
 |---|---|
-| `PLATFORM` | All bots — `"mastodon"` or `"bluesky"` |
+| `PLATFORM` | All posting bots — `"mastodon"` or `"bluesky"` |
 | `USERNAME` / `PASSWORD` | Bluesky login |
 | `ACCESS_TOKEN`, `CLIENT_ID`, `CLIENT_SECRET` | Mastodon OAuth |
 | `GEMINI_API_KEY` | Blog-post bot (AI summaries) |
-| `JSON_FILE`, `COUNTER` | Blog-post bot (file paths) |
-| `IMAGES`, `ARCHIVE_DIRECTORY` | Image and archive storage |
+| `JSON_FILE`, `COUNTER` | Blog-post and package-promotion bots (file paths) |
+| `ARCHIVE_FILE` | Package-promotion bot — path to promoted-version archive JSON |
+| `BASE_URL`, `GITHUB_RAW_URL` | Package data collector — GitHub tree URL and raw content base |
+| `IMAGES`, `ARCHIVE_DIRECTORY` | Image and archive storage (blog-post bot) |
 
 Bots accept a `config_dict` constructor argument as an alternative to environment variables, which is used for local testing and the debug helper (`debug.py`).
 

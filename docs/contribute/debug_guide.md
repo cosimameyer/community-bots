@@ -16,7 +16,7 @@ Already familiar with the setup? Here's the short path:
 
    ```python
    self.bot           = 'pyladies'   # 'pyladies' or 'rladies'
-   self.what_to_debug = 'blog'       # 'blog' | 'rss' | 'boost_tags' | 'boost_mentions' | 'anniversary'
+   self.what_to_debug = 'blog'       # 'blog' | 'rss' | 'boost_tags' | 'boost_mentions' | 'anniversary' | 'packages' | 'package'
    self.platform      = 'bluesky'    # 'bluesky' or 'mastodon'
    self.no_dry_run    = False        # False = safe dry run, True = actually post
    ```
@@ -141,7 +141,7 @@ This lets you set breakpoints in any bot module and step through execution. The 
 
 ## Scenario reference
 
-The table below summarises all five scenarios at a glance, showing what each exercises and whether credentials or a platform selection are required.
+The table below summarises all seven scenarios at a glance, showing what each exercises and whether credentials or a platform selection are required.
 
 | `what_to_debug` | What it exercises | Needs credentials? | Platform matters? |
 |---|---|---|---|
@@ -150,6 +150,8 @@ The table below summarises all five scenarios at a glance, showing what each exe
 | `boost_tags` | Search posts by hashtag → (boost) matching posts | Yes | Yes |
 | `boost_mentions` | Fetch mentions → (boost/repost) them | Yes | Yes |
 | `anniversary` | Read `events.json` → (post) today's anniversary | Yes | Yes |
+| `packages` | Fetch package list from GitHub → update local JSON | No | No |
+| `package` | Read package metadata → check version → (post) next package | Yes | Yes |
 
 ---
 
@@ -426,6 +428,137 @@ The required environment variables depend on the bot and platform combination yo
 
 ---
 
+## Scenario 6 — `packages`: update the package metadata
+
+**Goal:** Verify that the bot can reach the GitHub repository that lists community packages, download each package JSON, and write an updated metadata file locally.
+
+### When to use this
+
+- After a new package is added to `awesome-pyladies-creations` or `awesome-rladies-creations`
+- When the package metadata JSON is suspected to be stale or missing
+- Before testing the `package` scenario
+
+### Required env vars
+
+None — this scenario reads from public GitHub URLs only.
+
+### Steps
+
+1. Set the knobs:
+
+   ```python
+   self.bot           = 'pyladies'   # or 'rladies'
+   self.what_to_debug = 'packages'
+   self.platform      = 'bluesky'    # value is ignored for this scenario
+   self.no_dry_run    = False
+   ```
+
+2. Run:
+
+   ```bash
+   pdm run python src/debug.py
+   ```
+
+3. Inspect `metadata/pyladies_packages_meta_data.json` (or `rladies`) to confirm it was updated with the expected entries.
+
+### What to watch for
+
+- The log should show each package JSON being fetched and parsed.
+- A network error means a public GitHub URL is unreachable — check your internet connection or whether the repository has moved.
+- `no_dry_run = False` still logs the full list of entries that *would* be written without touching the file. Set `no_dry_run = True` to actually write to disk.
+
+### Files read/written
+
+| File | Purpose |
+|---|---|
+| `metadata/pyladies_packages_meta_data.json` (or `rladies`) | Output — package metadata used by the `package` bot |
+
+---
+
+## Scenario 7 — `package`: promote a community package
+
+**Goal:** Verify that the bot can read the package metadata, determine the next package to promote (checking its version against the archive), build a correctly formatted post, and (in live mode) publish it.
+
+### When to use this
+
+- After changing `promote_package.py`
+- After running the `packages` scenario to refresh the metadata
+- When the counter or archive file is suspected to be out of sync
+
+### Required env vars
+
+| Combination | Vars needed |
+|---|---|
+| pyladies + bluesky | `PYLADIES_BSKY_USERNAME`, `PYLADIES_BSKY_PASSWORD` |
+| pyladies + mastodon | `PYLADIES_MASTODON_USERNAME`, `PYLADIES_MASTODON_PASSWORD`, `PYLADIES_MASTODON_ACCESS_TOKEN`, `PYLADIES_BOT_CLIENTCRED_SECRET` |
+| rladies + bluesky | `RLADIES_BSKY_USERNAME`, `RLADIES_BSKY_PASSWORD` |
+| rladies + mastodon | `RLADIES_MASTODON_USERNAME`, `RLADIES_MASTODON_PASSWORD`, `RLADIES_MASTODON_ACCESS_TOKEN`, `RLADIES_BOT_CLIENTCRED_SECRET` |
+
+### Steps
+
+1. Make sure the metadata file is populated first (run the `packages` scenario if needed).
+
+2. Set the knobs:
+
+   ```python
+   self.bot           = 'pyladies'   # or 'rladies'
+   self.what_to_debug = 'package'
+   self.platform      = 'bluesky'    # or 'mastodon'
+   self.no_dry_run    = False
+   ```
+
+3. Run:
+
+   ```bash
+   pdm run python src/debug.py
+   ```
+
+4. Read the log output. A dry run shows the full formatted post that would be sent:
+
+   ```
+   INFO  Initializing pyladies_bot Bot
+   INFO  > Connecting to bluesky
+   INFO  Considering package: CiteLang
+   INFO  Promoting package: CiteLang
+   INFO    Version: 0.1.2
+   INFO  [DRY RUN] Would promote: CiteLang (https://github.com/vsoch/citelang)
+         📦 CiteLang
+
+         Generate credit summaries.
+
+         👤 Vanessa Sochat (@vsoch.bsky.social)
+
+         🔗 https://github.com/vsoch/citelang
+
+         #pyladies #python #opensource
+   ```
+
+5. If the output looks correct, switch to live mode and run again:
+
+   ```python
+   self.no_dry_run = True
+   ```
+
+### What to watch for
+
+- **`[DRY RUN] Would promote: …`** — a package was found that is either new or has a newer version. The full post text is shown. Good.
+- **`Skipping … — already promoted at version …`** — the package is already in the archive at its current version. The bot will try the next package in the list.
+- **`All packages already promoted at their current version — nothing to post`** — every package is up to date. Use this to confirm the archive is working correctly. To force a re-run, delete the relevant entry from the archive JSON.
+- **`ARCHIVE_FILE not configured`** — the `archive_file` key is missing from the config. Version tracking is disabled; all packages are treated as new every cycle.
+- A login error almost always means the credentials in `.env` are wrong or the app password has been revoked.
+
+### Files read/written
+
+| File | Purpose |
+|---|---|
+| `metadata/pyladies_packages_meta_data.json` (or `rladies`) | Input — package list produced by the `packages` scenario |
+| `metadata/pyladies_packages_counter_bluesky.txt` (or variant) | Tracks which package was last promoted |
+| `metadata/pyladies_packages_archive.json` (or `rladies`) | Records each promoted package and its version to prevent re-promotion |
+
+The counter and archive are only written to disk if `no_dry_run = True` and a post is sent successfully.
+
+---
+
 ## Troubleshooting
 
 ### "No config for bot=… platform=…"
@@ -463,3 +596,5 @@ cd src && python debug.py
 - **`blog`:** all entries in the RSS feed are already in the archive. Delete or empty the archive file (`archive_directory*/file.json`) to force a re-run.
 - **`boost_tags` / `boost_mentions`:** no recent posts match the criteria. Post something yourself on the relevant platform under the hashtag and try again.
 - **`anniversary`:** no entry in `events.json` matches today's date. Add a temporary test entry (see Scenario 5, step 1).
+- **`packages`:** the metadata JSON was already up to date. This is normal — run with `no_dry_run = True` to write (overwrite) it regardless.
+- **`package`:** every package in the metadata is already in the archive at its current version. To force a re-run, remove the relevant entry (or all entries) from `metadata/pyladies_packages_archive.json` (or `rladies`).

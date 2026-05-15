@@ -11,6 +11,24 @@ load_dotenv()
 REQUEST_TIMEOUT = 10  # seconds
 
 
+def _extract_contributor(person: dict) -> dict:
+    """Normalise a single author/maintainer entry into a contributor dict.
+
+    directory_id is preserved when present — it marks an R-Ladies community
+    member and is used downstream to decide whether to link the person.
+    """
+    social_media_list = person.get("social_media", [])
+    social = social_media_list[0] if social_media_list else {}
+    contributor = {
+        "name": person.get("name", ""),
+        "mastodon": social.get("mastodon", ""),
+        "bluesky": social.get("bluesky", ""),
+    }
+    if person.get("directory_id"):
+        contributor["directory_id"] = person["directory_id"]
+    return contributor
+
+
 class PackagesData:
     """
     Handle gathering package metadata from awesome-*-creations repos.
@@ -113,33 +131,38 @@ class PackagesData:
         """
         Extract metadata from a single package JSON.
 
-        Handles both PyLadies format (maintainers + pypi_url + social_media)
-        and RLadies format (authors + pkdown_url).
+        Handles both source formats:
+        - PyLadies: maintainers[] + pypi_url + docs_url; social nested under
+          maintainers[].social_media[].
+        - RLadies: authors[] + pkdown_url + bug_reports_url; no social in
+          package JSON. Authors with a directory_id are R-Ladies members.
+
+        PyLadies docs_url is mapped to pkdown_url (semantically equivalent).
 
         Returns:
-            dict: Normalised metadata dictionary.
+            dict: Normalised metadata dictionary with a contributors list.
+                  R-Ladies community members carry a directory_id field;
+                  other contributors and all PyLadies maintainers do not.
         """
         maintainers = content.get("maintainers", [])
         authors = content.get("authors", [])
-        person = (maintainers or authors or [{}])[0]
 
-        name = person.get("name", "")
-
-        social_media_list = person.get("social_media", [])
-        social_media = social_media_list[0] if social_media_list else {}
-        mastodon = social_media.get("mastodon", "")
-        bluesky = social_media.get("bluesky", "")
+        contributors = [
+            _extract_contributor(p)
+            for p in (maintainers or authors)
+        ]
 
         return {
             "name": content.get("name", ""),
+            "title": content.get("title", ""),
             "description": content.get("description", ""),
             "repo_url": content.get("repo_url", ""),
             "pypi_url": content.get("pypi_url", ""),
-            "pkdown_url": content.get("pkdown_url", ""),
+            "pkdown_url": content.get("pkdown_url") or content.get("docs_url") or "",
+            "bug_reports_url": content.get("bug_reports_url", ""),
             "logo_url": content.get("logo_url", ""),
-            "maintainer_name": name,
-            "mastodon": mastodon,
-            "bluesky": bluesky,
+            "last_updated": content.get("last_updated", ""),
+            "contributors": contributors,
         }
 
     def get_meta_data(self, contents_list: list[dict]) -> list[dict]:
