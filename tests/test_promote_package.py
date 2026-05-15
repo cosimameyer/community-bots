@@ -39,11 +39,14 @@ def make_package(
     pypi_url="https://pypi.org/project/citelang/",
     pkdown_url="",
     logo_url="https://example.com/logo.png",
-    maintainer_name="Vanessa Sochat",
-    mastodon="@vsoch@mastodon.social",
-    bluesky="vsoch.bsky.social",
+    contributors=None,
     last_updated="",
 ):
+    if contributors is None:
+        # PyLadies-style: no directory_id, social handles present
+        contributors = [
+            {"name": "Vanessa Sochat", "mastodon": "@vsoch@mastodon.social", "bluesky": "vsoch.bsky.social"}
+        ]
     return {
         "name": name,
         "description": description,
@@ -51,9 +54,7 @@ def make_package(
         "pypi_url": pypi_url,
         "pkdown_url": pkdown_url,
         "logo_url": logo_url,
-        "maintainer_name": maintainer_name,
-        "mastodon": mastodon,
-        "bluesky": bluesky,
+        "contributors": contributors,
         "last_updated": last_updated,
     }
 
@@ -514,15 +515,39 @@ class TestBuildPostMastodon:
         post = handler.build_post_mastodon(make_package(repo_url="https://github.com/x/y"))
         assert "https://github.com/x/y" in post
 
-    def test_includes_maintainer_name(self):
-        handler = make_handler({"platform": "mastodon"})
-        post = handler.build_post_mastodon(make_package(maintainer_name="Alice"))
+    def test_includes_contributor_name(self):
+        handler = make_handler({"platform": "mastodon", "client_name": "pyladies_bot"})
+        post = handler.build_post_mastodon(make_package(
+            contributors=[{"name": "Alice", "mastodon": "", "bluesky": ""}]
+        ))
         assert "Alice" in post
 
-    def test_includes_mastodon_handle(self):
-        handler = make_handler({"platform": "mastodon"})
-        post = handler.build_post_mastodon(make_package(mastodon="@alice@fosstodon.org"))
+    def test_includes_mastodon_handle_for_pyladies_community_member(self):
+        handler = make_handler({"platform": "mastodon", "client_name": "pyladies_bot"})
+        post = handler.build_post_mastodon(make_package(
+            contributors=[{"name": "Alice", "mastodon": "@alice@fosstodon.org", "bluesky": ""}]
+        ))
         assert "@alice@fosstodon.org" in post
+
+    def test_rladies_bot_links_directory_id_member(self):
+        handler = make_handler({"platform": "mastodon", "client_name": "rladies_bot"})
+        post = handler.build_post_mastodon(make_package(
+            contributors=[
+                {"name": "Szymon", "mastodon": "", "bluesky": ""},
+                {"name": "Anna", "mastodon": "@anna@fosstodon.org", "bluesky": "", "directory_id": "anna-kozak"},
+            ]
+        ))
+        assert "Szymon" in post
+        assert "Anna" in post
+        assert "@anna@fosstodon.org" in post
+
+    def test_rladies_bot_does_not_link_contributor_without_directory_id(self):
+        handler = make_handler({"platform": "mastodon", "client_name": "rladies_bot"})
+        post = handler.build_post_mastodon(make_package(
+            contributors=[{"name": "Szymon", "mastodon": "@szymon@fosstodon.org", "bluesky": ""}]
+        ))
+        assert "Szymon" in post
+        assert "@szymon@fosstodon.org" not in post
 
     def test_no_pypi_or_docs_links_in_post(self):
         """Post should only contain the repo URL, not pypi or pkdown links."""
@@ -536,9 +561,9 @@ class TestBuildPostMastodon:
         assert "pypi.org" not in post
         assert "pkg.example.com" not in post
 
-    def test_missing_maintainer_skips_author_line(self):
-        handler = make_handler({"platform": "mastodon"})
-        post = handler.build_post_mastodon(make_package(maintainer_name="", mastodon=""))
+    def test_no_contributors_skips_author_line(self):
+        handler = make_handler({"platform": "mastodon", "client_name": "pyladies_bot"})
+        post = handler.build_post_mastodon(make_package(contributors=[]))
         assert "👤" not in post
 
     def test_includes_hashtags(self):
@@ -636,16 +661,42 @@ class TestBuildPostBluesky:
         # The builder still returns a FakeTextBuilder instance (no exception)
         assert tb is not None
 
-    def test_skips_did_resolution_when_no_handle(self):
-        handler = self._make_handler_with_fake_builder()
+    def test_skips_did_resolution_when_no_bluesky_handle(self):
+        handler = self._make_handler_with_fake_builder({"platform": "bluesky", "client_name": "pyladies_bot"})
         with patch.object(handler, "get_bluesky_did") as mock_did:
-            handler.build_post_bluesky(make_package(bluesky=""))
+            handler.build_post_bluesky(make_package(
+                contributors=[{"name": "Alice", "mastodon": "", "bluesky": ""}]
+            ))
         mock_did.assert_not_called()
+
+    def test_rladies_bot_skips_did_for_contributor_without_directory_id(self):
+        """R-Ladies bot must not resolve DID for authors who are not R-Ladies members."""
+        handler = self._make_handler_with_fake_builder({"platform": "bluesky", "client_name": "rladies_bot"})
+        with patch.object(handler, "get_bluesky_did") as mock_did:
+            handler.build_post_bluesky(make_package(
+                contributors=[{"name": "Szymon", "mastodon": "", "bluesky": "szymon.bsky.social"}]
+            ))
+        mock_did.assert_not_called()
+
+    def test_all_contributor_names_appear_in_bluesky_post(self):
+        handler = self._make_handler_with_fake_builder({"platform": "bluesky", "client_name": "rladies_bot"})
+        with patch.object(handler, "get_bluesky_did", return_value=None):
+            tb = handler.build_post_bluesky(make_package(
+                contributors=[
+                    {"name": "Szymon", "mastodon": "", "bluesky": ""},
+                    {"name": "Anna", "mastodon": "", "bluesky": "anna.bsky.social", "directory_id": "anna-kozak"},
+                ]
+            ))
+        text = tb.build_text()
+        assert "Szymon" in text
+        assert "Anna" in text
 
     def test_includes_hashtags(self):
         handler = self._make_handler_with_fake_builder({"platform": "bluesky", "client_name": "pyladies_bot"})
         with patch.object(handler, "get_bluesky_did", return_value=None):
-            tb = handler.build_post_bluesky(make_package(bluesky=""))
+            tb = handler.build_post_bluesky(make_package(
+                contributors=[{"name": "Alice", "mastodon": "", "bluesky": ""}]
+            ))
         assert "pyladies" in tb.build_text()
 
 

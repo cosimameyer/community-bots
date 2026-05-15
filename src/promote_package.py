@@ -337,24 +337,50 @@ class PromotePackage():
             return f"@{handle}"
         return handle
 
+    @staticmethod
+    def _join_names(parts: list[str]) -> str:
+        """Join a list of names as 'A', 'A & B', or 'A, B & C'."""
+        if not parts:
+            return ""
+        if len(parts) == 1:
+            return parts[0]
+        return ", ".join(parts[:-1]) + " & " + parts[-1]
+
+    def _is_community_member(self, contributor: dict) -> bool:
+        """Return True if this contributor is a community member.
+
+        R-Ladies: community membership is marked by a directory_id in the
+        contributor entry (present only for R-Ladies members).
+        PyLadies: all listed maintainers are treated as community members
+        (no directory_id equivalent exists in the PyLadies schema).
+        """
+        client_name = self.config_dict.get("client_name", "")
+        if "rladies" in client_name.lower():
+            return bool(contributor.get("directory_id"))
+        return True
+
     def build_post_mastodon(self, package: dict) -> str:
         """Build a Mastodon post for the given package."""
         name = package.get("name", "")
         description = package.get("description", "")
         repo_url = package.get("repo_url", "")
-        maintainer_name = package.get("maintainer_name", "")
-        mastodon_handle = self._check_handle(package.get("mastodon", ""))
+        contributors = package.get("contributors", [])
         tags = self.define_tags()
 
         post = f'📦 {name}\n\n'
         if description:
             post += f"{description}\n\n"
 
-        if maintainer_name:
-            post += f"👤 {maintainer_name}"
-            if mastodon_handle:
-                post += f" ({mastodon_handle})"
-            post += "\n\n"
+        if contributors:
+            parts = []
+            for c in contributors:
+                entry = c.get("name", "")
+                if self._is_community_member(c):
+                    handle = self._check_handle(c.get("mastodon", ""))
+                    if handle:
+                        entry += f" ({handle})"
+                parts.append(entry)
+            post += f"👤 {self._join_names(parts)}\n\n"
 
         post += f"🔗 {repo_url}\n\n{tags}"
 
@@ -370,14 +396,19 @@ class PromotePackage():
         name = package.get("name", "")
         description = package.get("description", "")
         repo_url = package.get("repo_url", "")
-        maintainer_name = package.get("maintainer_name", "")
-        bluesky_handle = self._check_handle(package.get("bluesky", ""))
+        contributors = package.get("contributors", [])
         tags = self.define_tags()
         tag_list = [t.strip() for t in tags.split("#") if t.strip()]
 
-        did = (
-            self.get_bluesky_did(bluesky_handle) if bluesky_handle else None
-        )
+        # Resolve DIDs only for community members, once before the tag-trimming loop.
+        resolved = []
+        for c in contributors:
+            if self._is_community_member(c):
+                handle = self._check_handle(c.get("bluesky", ""))
+                did = self.get_bluesky_did(handle) if handle else None
+            else:
+                handle, did = "", None
+            resolved.append((c.get("name", ""), handle, did))
 
         def _build(tag_subset):
             tb = client_utils.TextBuilder()
@@ -385,12 +416,16 @@ class PromotePackage():
             if description:
                 tb.text(description)
                 tb.text("\n\n")
-            if maintainer_name:
-                tb.text(f"👤 {maintainer_name}")
-                if bluesky_handle and did:
-                    tb.mention(f" ({bluesky_handle})", did)
-                elif bluesky_handle:
-                    tb.text(f" ({bluesky_handle})")
+            if resolved:
+                tb.text("👤 ")
+                for i, (cname, handle, did) in enumerate(resolved):
+                    if i > 0:
+                        tb.text(", " if i < len(resolved) - 1 else " & ")
+                    tb.text(cname)
+                    if handle and did:
+                        tb.mention(f" ({handle})", did)
+                    elif handle:
+                        tb.text(f" ({handle})")
                 tb.text("\n\n")
             tb.text("🔗 ")
             tb.link(repo_url, repo_url)
