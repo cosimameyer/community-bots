@@ -961,7 +961,9 @@ class TestProcessFeeds:
              ):
             handler.process_feeds(feeds, "OnlyFeed", 0, MagicMock())
 
-        assert "OnlyFeed" in captured_counter
+        # Counter must NOT advance when nothing was posted (fix: counter only
+        # advances on actual successful posts to avoid skipping rotation slots).
+        assert captured_counter == []
 
 
 # ---------------------------------------------------------------------------

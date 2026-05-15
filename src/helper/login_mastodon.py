@@ -7,6 +7,11 @@ from mastodon import Mastodon
 
 logger = logging.getLogger(__name__)
 
+# Suppress credential-adjacent debug output from third-party libraries
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("atproto").setLevel(logging.WARNING)
+logging.getLogger("atproto_client").setLevel(logging.WARNING)
+
 
 class MastodonConfig(TypedDict):
     """Typed configuration for Mastodon login."""
