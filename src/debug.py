@@ -15,14 +15,18 @@ from boost_mentions import BoostMentions
 load_dotenv()
 logging.basicConfig(level=logging.INFO)
 
+# Resolve paths relative to this file so the script works regardless of cwd.
+_SRC_DIR = os.path.dirname(os.path.abspath(__file__))
+_METADATA_DIR = os.path.join(_SRC_DIR, "..", "metadata")
+
 
 class DebugBots:
     """
     Class to handle debugging of all modules.
     """
     def __init__(self):
-        self.bot = 'rladies'  # 'pyladies' or 'rladies'
-        self.what_to_debug = 'rss'  # 'blog', 'boost_tags', 'rss', 'anniversary', 'boost_mentions', 'packages', 'package'
+        self.bot = 'pyladies'  # 'pyladies' or 'rladies'
+        self.what_to_debug = 'package'  # 'blog', 'boost_tags', 'rss', 'anniversary', 'boost_mentions', 'get_packages', 'package'
         self.platform = 'bluesky'  # 'bluesky' or 'mastodon'
         self.no_dry_run = True  # True to actually post
 
@@ -100,7 +104,7 @@ class DebugBots:
             )
             promote_anniversary_handler.promote_anniversary()
 
-        elif self.what_to_debug == 'packages':
+        elif self.what_to_debug == 'get_packages':
             config_dict = self.get_config_packages()
             if config_dict is None:
                 logger.error(
@@ -167,8 +171,8 @@ class DebugBots:
             if self.platform == 'bluesky':
                 return {
                     "archive": "rladies_archive_directory_bluesky",
-                    "counter": "../metadata/rladies_counter_bluesky.txt",
-                    "json_file": "../metadata/rladies_meta_data.json",
+                    "counter": os.path.join(_METADATA_DIR, "rladies_counter_bluesky.txt"),
+                    "json_file": os.path.join(_METADATA_DIR, "rladies_meta_data.json"),
                     "client_name": "rladies_bot",
                     "images": "rladies_images",
                     "api_base_url": self.platform,
@@ -182,8 +186,8 @@ class DebugBots:
             if self.platform == 'mastodon':
                 return {
                     "archive": "rladies_archive_directory",
-                    "counter": "../metadata/rladies_counter.txt",
-                    "json_file": "../metadata/rladies_meta_data.json",
+                    "counter": os.path.join(_METADATA_DIR, "rladies_counter.txt"),
+                    "json_file": os.path.join(_METADATA_DIR, "rladies_meta_data.json"),
                     "client_name": "rladies_bot",
                     "images": "rladies_images",
                     "api_base_url": config.API_BASE_URL,
@@ -344,7 +348,7 @@ class DebugBots:
                     "https://raw.githubusercontent.com/cosimameyer/"
                     "awesome-pyladies-creations/main/data/packages"
                 ),
-                "json_file": "metadata/pyladies_packages_meta_data.json",
+                "json_file": os.path.join(_METADATA_DIR, "pyladies_packages_meta_data.json"),
             }
         if self.bot == 'rladies':
             return {
@@ -356,17 +360,18 @@ class DebugBots:
                     "https://raw.githubusercontent.com/rladies/"
                     "awesome-rladies-creations/main/data/packages"
                 ),
-                "json_file": "metadata/rladies_packages_meta_data.json",
+                "json_file": os.path.join(_METADATA_DIR, "rladies_packages_meta_data.json"),
             }
         return None
 
     def get_config_package(self):
-        """Method to generate config for promoting libraries."""
+        """Method to generate config for promoting packages."""
         if self.bot == 'pyladies':
             if self.platform == 'bluesky':
                 return {
-                    "counter": "metadata/pyladies_packages_counter_bluesky.txt",
-                    "json_file": "metadata/pyladies_packages_meta_data.json",
+                    "counter": os.path.join(_METADATA_DIR, "pyladies_packages_counter_bluesky.txt"),
+                    "json_file": os.path.join(_METADATA_DIR, "pyladies_packages_meta_data.json"),
+                    "archive_file": os.path.join(_METADATA_DIR, "pyladies_packages_archive.json"),
                     "client_name": "pyladies_bot",
                     "api_base_url": self.platform,
                     "password": os.getenv("PYLADIES_BSKY_PASSWORD"),
@@ -375,8 +380,9 @@ class DebugBots:
                 }
             if self.platform == 'mastodon':
                 return {
-                    "counter": "metadata/pyladies_packages_counter_mastodon.txt",
-                    "json_file": "metadata/pyladies_packages_meta_data.json",
+                    "counter": os.path.join(_METADATA_DIR, "pyladies_packages_counter_mastodon.txt"),
+                    "json_file": os.path.join(_METADATA_DIR, "pyladies_packages_meta_data.json"),
+                    "archive_file": os.path.join(_METADATA_DIR, "pyladies_packages_archive.json"),
                     "client_name": "pyladies_bot",
                     "api_base_url": config.API_BASE_URL,
                     "password": os.getenv("PYLADIES_MASTODON_PASSWORD"),
@@ -390,8 +396,9 @@ class DebugBots:
         if self.bot == 'rladies':
             if self.platform == 'bluesky':
                 return {
-                    "counter": "metadata/rladies_packages_counter_bluesky.txt",
-                    "json_file": "metadata/rladies_packages_meta_data.json",
+                    "counter": os.path.join(_METADATA_DIR, "rladies_packages_counter_bluesky.txt"),
+                    "json_file": os.path.join(_METADATA_DIR, "rladies_packages_meta_data.json"),
+                    "archive_file": os.path.join(_METADATA_DIR, "rladies_packages_archive.json"),
                     "client_name": "rladies_bot",
                     "api_base_url": self.platform,
                     "password": os.getenv("RLADIES_BSKY_PASSWORD"),
@@ -400,8 +407,9 @@ class DebugBots:
                 }
             if self.platform == 'mastodon':
                 return {
-                    "counter": "metadata/rladies_packages_counter_mastodon.txt",
-                    "json_file": "metadata/rladies_packages_meta_data.json",
+                    "counter": os.path.join(_METADATA_DIR, "rladies_packages_counter_mastodon.txt"),
+                    "json_file": os.path.join(_METADATA_DIR, "rladies_packages_meta_data.json"),
+                    "archive_file": os.path.join(_METADATA_DIR, "rladies_packages_archive.json"),
                     "client_name": "rladies_bot",
                     "api_base_url": config.API_BASE_URL,
                     "password": os.getenv("RLADIES_MASTODON_PASSWORD"),

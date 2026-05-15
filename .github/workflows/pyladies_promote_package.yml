@@ -50,6 +50,7 @@ jobs:
           PLATFORM: "bluesky"
           COUNTER: "pyladies_packages_counter_bluesky.txt"
           JSON_FILE: "pyladies_packages_meta_data.json"
+          ARCHIVE_FILE: "pyladies_packages_archive.json"
           CLIENT_NAME: "pyladies_bot"
           PASSWORD: ${{ secrets.PYLADIES_BSKY_PASSWORD }}
           USERNAME: ${{ secrets.PYLADIES_BSKY_USERNAME }}

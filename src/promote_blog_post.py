@@ -215,12 +215,17 @@ class PromoteBlogPost():
     @staticmethod
     def _ensure_metadata_prefix(value: str, prefix="metadata/") -> str:
         """
-        Ensures that a string has the prefix "metadata/". If it does not
-        have this, update it.
+        Ensures that a string contains "metadata/" as a proper path segment.
+        Handles bare names ("counter.txt" → "metadata/counter.txt") while
+        leaving already-prefixed paths intact, including relative ones
+        ("../metadata/counter.txt" is returned unchanged).
         """
-        if not value.startswith(prefix):
-            return prefix + value
-        return value
+        if not value:
+            return value
+        segments = value.replace("\\", "/").split("/")
+        if prefix.rstrip("/") in segments:
+            return value
+        return prefix + value
 
     def download_image(self, url: str):
         """

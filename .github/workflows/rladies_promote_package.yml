@@ -50,6 +50,7 @@ jobs:
           PLATFORM: "bluesky"
           COUNTER: "rladies_packages_counter_bluesky.txt"
           JSON_FILE: "rladies_packages_meta_data.json"
+          ARCHIVE_FILE: "rladies_packages_archive.json"
           CLIENT_NAME: "rladies_bot"
           PASSWORD: ${{ secrets.RLADIES_BSKY_PASSWORD }}
           USERNAME: ${{ secrets.RLADIES_BSKY_USERNAME }}
