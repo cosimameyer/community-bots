@@ -268,12 +268,14 @@ Environment variables (stored as GitHub Secrets) drive all credentials and paths
 
 | Variable | Used by |
 |---|---|
-| `PLATFORM` | All bots — `"mastodon"` or `"bluesky"` |
+| `PLATFORM` | All posting bots — `"mastodon"` or `"bluesky"` |
 | `USERNAME` / `PASSWORD` | Bluesky login |
 | `ACCESS_TOKEN`, `CLIENT_ID`, `CLIENT_SECRET` | Mastodon OAuth |
 | `GEMINI_API_KEY` | Blog-post bot (AI summaries) |
-| `JSON_FILE`, `COUNTER` | Blog-post bot (file paths) |
-| `IMAGES`, `ARCHIVE_DIRECTORY` | Image and archive storage |
+| `JSON_FILE`, `COUNTER` | Blog-post and package-promotion bots (file paths) |
+| `ARCHIVE_FILE` | Package-promotion bot — path to promoted-version archive JSON |
+| `BASE_URL`, `GITHUB_RAW_URL` | Package data collector — GitHub tree URL and raw content base |
+| `IMAGES`, `ARCHIVE_DIRECTORY` | Image and archive storage (blog-post bot) |
 
 Bots accept a `config_dict` constructor argument as an alternative to environment variables, which is used for local testing and the debug helper (`debug.py`).
 
