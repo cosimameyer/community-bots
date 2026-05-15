@@ -359,18 +359,25 @@ class PromotePackage():
             return bool(contributor.get("directory_id"))
         return True
 
+    @staticmethod
+    def _fit_description(description: str, budget: int) -> str:
+        """Truncate description to fit within budget characters, adding '…'."""
+        if budget <= 0:
+            return ""
+        if len(description) <= budget:
+            return description
+        return description[:budget - 1] + "…"
+
     def build_post_mastodon(self, package: dict) -> str:
         """Build a Mastodon post for the given package."""
+        mastodon_max_chars = 500
         name = package.get("name", "")
         description = package.get("description", "")
         repo_url = package.get("repo_url", "")
         contributors = package.get("contributors", [])
         tags = self.define_tags()
 
-        post = f'📦 {name}\n\n'
-        if description:
-            post += f"{description}\n\n"
-
+        contributor_line = ""
         if contributors:
             parts = []
             for c in contributors:
@@ -380,9 +387,18 @@ class PromotePackage():
                     if handle:
                         entry += f" ({handle})"
                 parts.append(entry)
-            post += f"👤 {self._join_names(parts)}\n\n"
+            contributor_line = f"👤 {self._join_names(parts)}\n\n"
 
-        post += f"🔗 {repo_url}\n\n{tags}"
+        suffix = f"🔗 {repo_url}\n\n{tags}"
+        prefix = f"📦 {name}\n\n"
+        # "\n\n" separates description from what follows
+        overhead = len(prefix) + len(contributor_line) + len(suffix) + 2
+        description = self._fit_description(description, mastodon_max_chars - overhead)
+
+        post = prefix
+        if description:
+            post += f"{description}\n\n"
+        post += contributor_line + suffix
 
         self.logger.info("*****************************")
         self.logger.info(post)
@@ -410,11 +426,11 @@ class PromotePackage():
                 handle, did = "", None
             resolved.append((c.get("name", ""), handle, did))
 
-        def _build(tag_subset):
+        def _build(desc, tag_subset):
             tb = client_utils.TextBuilder()
             tb.text(f"📦 {name}\n\n")
-            if description:
-                tb.text(description)
+            if desc:
+                tb.text(desc)
                 tb.text("\n\n")
             if resolved:
                 tb.text("👤 ")
@@ -434,10 +450,17 @@ class PromotePackage():
                 tb.tag(f"#{tag_clean} ", tag_clean)
             return tb
 
+        # First trim tags, then trim description if still over limit.
         for count in range(len(tag_list), -1, -1):
-            text_builder = _build(tag_list[:count])
+            text_builder = _build(description, tag_list[:count])
             if len(text_builder.build_text()) <= bluesky_max_graphemes:
                 return text_builder
+
+        # Tags exhausted — trim description to fit.
+        no_desc_len = len(_build("", []).build_text())
+        desc_budget = bluesky_max_graphemes - no_desc_len - 2  # 2 for "\n\n"
+        trimmed = self._fit_description(description, desc_budget)
+        return _build(trimmed, [])
 
         return _build([])
 

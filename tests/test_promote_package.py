@@ -576,6 +576,17 @@ class TestBuildPostMastodon:
         result = handler.build_post_mastodon(make_package())
         assert isinstance(result, str)
 
+    def test_long_description_truncated_to_500_chars(self):
+        handler = make_handler({"platform": "mastodon", "client_name": "pyladies_bot"})
+        post = handler.build_post_mastodon(make_package(description="X" * 600))
+        assert len(post) <= 500
+
+    def test_short_description_not_truncated(self):
+        handler = make_handler({"platform": "mastodon", "client_name": "pyladies_bot"})
+        desc = "Short description."
+        post = handler.build_post_mastodon(make_package(description=desc))
+        assert desc in post
+
 
 # ---------------------------------------------------------------------------
 # build_post_bluesky
@@ -653,13 +664,12 @@ class TestBuildPostBluesky:
             tb = handler.build_post_bluesky(make_package())
         assert len(tb.build_text()) <= 300
 
-    def test_long_description_does_not_raise(self):
-        """A description longer than 300 chars shouldn't raise — tags are dropped instead."""
+    def test_long_description_truncated_to_300_graphemes(self):
+        """A very long description must be trimmed so the post stays within 300 graphemes."""
         handler = self._make_handler_with_fake_builder()
         with patch.object(handler, "get_bluesky_did", return_value=None):
             tb = handler.build_post_bluesky(make_package(description="A" * 400))
-        # The builder still returns a FakeTextBuilder instance (no exception)
-        assert tb is not None
+        assert len(tb.build_text()) <= 300
 
     def test_skips_did_resolution_when_no_bluesky_handle(self):
         handler = self._make_handler_with_fake_builder({"platform": "bluesky", "client_name": "pyladies_bot"})
