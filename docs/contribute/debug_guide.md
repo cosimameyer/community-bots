@@ -24,7 +24,7 @@ Already familiar with the setup? Here's the short path:
 3. Run from the project root:
 
    ```bash
-   pdm run python src/debug.py
+   uv run python src/debug.py
    ```
 
 4. Check the `INFO` log output. When everything looks right, switch `no_dry_run = True` and run again.
@@ -51,8 +51,8 @@ Already familiar with the setup? Here's the short path:
 ### 1. Prerequisites
 
 - Python 3.12
-- PDM: `pip install pdm`
-- Project dependencies: `pdm install`
+- uv: see the [uv installation guide](https://docs.astral.sh/uv/getting-started/installation/)
+- Project dependencies: `uv sync`
 
 ### 2. Create a `.env` file
 
@@ -90,13 +90,13 @@ GEMINI_MODEL_NAME=gemini-2.5-flash
 
 ## Running the script
 
-### Preferred: PDM (from the project root)
+### Preferred: uv (from the project root)
 
 ```bash
-pdm run python src/debug.py
+uv run python src/debug.py
 ```
 
-PDM resolves the virtualenv and dependencies automatically — no `cd src` or manual environment activation needed.
+uv resolves the virtualenv and dependencies automatically — no `cd src` or manual environment activation needed.
 
 ### Alternative: VS Code debugger
 
@@ -107,7 +107,7 @@ Add a launch configuration to `.vscode/launch.json`:
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug bot (PDM)",
+            "name": "Debug bot (uv)",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/debug.py",
@@ -129,7 +129,7 @@ And the corresponding `tasks.json`:
         {
             "label": "Check requirements",
             "type": "shell",
-            "command": "pdm install"
+            "command": "uv sync"
         }
     ]
 }
@@ -190,7 +190,7 @@ The required environment variables depend on the bot and platform combination yo
 2. Run:
 
    ```bash
-   pdm run python src/debug.py
+   uv run python src/debug.py
    ```
 
 3. Read the log output. A dry run shows lines like:
@@ -252,7 +252,7 @@ None — this scenario reads from public GitHub URLs only.
 2. Run:
 
    ```bash
-   pdm run python src/debug.py
+   uv run python src/debug.py
    ```
 
 3. Inspect `metadata/pyladies_meta_data.json` (or `rladies`) to confirm it was updated.
@@ -299,7 +299,7 @@ The required environment variables depend on the bot and platform combination yo
 2. Run:
 
    ```bash
-   pdm run python src/debug.py
+   uv run python src/debug.py
    ```
 
 3. The log shows posts found under the hashtag and whether each would be boosted or skipped.
@@ -341,7 +341,7 @@ Same as `boost_tags` — see the table in Scenario 3.
 2. Run:
 
    ```bash
-   pdm run python src/debug.py
+   uv run python src/debug.py
    ```
 
 3. The log shows each notification and whether it would be boosted or skipped.
@@ -408,7 +408,7 @@ The required environment variables depend on the bot and platform combination yo
 3. Run:
 
    ```bash
-   pdm run python src/debug.py
+   uv run python src/debug.py
    ```
 
 4. The log shows:
@@ -456,7 +456,7 @@ None — this scenario reads from public GitHub URLs only.
 2. Run:
 
    ```bash
-   pdm run python src/debug.py
+   uv run python src/debug.py
    ```
 
 3. Inspect `metadata/pyladies_packages_meta_data.json` (or `rladies`) to confirm it was updated with the expected entries.
@@ -510,7 +510,7 @@ None — this scenario reads from public GitHub URLs only.
 3. Run:
 
    ```bash
-   pdm run python src/debug.py
+   uv run python src/debug.py
    ```
 
 4. Read the log output. A dry run shows the full formatted post that would be sent:
@@ -581,11 +581,11 @@ The `rss` scenario ignores `platform` entirely.
 
 ### ModuleNotFoundError / ImportError
 
-Run from the project root using PDM, not from inside `src/`:
+Run from the project root using uv, not from inside `src/`:
 
 ```bash
 # Correct
-pdm run python src/debug.py
+uv run python src/debug.py
 
 # Wrong — relative imports break
 cd src && python debug.py

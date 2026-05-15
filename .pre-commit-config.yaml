@@ -3,7 +3,7 @@ repos:
     hooks:
       - id: pylint-pep-check
         name: 💅 Pylint PEP Check
-        entry: pdm run pylint
+        entry: uv run pylint
         language: system
         types: [python]
         files: \.py$
@@ -13,19 +13,19 @@ repos:
         - --fail-under=4
       - id: pytest
         name: 🧪 Run unit tests
-        entry: pdm run pytest
+        entry: uv run pytest
         language: system
         pass_filenames: false
         stages: [pre-push]
         verbose: true
-  - repo: https://github.com/pdm-project/pdm
-    rev: 2.24.1
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.11.14
     hooks:
-      - id: pdm-lock-check
-        name: 🔒 Check that your pdm.lock is ok
-      - id: pdm-sync
-        name: 🔄 Sync pdm.lock with pyproject.toml
-      - id: pdm-export
-        name: 💾  Export your requirements.txt based on pdm.lock
-        args: ['-o', 'requirements.txt', '--without-hashes']
-        files: ^pdm.lock$
+      - id: uv-lock
+        name: 🔒 Check that your uv.lock is ok
+      - id: uv-sync
+        name: 🔄 Sync uv.lock with pyproject.toml
+      - id: uv-export
+        name: 💾  Export your requirements.txt based on uv.lock
+        args: ['--frozen', '-o', 'requirements.txt', '--no-hashes']
+        files: ^uv\.lock$
