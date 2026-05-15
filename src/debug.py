@@ -21,10 +21,10 @@ class DebugBots:
     Class to handle debugging of all modules.
     """
     def __init__(self):
-        self.bot = 'pyladies'  # 'pyladies' or 'rladies'
-        self.what_to_debug = 'package'  # 'blog', 'boost_tags', 'rss', 'anniversary', 'boost_mentions', 'packages', 'package'
+        self.bot = 'rladies'  # 'pyladies' or 'rladies'
+        self.what_to_debug = 'get_packages'  # 'blog', 'boost_tags', 'rss', 'anniversary', 'boost_mentions', 'get_packages', 'package'
         self.platform = 'bluesky'  # 'bluesky' or 'mastodon'
-        self.no_dry_run = False  # True to actually post
+        self.no_dry_run = True  # True to actually post
 
     def start_debug(self):
         """Start debugging."""
@@ -100,7 +100,7 @@ class DebugBots:
             )
             promote_anniversary_handler.promote_anniversary()
 
-        elif self.what_to_debug == 'packages':
+        elif self.what_to_debug == 'get_packages':
             config_dict = self.get_config_packages()
             if config_dict is None:
                 logger.error(
