@@ -1,8 +1,12 @@
 """Module to boost posts containing specific tags using community bots."""
 
+import json
+import re
 import time
 import os
 import logging
+from datetime import datetime, timezone, timedelta
+from pathlib import Path
 from typing import Optional, Dict, Any, cast
 from dotenv import load_dotenv
 
@@ -126,8 +130,49 @@ class BoostTags:
         """Handle reposting tags on Mastodon."""
         raise NotImplementedError("Mastodon tag boosting is not yet implemented.")
 
+    _SEEN_CIDS_FILE = Path("metadata/bluesky_seen_cids.json")
+    _SEEN_CIDS_MAX_AGE_DAYS = 7
+    _VALID_TAG_PATTERN = re.compile(r'^[a-zA-Z0-9_]{1,100}$')
+
+    def _load_seen_cids(self) -> dict:
+        """Load persistent seen-CIDs from file, pruning entries older than 7 days."""
+        if self._SEEN_CIDS_FILE.exists():
+            try:
+                with self._SEEN_CIDS_FILE.open("r", encoding="utf-8") as f:
+                    data = json.load(f)
+            except (json.JSONDecodeError, OSError):
+                data = {}
+        else:
+            data = {}
+        cutoff = datetime.now(timezone.utc) - timedelta(days=self._SEEN_CIDS_MAX_AGE_DAYS)
+        return {
+            cid: ts
+            for cid, ts in data.items()
+            if datetime.fromisoformat(ts) > cutoff
+        }
+
+    def _save_seen_cids(self, seen_cids: dict) -> None:
+        """Save persistent seen-CIDs to file."""
+        try:
+            self._SEEN_CIDS_FILE.parent.mkdir(parents=True, exist_ok=True)
+            with self._SEEN_CIDS_FILE.open("w", encoding="utf-8") as f:
+                json.dump(seen_cids, f, ensure_ascii=False, indent=2)
+        except OSError as e:
+            self.logger.warning("Could not save seen CIDs file: %s", e)
+
     def _boost_tags_bluesky(self) -> None:
         """Handle reposting tags on Bluesky."""
+        # Fix 1: validate tags from config before proceeding
+        raw_tags = self.cfg.get("tags", [])
+        if isinstance(raw_tags, str):
+            raw_tag_list = [t.strip().lstrip('#') for t in raw_tags.split(',')]
+        else:
+            raw_tag_list = [t.strip().lstrip('#') for t in raw_tags]
+        valid_tags = [t for t in raw_tag_list if self._VALID_TAG_PATTERN.match(t)]
+        if not valid_tags:
+            self.logger.warning("No valid tags after validation — skipping boost.")
+            return
+
         try:
             client = login_bluesky(cast(BlueskyConfig, self.config_dict))
         except InvokeTimeoutError:
@@ -136,17 +181,22 @@ class BoostTags:
         self.logger.info(" > Fetched Bluesky account data.")
         self.logger.info(" > Starting search-loop for reposting.")
 
+        # Fix 9: use persistent seen-CIDs file instead of single-page timeline dedup
+        seen_cids_dict = self._load_seen_cids()
         try:
             timeline = client.get_timeline(algorithm="reverse-chronological")
+            now_ts = datetime.now(timezone.utc).isoformat()
+            for post in timeline.feed:
+                seen_cids_dict[post.post.cid] = now_ts
         except InvokeTimeoutError:
             self.logger.error("Timed out fetching timeline. Aborting.")
             return
-        seen_cids = {post.post.cid for post in timeline.feed}
+        seen_cids = set(seen_cids_dict.keys())
 
         max_boosts = self.cfg.get("max_boosts_per_run", 5)
         boost_count = 0
 
-        for tag in self.cfg["tags"]:
+        for tag in valid_tags:
             tag = tag.lower().strip("# ")
             self.logger.info(" > Searching for tag #%s", tag)
             if boost_count >= max_boosts:
@@ -193,6 +243,7 @@ class BoostTags:
                             post.author.handle,
                         )
                         seen_cids.add(post.cid)
+                        seen_cids_dict[post.cid] = datetime.now(timezone.utc).isoformat()
                         boost_count += 1
                     else:
                         try:
@@ -203,6 +254,7 @@ class BoostTags:
                                 result,
                             )
                             seen_cids.add(post.cid)
+                            seen_cids_dict[post.cid] = datetime.now(timezone.utc).isoformat()
                             boost_count += 1
                         except AtProtocolError as e:
                             self.logger.error(
@@ -213,6 +265,7 @@ class BoostTags:
                             )
                     time.sleep(0.1)  # avoid hammering API
 
+        self._save_seen_cids(seen_cids_dict)
         self.logger.info("Finished processing Bluesky reposts.")
 
 

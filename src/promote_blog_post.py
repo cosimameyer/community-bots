@@ -57,7 +57,7 @@ class PromoteBlogPost():
                 "json_file": self._ensure_metadata_prefix(
                     os.getenv("JSON_FILE", "")
                 ),
-                "gen_ai_support": True,
+                "gen_ai_support": bool(os.getenv("GEMINI_API_KEY")),
                 "gemini_api_key": os.getenv("GEMINI_API_KEY"),
                 "gemini_model_name": "gemini-2.5-flash"
             }
@@ -169,7 +169,12 @@ class PromoteBlogPost():
                     "Successfully promoted blog posts. "
                     "Thank you and see you next time!")
 
-        self.update_counter(feeds[next_index]['name'])
+        if count_post > 0:
+            self.update_counter(feeds[next_index]['name'])
+        else:
+            self.logger.info(
+                "No posts made this run — counter left unchanged."
+            )
 
     def update_counter(self, counter_name):
         """
@@ -186,8 +191,11 @@ class PromoteBlogPost():
         """
         Read counter name from txt file
         """
-        with open(self.config_dict["counter"], 'r', encoding='utf-8') as f:
-            return f.read()
+        try:
+            with open(self.config_dict["counter"], 'r', encoding='utf-8') as f:
+                return f.read()
+        except FileNotFoundError:
+            return ""
 
     def read_metadata_json(self):
         """
@@ -227,18 +235,19 @@ class PromoteBlogPost():
         try:
             filename = ''
             # Parse the URL components
+            parsed = urlsplit(url)
+            domain = parsed.netloc
+            safe_filename = posixpath.basename(parsed.path) or "image"
             if self.config_dict["platform"] == "bluesky":
-                domain = urlsplit(url).path
-                filename = posixpath.basename(domain)
+                filename = safe_filename
             elif self.config_dict["platform"] == "mastodon":
-                domain = urlsplit(url).netloc
-                filename = posixpath.basename(urlsplit(url).path)
+                filename = safe_filename
 
             # Create folder structure based on the domain name
             domain_dir = Path(self.config_dict['images']) / domain
             domain_dir.mkdir(parents=True, exist_ok=True)
 
-            # Full file path for the image
+            # Full file path for the image (always under images/domain/)
             file_path = domain_dir / filename
 
             if file_path.is_file():
@@ -315,9 +324,8 @@ class PromoteBlogPost():
                 if tag.lower() in ['pyladies', 'python', 'rstats', 'rladies']:
                     pass
                 else:
-                    tags += (
-                        f"#{tag.replace(' ', '').replace('-', '').lower()} "
-                    )
+                    tag_clean = tag.replace(' ', '').replace('-', '').lower()[:50]
+                    tags += f"#{tag_clean} "
 
         return tags
 
@@ -330,7 +338,7 @@ class PromoteBlogPost():
             f"handle={platform_user_handle.lstrip('@')}"
         )
         try:
-            response = requests.get(url)
+            response = requests.get(url, timeout=10)
 
             if response.status_code == 200:
                 data = response.json()
@@ -364,7 +372,11 @@ class PromoteBlogPost():
         post = f'{emoji} "{title}"\n\n' if title else ''
 
         if self.config_dict.get('gen_ai_support', None):
-            summarized_blog_post = self.summarize_text(entry)
+            try:
+                summarized_blog_post = self.summarize_text(entry)
+            except Exception as e:  # pylint: disable=broad-except
+                self.logger.warning("Gemini summarization failed, falling back to no summary: %s", e)
+                summarized_blog_post = ""
             if summarized_blog_post:
                 post += summarized_blog_post + '\n\n'
 
@@ -452,6 +464,8 @@ class PromoteBlogPost():
         """
         Check platform handle.
         """
+        if not platform_user_handle:
+            return ""
         if (len(platform_user_handle) > 1
                 and not platform_user_handle.startswith('@')):
             return f"@{platform_user_handle}"
@@ -475,7 +489,11 @@ class PromoteBlogPost():
 
         summarized_blog_post = ''
         if self.config_dict.get('gen_ai_support', None):
-            summarized_blog_post = self.summarize_text(entry) or ''
+            try:
+                summarized_blog_post = self.summarize_text(entry) or ''
+            except Exception as e:  # pylint: disable=broad-except
+                self.logger.warning("Gemini summarization failed, falling back to no summary: %s", e)
+                summarized_blog_post = ''
 
         # Resolve DID once so _build() never makes a duplicate HTTP call
         did = self.get_bluesky_did(platform_user_handle) if platform_user_handle else None
@@ -607,6 +625,8 @@ class PromoteBlogPost():
         """
         if en['media_content']:
             filename = self.download_image(en['media_content'])
+            if filename is None:
+                return None
             with open(filename, 'rb') as f:
                 img_data = f.read()
 
@@ -664,6 +684,8 @@ class PromoteBlogPost():
     @staticmethod
     def get_rss_feed_archive(feed):
         """Method to get RSS feed archive content"""
+        if not feed.get('ARCHIVE'):
+            return {'link': []}
         archive_path = Path(feed['ARCHIVE'][0])
         archive_file = archive_path / 'file.json'
 
@@ -823,6 +845,12 @@ class PromoteBlogPost():
     def _save_rss_feed_archive(self, feed, rss_feed_archive):
         """ Save RSS feed archive to a file """
         archive_path = os.path.join(feed['ARCHIVE'][0], 'file.json')
+        safe_root = Path.cwd().resolve()
+        target = Path(archive_path).resolve()
+        if not str(target).startswith(str(safe_root)):
+            raise ValueError(
+                f"Archive path {archive_path!r} escapes the project root — refusing to write."
+            )
         with open(archive_path, 'w', encoding='utf-8') as fp:
             json.dump(rss_feed_archive, fp)
         self.logger.info("Archive for %s updated successfully.", feed['name'])
@@ -892,9 +920,9 @@ class PromoteBlogPost():
 
             if en['link'] not in feed_config['rss_feed_archive']['link']:
                 if self.no_dry_run:
-                    feed_config['rss_feed_archive']['link'].append(en['link'])
                     result = self.send_post(en, feed_config['feed'], client)
                     if result == 'success':
+                        feed_config['rss_feed_archive']['link'].append(en['link'])
                         count_post += 1
                         count += 1
                         time.sleep(1)

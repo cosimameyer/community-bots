@@ -7,6 +7,11 @@ from atproto import Client
 
 logger = logging.getLogger(__name__)
 
+# Suppress credential-adjacent debug output from third-party libraries
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("atproto").setLevel(logging.WARNING)
+logging.getLogger("atproto_client").setLevel(logging.WARNING)
+
 
 class BlueskyConfig(TypedDict):
     """Typed configuration for Bluesky login."""
