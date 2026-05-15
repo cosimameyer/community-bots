@@ -462,8 +462,6 @@ class PromotePackage():
         trimmed = self._fit_description(description, desc_budget)
         return _build(trimmed, [])
 
-        return _build([])
-
     def send_post(self, package: dict, client) -> str:
         """Build and send the post for a package."""
         self.logger.info(
