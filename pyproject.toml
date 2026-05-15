@@ -37,9 +37,6 @@ readme = "README.md"
 license = {text = "CC0 1.0"}
 
 
-[tool.pdm]
-distribution = false
-
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]

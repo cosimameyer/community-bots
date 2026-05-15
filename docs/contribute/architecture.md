@@ -237,7 +237,7 @@ The repository is organised as follows: bot source code lives in `src/`, persist
 ├── archive/                        # Audit copies of posted content
 ├── docs/                           # MkDocs documentation source
 ├── .github/workflows/              # Scheduled GitHub Actions (one per bot × community)
-├── pyproject.toml                  # Dependencies (pdm)
+├── pyproject.toml                  # Dependencies (uv)
 └── mkdocs.yml                      # Documentation site config
 ```
 
