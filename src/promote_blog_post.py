@@ -421,12 +421,12 @@ class PromoteBlogPost():
         Summarize text using LLMs.
         """
         text = self.generate_text_to_summarize(entry)
-        prompt_parts = [
-            'Summarize the content of the post in maximum 60 characters.',
-            'Be as concise as possible and be engaging.',
-            'Don\'t repeat the title.',
-            text
-        ]
+        prompt = (
+            'Summarize the content of the post in maximum 60 characters. '
+            'Be as concise as possible and be engaging. '
+            "Don't repeat the title.\n\n"
+            + text
+        )
         _retryable_codes = ("429", "503")
         _max_attempts = 3
         _retry_wait = 30
@@ -435,7 +435,7 @@ class PromoteBlogPost():
             try:
                 response = self.genai_client.models.generate_content(
                     model=self.config_dict.get('gemini_model_name', ''),
-                    contents=prompt_parts
+                    contents=prompt
                 )
                 break
             except Exception as e:  # pylint: disable=broad-except
