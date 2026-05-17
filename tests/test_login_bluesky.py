@@ -150,7 +150,8 @@ def test_succeeds_on_third_attempt():
     bad_client_2 = MagicMock()
     bad_client_2.login.side_effect = RuntimeError("transient 403")
 
-    with patch("helper.login_bluesky.Client", side_effect=[bad_client_1, bad_client_2, good_client]), \
+    clients = [bad_client_1, bad_client_2, good_client]
+    with patch("helper.login_bluesky.Client", side_effect=clients), \
          patch("helper.login_bluesky.time.sleep") as mock_sleep:
         result = login_bluesky(VALID_CONFIG)
 
