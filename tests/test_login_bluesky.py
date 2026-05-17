@@ -6,13 +6,14 @@ Covers:
 - Happy path: correct Client.login args, client returned
 - Regression guards: Client() constructed with no args; profile.handle read from login return value
 - Login return value: server-confirmed handle used in success log
-- Error propagation: Client() and client.login() exceptions bubble up
+- Error propagation: Client() and client.login() exceptions bubble up after all retries
+- Retry behaviour: succeeds on 2nd/3rd attempt; warning logged per failure; fresh Client per attempt
 - Edge cases: missing required config keys raise KeyError; empty-string credentials forwarded
 - Logging: login and success messages are emitted with correct content
 """
 
 import logging
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, call, patch
 
 import pytest
 
@@ -109,10 +110,8 @@ def test_success_log_uses_server_confirmed_handle(caplog):
 
 
 def test_client_constructor_exception_propagates():
-    with patch(
-        "helper.login_bluesky.Client",
-        side_effect=ConnectionError("unreachable"),
-    ):
+    with patch("helper.login_bluesky.Client", side_effect=ConnectionError("unreachable")), \
+         patch("helper.login_bluesky.time.sleep"):
         with pytest.raises(ConnectionError, match="unreachable"):
             login_bluesky(VALID_CONFIG)
 
@@ -120,9 +119,71 @@ def test_client_constructor_exception_propagates():
 def test_login_exception_propagates():
     mock_client = MagicMock()
     mock_client.login.side_effect = PermissionError("invalid credentials")
-    with patch("helper.login_bluesky.Client", return_value=mock_client):
+    with patch("helper.login_bluesky.Client", return_value=mock_client), \
+         patch("helper.login_bluesky.time.sleep"):
         with pytest.raises(PermissionError, match="invalid credentials"):
             login_bluesky(VALID_CONFIG)
+
+
+# ---------------------------------------------------------------------------
+# Retry behaviour
+# ---------------------------------------------------------------------------
+
+
+def test_succeeds_on_second_attempt():
+    good_client = _make_mock_client()
+    bad_client = MagicMock()
+    bad_client.login.side_effect = RuntimeError("transient 403")
+
+    with patch("helper.login_bluesky.Client", side_effect=[bad_client, good_client]), \
+         patch("helper.login_bluesky.time.sleep") as mock_sleep:
+        result = login_bluesky(VALID_CONFIG)
+
+    assert result is good_client
+    mock_sleep.assert_called_once_with(30)
+
+
+def test_succeeds_on_third_attempt():
+    good_client = _make_mock_client()
+    bad_client_1 = MagicMock()
+    bad_client_1.login.side_effect = RuntimeError("transient 403")
+    bad_client_2 = MagicMock()
+    bad_client_2.login.side_effect = RuntimeError("transient 403")
+
+    with patch("helper.login_bluesky.Client", side_effect=[bad_client_1, bad_client_2, good_client]), \
+         patch("helper.login_bluesky.time.sleep") as mock_sleep:
+        result = login_bluesky(VALID_CONFIG)
+
+    assert result is good_client
+    mock_sleep.assert_has_calls([call(30), call(60)])
+
+
+def test_fresh_client_created_on_each_attempt():
+    # Each retry must use a new Client() — not reuse a client that failed auth.
+    bad = MagicMock()
+    bad.login.side_effect = RuntimeError("fail")
+
+    with patch("helper.login_bluesky.Client", side_effect=[bad, bad, bad]) as mock_cls, \
+         patch("helper.login_bluesky.time.sleep"):
+        with pytest.raises(RuntimeError):
+            login_bluesky(VALID_CONFIG)
+
+    assert mock_cls.call_count == 3
+
+
+def test_warning_logged_per_failed_attempt(caplog):
+    bad_client = MagicMock()
+    bad_client.login.side_effect = RuntimeError("transient")
+    good_client = _make_mock_client()
+
+    with patch("helper.login_bluesky.Client", side_effect=[bad_client, good_client]), \
+         patch("helper.login_bluesky.time.sleep"), \
+         caplog.at_level(logging.WARNING, logger="helper.login_bluesky"):
+        login_bluesky(VALID_CONFIG)
+
+    warnings = [r for r in caplog.records if r.levelno == logging.WARNING]
+    assert len(warnings) == 1
+    assert "1/3" in warnings[0].message
 
 
 # ---------------------------------------------------------------------------
@@ -132,14 +193,16 @@ def test_login_exception_propagates():
 
 def test_missing_username_raises_key_error():
     bad_config = {"password": "hunter2"}
-    with patch("helper.login_bluesky.Client"):
+    with patch("helper.login_bluesky.Client"), \
+         patch("helper.login_bluesky.time.sleep"):
         with pytest.raises(KeyError):
             login_bluesky(bad_config)  # type: ignore[arg-type]
 
 
 def test_missing_password_raises_key_error():
     bad_config = {"username": "test_bot.bsky.social"}
-    with patch("helper.login_bluesky.Client"):
+    with patch("helper.login_bluesky.Client"), \
+         patch("helper.login_bluesky.time.sleep"):
         with pytest.raises(KeyError):
             login_bluesky(bad_config)  # type: ignore[arg-type]
 
@@ -191,7 +254,8 @@ def test_exactly_two_log_messages_emitted(caplog):
 def test_no_success_log_when_login_raises(caplog):
     mock_client = MagicMock()
     mock_client.login.side_effect = RuntimeError("boom")
-    with patch("helper.login_bluesky.Client", return_value=mock_client):
+    with patch("helper.login_bluesky.Client", return_value=mock_client), \
+         patch("helper.login_bluesky.time.sleep"):
         with caplog.at_level(logging.INFO, logger="helper.login_bluesky"):
             with pytest.raises(RuntimeError):
                 login_bluesky(VALID_CONFIG)
