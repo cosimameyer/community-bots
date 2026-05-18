@@ -102,6 +102,15 @@
     "bluesky": "@emmatyping.dev"
   },
   {
+    "name": "Katie McLaughlin",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://glasnt.com/blog/feed.xml"
+    ],
+    "mastodon": "@glasnt@cloudisland.nz",
+    "bluesky": ""
+  },
+  {
     "name": "Ines Montani",
     "content_type": "blog",
     "rss_feed": [
