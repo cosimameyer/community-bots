@@ -19,7 +19,7 @@
   },
   {
     "name": "axe-playwright-python",
-    "title": "Axe Playwright Python",
+    "title": "axe-playwright-python",
     "description": "Automated web accessibility testing using axe-core engine and Playwright.",
     "repo_url": "https://github.com/pamelafox/axe-playwright-python",
     "pypi_url": "https://pypi.org/project/axe-playwright-python/",
@@ -36,8 +36,44 @@
     ]
   },
   {
+    "name": "deid",
+    "title": "deid",
+    "description": "Best-effort de-identification of DICOM medical images using Python and pydicom.",
+    "repo_url": "https://github.com/pydicom/deid",
+    "pypi_url": "https://pypi.org/project/deid/",
+    "pkdown_url": "",
+    "bug_reports_url": "https://github.com/pydicom/deid/issues",
+    "logo_url": "https://github.com/vsoch.png",
+    "last_updated": "2026-01-12",
+    "contributors": [
+      {
+        "name": "Vanessa Sochat",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "emojificate",
+    "title": "emojificate",
+    "description": "Convert emoji in HTML to accessible fallback images with alt text, title text, and aria labels.",
+    "repo_url": "https://github.com/glasnt/emojificate",
+    "pypi_url": "https://pypi.org/project/emojificate/",
+    "pkdown_url": "",
+    "bug_reports_url": "https://github.com/glasnt/emojificate/issues",
+    "logo_url": "https://github.com/glasnt.png",
+    "last_updated": "2023-01-12",
+    "contributors": [
+      {
+        "name": "Katie McLaughlin",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
     "name": "expfactory",
-    "title": "Expfactory",
+    "title": "expfactory",
     "description": "Software to generate a reproducible container with a battery of experiments.",
     "repo_url": "https://github.com/expfactory/expfactory",
     "pypi_url": "https://pypi.org/project/expfactory/",
@@ -55,7 +91,7 @@
   },
   {
     "name": "flask-talisman",
-    "title": "Flask-Talisman",
+    "title": "flask-talisman",
     "description": "A small Flask extension that handles HTTP security headers for you.",
     "repo_url": "https://github.com/wntrblm/flask-talisman",
     "pypi_url": "https://pypi.org/project/flask-talisman/",
@@ -83,7 +119,7 @@
   },
   {
     "name": "gidgethub",
-    "title": "Gidgethub",
+    "title": "gidgethub",
     "description": "An async GitHub API library for Python.",
     "repo_url": "https://github.com/gidgethub/gidgethub",
     "pypi_url": "https://pypi.org/project/gidgethub/",
@@ -105,8 +141,26 @@
     ]
   },
   {
-    "name": "Kedro",
-    "title": "Kedro",
+    "name": "ih",
+    "title": "ih",
+    "description": "A Python package for creating cross-stitch embroidery patterns from images.",
+    "repo_url": "https://github.com/glasnt/ih",
+    "pypi_url": "https://pypi.org/project/ih/",
+    "pkdown_url": "",
+    "bug_reports_url": "https://github.com/glasnt/ih/issues",
+    "logo_url": "https://github.com/glasnt.png",
+    "last_updated": "2021-03-14",
+    "contributors": [
+      {
+        "name": "Katie McLaughlin",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "kedro",
+    "title": "kedro",
     "description": "An open-source Python framework for creating reproducible, maintainable and modular data science code.",
     "repo_url": "https://github.com/kedro-org/kedro",
     "pypi_url": "https://pypi.org/project/kedro/",
@@ -128,8 +182,8 @@
     ]
   },
   {
-    "name": "Nox",
-    "title": "Nox",
+    "name": "nox",
+    "title": "nox",
     "description": "Flexible test automation for Python.",
     "repo_url": "https://github.com/wntrblm/nox",
     "pypi_url": "https://pypi.org/project/nox/",
@@ -171,8 +225,26 @@
     ]
   },
   {
+    "name": "oras",
+    "title": "oras",
+    "description": "Python SDK for OCI Registry as Storage (ORAS) — push and pull arbitrary artifacts to and from OCI registries.",
+    "repo_url": "https://github.com/oras-project/oras-py",
+    "pypi_url": "https://pypi.org/project/oras/",
+    "pkdown_url": "",
+    "bug_reports_url": "https://github.com/oras-project/oras-py/issues",
+    "logo_url": "https://github.com/vsoch.png",
+    "last_updated": "2026-03-09",
+    "contributors": [
+      {
+        "name": "Vanessa Sochat",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
     "name": "overviewpy",
-    "title": "OverviewPy",
+    "title": "overviewpy",
     "description": "Easily Extracting Information About Your Data",
     "repo_url": "https://github.com/cosimameyer/overviewpy",
     "pypi_url": "https://pypi.org/project/overviewpy/",
@@ -190,7 +262,7 @@
   },
   {
     "name": "pokemon",
-    "title": "Pokemon",
+    "title": "pokemon",
     "description": "ascii database of pokemon in Python!",
     "repo_url": "https://github.com/vsoch/pokemon",
     "pypi_url": "https://pypi.org/project/pokemon/",
@@ -208,7 +280,7 @@
   },
   {
     "name": "pull-request-action",
-    "title": "Pull Request Action",
+    "title": "pull-request-action",
     "description": "GitHub Action to open a pull request when a branch is pushed or updated.",
     "repo_url": "https://github.com/vsoch/pull-request-action",
     "pypi_url": "https://pypi.org/project/pull-request-action/",
@@ -226,7 +298,7 @@
   },
   {
     "name": "roctet",
-    "title": "Roctet",
+    "title": "roctet",
     "description": "Generate diverse score-target datasets with the same AUROC value, ala Anscombe's Quartet",
     "repo_url": "https://github.com/emilyriederer/roctet",
     "pypi_url": "https://pypi.org/project/roctet/",
@@ -244,7 +316,7 @@
   },
   {
     "name": "singularity-compose",
-    "title": "Singularity Compose",
+    "title": "singularity-compose",
     "description": "A simple orchestration library for Singularity containers, akin to Docker Compose.",
     "repo_url": "https://github.com/singularityhub/singularity-compose",
     "pypi_url": "https://pypi.org/project/singularity-compose/",
@@ -262,7 +334,7 @@
   },
   {
     "name": "singularity-hpc",
-    "title": "Singularity HPC",
+    "title": "singularity-hpc",
     "description": "Local filesystem registry for containers (intended for HPC) using Lmod or Environment Modules.",
     "repo_url": "https://github.com/singularityhub/singularity-hpc",
     "pypi_url": "https://pypi.org/project/singularity-hpc/",
@@ -275,6 +347,111 @@
         "name": "Vanessa Sochat",
         "mastodon": "@vsoch@mastodon.social",
         "bluesky": "vsoch.bsky.social"
+      }
+    ]
+  },
+  {
+    "name": "snakedeploy",
+    "title": "snakedeploy",
+    "description": "Deployment and maintenance toolbox for Snakemake workflows.",
+    "repo_url": "https://github.com/snakemake/snakedeploy",
+    "pypi_url": "https://pypi.org/project/snakedeploy/",
+    "pkdown_url": "",
+    "bug_reports_url": "https://github.com/snakemake/snakedeploy/issues",
+    "logo_url": "https://github.com/vsoch.png",
+    "last_updated": "2026-02-13",
+    "contributors": [
+      {
+        "name": "Vanessa Sochat",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "johanneskoester",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "spython",
+    "title": "spython",
+    "description": "A Python command-line tool for working with Singularity containers.",
+    "repo_url": "https://github.com/singularityhub/singularity-cli",
+    "pypi_url": "https://pypi.org/project/spython/",
+    "pkdown_url": "",
+    "bug_reports_url": "https://github.com/singularityhub/singularity-cli/issues",
+    "logo_url": "https://github.com/vsoch.png",
+    "last_updated": "2024-09-15",
+    "contributors": [
+      {
+        "name": "Vanessa Sochat",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "tributors",
+    "title": "tributors",
+    "description": "Give tribute to your repository contributors — generates contributor files like .all-contributorsrc and CITATION.cff.",
+    "repo_url": "https://github.com/con/tributors",
+    "pypi_url": "https://pypi.org/project/tributors/",
+    "pkdown_url": "",
+    "bug_reports_url": "https://github.com/con/tributors/issues",
+    "logo_url": "https://github.com/vsoch.png",
+    "last_updated": "2023-06-07",
+    "contributors": [
+      {
+        "name": "Vanessa Sochat",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "yarikoptic",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "urlchecker",
+    "title": "urlchecker",
+    "description": "A tool to collect and validate URLs across static files — useful for checking links in code and documentation.",
+    "repo_url": "https://github.com/urlstechie/urlchecker-python",
+    "pypi_url": "https://pypi.org/project/urlchecker/",
+    "pkdown_url": "",
+    "bug_reports_url": "https://github.com/urlstechie/urlchecker-python/issues",
+    "logo_url": "https://github.com/vsoch.png",
+    "last_updated": "2024-02-03",
+    "contributors": [
+      {
+        "name": "Vanessa Sochat",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "SuperKogito",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "watchme",
+    "title": "watchme",
+    "description": "A reproducible monitoring client that watches URLs, system resources, and more, with exporters for research tracking.",
+    "repo_url": "https://github.com/vsoch/watchme",
+    "pypi_url": "https://pypi.org/project/watchme/",
+    "pkdown_url": "",
+    "bug_reports_url": "https://github.com/vsoch/watchme/issues",
+    "logo_url": "https://github.com/vsoch.png",
+    "last_updated": "2022-08-05",
+    "contributors": [
+      {
+        "name": "Vanessa Sochat",
+        "mastodon": "",
+        "bluesky": ""
       }
     ]
   }
