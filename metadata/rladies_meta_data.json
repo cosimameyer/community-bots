@@ -175,6 +175,15 @@
     "bluesky": ""
   },
   {
+    "name": "Helena Jambor",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://helenajamborwrites.netlify.app/index.xml"
+    ],
+    "mastodon": "@helenajambor@mastodon.social",
+    "bluesky": "helenajambor.bsky.social"
+  },
+  {
     "name": "Veerle van Leemput",
     "content_type": "blog",
     "rss_feed": [
@@ -351,7 +360,7 @@
     "bluesky": ""
   },
   {
-    "name": "R-Ladies Global",
+    "name": "RLadies+",
     "content_type": "blog",
     "rss_feed": [
       "https://rladies.org/blog/index.xml"
