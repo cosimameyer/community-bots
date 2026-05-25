@@ -374,7 +374,7 @@ class PromotePackage():
         mastodon_max_chars = 500
         name = package.get("name", "")
         description = package.get("description", "")
-        repo_url = package.get("repo_url", "")
+        repo_url = package.get("repo_url") or ""
         contributors = package.get("contributors", [])
         tags = self.define_tags()
 
@@ -412,7 +412,7 @@ class PromotePackage():
         bluesky_max_graphemes = 300
         name = package.get("name", "")
         description = package.get("description", "")
-        repo_url = package.get("repo_url", "")
+        repo_url = package.get("repo_url") or ""
         contributors = package.get("contributors", [])
         tags = self.define_tags()
         tag_list = [t.strip() for t in tags.split("#") if t.strip()]
@@ -444,9 +444,10 @@ class PromotePackage():
                     elif handle:
                         tb.text(f" ({handle})")
                 tb.text("\n\n")
-            tb.text("🔗 ")
-            tb.link(repo_url, repo_url)
-            tb.text("\n\n")
+            if repo_url:
+                tb.text("🔗 ")
+                tb.link(repo_url, repo_url)
+                tb.text("\n\n")
             for tag_clean in tag_subset:
                 tb.tag(f"#{tag_clean} ", tag_clean)
             return tb
