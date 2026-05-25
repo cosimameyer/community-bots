@@ -36,6 +36,24 @@
     ]
   },
   {
+    "name": "data-morph-ai",
+    "title": "Data Morph: Teaching the Importance of Data Visualization Through Dataset Transformation",
+    "description": "Data Morph transforms an input dataset of 2D points into select shapes, while preserving the summary statistics to a given number of decimal points through simulated annealing. It is intended to be used as a teaching tool to illustrate the importance of data visualization.",
+    "repo_url": "https://github.com/stefmolin/data-morph",
+    "pypi_url": "https://pypi.org/project/data-morph-ai/",
+    "pkdown_url": "",
+    "bug_reports_url": "https://github.com/stefmolin/data-morph/issues",
+    "logo_url": "https://stefaniemolin.com/data-morph/stable/_static/logo.png",
+    "last_updated": "2025-05-14",
+    "contributors": [
+      {
+        "name": "Stefanie Molin",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
     "name": "deid",
     "title": "deid",
     "description": "Best-effort de-identification of DICOM medical images using Python and pydicom.",
@@ -48,6 +66,24 @@
     "contributors": [
       {
         "name": "Vanessa Sochat",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "docstringify",
+    "title": "Docstringify",
+    "description": "Flag missing docstrings and, optionally, generate them from signatures and type annotations.",
+    "repo_url": "https://github.com/stefmolin/docstringify",
+    "pypi_url": "https://pypi.org/project/docstringify/",
+    "pkdown_url": "",
+    "bug_reports_url": "https://github.com/stefmolin/docstringify/issues",
+    "logo_url": "",
+    "last_updated": "2026-04-26",
+    "contributors": [
+      {
+        "name": "Stefanie Molin",
         "mastodon": "",
         "bluesky": ""
       }
@@ -72,6 +108,24 @@
     ]
   },
   {
+    "name": "exif-stripper",
+    "title": "exif-stripper",
+    "description": "An easy-to-use tool to ensure image EXIF metadata is removed. Mainly for use as a pre-commit hook.",
+    "repo_url": "https://github.com/stefmolin/exif-stripper",
+    "pypi_url": "https://pypi.org/project/exif-stripper/",
+    "pkdown_url": "",
+    "bug_reports_url": "https://github.com/stefmolin/exif-stripper/issues",
+    "logo_url": "https://raw.githubusercontent.com/stefmolin/exif-stripper/refs/heads/main/logo.png",
+    "last_updated": "2025-10-24",
+    "contributors": [
+      {
+        "name": "Stefanie Molin",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
     "name": "expfactory",
     "title": "expfactory",
     "description": "Software to generate a reproducible container with a battery of experiments.",
@@ -86,6 +140,64 @@
         "name": "Vanessa Sochat",
         "mastodon": "@vsoch@mastodon.social",
         "bluesky": "vsoch.bsky.social"
+      }
+    ]
+  },
+  {
+    "name": "fairlearn",
+    "title": "fairlearn",
+    "description": "A Python package to assess and improve fairness of machine learning models.",
+    "repo_url": "https://github.com/fairlearn/fairlearn",
+    "pypi_url": "https://pypi.org/project/fairlearn/",
+    "pkdown_url": "",
+    "bug_reports_url": "https://github.com/fairlearn/fairlearn/issues",
+    "logo_url": "https://raw.githubusercontent.com/fairlearn/fairlearn/refs/heads/main/docs/_static/images/fairlearn-favicon.ico",
+    "last_updated": "2025-10-19",
+    "contributors": [
+      {
+        "name": "Hilde Weerts",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Adrin Jalali",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Miroslav Dudík",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Roman Lutz",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Allie Saizan",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Tamara Atanasoska",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Richard Edgar",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Michael Madaio",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Tahar Allouche",
+        "mastodon": "",
+        "bluesky": ""
       }
     ]
   },
