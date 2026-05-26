@@ -1,5 +1,6 @@
 # pylint: disable=missing-class-docstring,missing-function-docstring,protected-access
 # pylint: disable=unused-argument,attribute-defined-outside-init,too-few-public-methods
+# pylint: disable=import-outside-toplevel,reimported,redefined-outer-name,multiple-imports
 """
 Tests for src/promote_anniversaries.py
 
@@ -13,8 +14,9 @@ Covers:
 - Main entry-point flow: dry run, live run, None-client guard
 """
 
-import json
 import os
+import pathlib
+import tempfile
 from datetime import datetime
 from unittest.mock import MagicMock, mock_open, patch
 
@@ -22,7 +24,6 @@ import runpy
 
 import pytest
 
-import promote_anniversaries as pa
 from promote_anniversaries import PromoteAnniversary
 
 
@@ -554,9 +555,7 @@ class TestBuildEmbedExternal:
     def test_uses_local_path_for_gallery_persons(self):
         """For gallery persons, img is a pathlib.Path to an existing local file —
         _resolve_image must return the local path directly without downloading."""
-        import pathlib, tempfile, os
         handler = make_handler(platform="bluesky")
-        client = MagicMock()
 
         with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmp:
             tmp.write(b"png data")
@@ -730,8 +729,9 @@ class TestPromoteAnniversary:
         today_event = self._today_event()
         off_event = self._off_day_event()
 
+        all_events = [off_event, today_event, off_event]
         with patch.object(handler, "_connect_client", return_value=client), \
-             patch("promote_anniversaries.load_persons", return_value=[off_event, today_event, off_event]), \
+             patch("promote_anniversaries.load_persons", return_value=all_events), \
              patch("builtins.open"), patch("json.load", return_value=[]), \
              patch.object(handler, "send_post") as mock_send:
             handler.promote_anniversary()

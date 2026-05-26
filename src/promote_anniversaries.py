@@ -123,12 +123,17 @@ class PromoteAnniversary:
             self.logger.error("Failed to connect to %s", self.cfg["platform"])
             return
 
+        default_gallery = str(GALLERY_WOMEN)
         gallery_path = pathlib.Path(
-            self.cfg.get("gallery_path", str(GALLERY_WOMEN)) if self.config_dict else str(GALLERY_WOMEN)
+            self.cfg.get("gallery_path", default_gallery) if self.config_dict else default_gallery
         )
         events: List[Dict[str, Any]] = load_persons(gallery_path)
 
-        special_file = self.cfg.get("events_special_file", "metadata/events_special.json") if self.config_dict else "metadata/events_special.json"
+        default_special = "metadata/events_special.json"
+        special_file = (
+            self.cfg.get("events_special_file", default_special)
+            if self.config_dict else default_special
+        )
         if os.path.exists(special_file):
             with open(special_file, encoding="utf-8") as f:
                 events.extend(json.load(f))
@@ -359,7 +364,8 @@ class PromoteAnniversary:
         img_data = self._compress_for_bluesky(img_data)
         if len(img_data) > self._BLUESKY_MAX_BLOB_BYTES:
             self.logger.warning(
-                "Image still exceeds Bluesky blob limit (%d bytes) after compression — upload may fail.",
+                "Image still exceeds Bluesky blob limit (%d bytes) after compression"
+                " — upload may fail.",
                 len(img_data),
             )
         thumb = client.upload_blob(img_data)
