@@ -1,0 +1,30 @@
+[
+  {
+    "name": "International Women's Day",
+    "anniversary": "03-08",
+    "bluesky": "",
+    "img": "international_womens_day_small.png",
+    "bio_bluesky": "",
+    "bio_mastodon": "",
+    "wiki_link": "https://en.wikipedia.org/wiki/International_Women%27s_Day"
+  },
+  {
+    "name": "PyLadies kicked off their first event in 2011",
+    "anniversary": "05-15",
+    "bluesky": "",
+    "img": "pyladies_small.png",
+    "bio_bluesky": "",
+    "bio_mastodon": "",
+    "alt": "The earth with people (with different hair colors, hairstyles and skin colors + different fashion styles) standing around it. Another person (a superhero with a cape and a Python logo on the front, holding up a sign that says 'Pyladies') is in the air. ",
+    "wiki_link": "https://en.wikipedia.org/wiki/PyLadies"
+  },
+  {
+    "name": "RLadies+",
+    "anniversary": "10-01",
+    "bluesky": "",
+    "bio_bluesky": "✨ founded in October 2012\n✨ a global organization dedicated to promoting greater diversity in the #rstats community",
+    "bio_mastodon": "✨ were founded in October 2012\n ✨ are a worldwide organization that seek to promote greater diversity in the #rstats community",
+    "img": "RLadies+_small.png",
+    "wiki_link": "https://en.wikipedia.org/wiki/RLadies+"
+  }
+]

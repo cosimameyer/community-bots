@@ -7,13 +7,15 @@ import io
 import json
 import logging
 import os
+import pathlib
 import posixpath
 import re
 import shutil
 from datetime import datetime
-from typing import Any, Dict, Optional, Union, cast
+from typing import Any, Dict, List, Optional, Union, cast
 from urllib.parse import urlsplit
 
+import yaml
 from PIL import Image
 
 import requests
@@ -28,6 +30,41 @@ load_dotenv()
 
 REQUEST_TIMEOUT = 10  # seconds
 logger = logging.getLogger(__name__)
+
+GALLERY_WOMEN = pathlib.Path(
+    os.getenv("GALLERY_PATH", "../gallery/content/amazing-women-in-tech")
+)
+
+
+def load_persons(gallery_path: pathlib.Path = GALLERY_WOMEN) -> List[Dict[str, Any]]:
+    """
+    Read per-person frontmatter from gallery index.md files.
+
+    Each returned dict has the same keys as gallery frontmatter
+    (name, anniversary, alt, wiki_link, bluesky, bio_gallery,
+    bio_bluesky, bio_mastodon) plus 'img' as a pathlib.Path to
+    the portrait PNG, or None when no PNG is found.
+    """
+    persons = []
+    if not gallery_path.is_dir():
+        logger.warning("Gallery path not found: %s — skipping person events", gallery_path)
+        return persons
+    for person_dir in sorted(gallery_path.iterdir()):
+        if not person_dir.is_dir():
+            continue
+        index = person_dir / "index.md"
+        if not index.exists():
+            continue
+        text = index.read_text(encoding="utf-8")
+        parts = text.split("---")
+        if len(parts) < 3:
+            continue
+        fm = yaml.safe_load(parts[1])
+        if not isinstance(fm, dict):
+            continue
+        fm["img"] = next(person_dir.glob("*.png"), None)
+        persons.append(fm)
+    return persons
 
 
 class PromoteAnniversary:
@@ -86,17 +123,28 @@ class PromoteAnniversary:
             self.logger.error("Failed to connect to %s", self.cfg["platform"])
             return
 
-        events_file = self.cfg.get("events_file", "metadata/events.json") if self.config_dict else "metadata/events.json"
-        with open(events_file, encoding="utf-8") as f:
-            events = json.load(f)
+        default_gallery = str(GALLERY_WOMEN)
+        gallery_path = pathlib.Path(
+            self.cfg.get("gallery_path", default_gallery) if self.config_dict else default_gallery
+        )
+        events: List[Dict[str, Any]] = load_persons(gallery_path)
+
+        default_special = "metadata/events_special.json"
+        special_file = (
+            self.cfg.get("events_special_file", default_special)
+            if self.config_dict else default_special
+        )
+        if os.path.exists(special_file):
+            with open(special_file, encoding="utf-8") as f:
+                events.extend(json.load(f))
 
         for event in events:
-            if self.is_matching_current_date(event["date"]):
+            if self.is_matching_current_date(event.get("anniversary", "")):
                 if not self.no_dry_run:
                     self.logger.info(
                         "[DRY RUN] Would post anniversary for %s on %s",
                         event.get("name"),
-                        event.get("date"),
+                        event.get("anniversary"),
                     )
                 else:
                     self.send_post(event, client)
@@ -120,7 +168,10 @@ class PromoteAnniversary:
         else:
             self.config_dict["api_base_url"] = "https://bsky.social"
         self.config_dict.setdefault(
-            "events_file", os.getenv("EVENTS_FILE", "metadata/events.json")
+            "gallery_path", os.getenv("GALLERY_PATH", str(GALLERY_WOMEN))
+        )
+        self.config_dict.setdefault(
+            "events_special_file", os.getenv("EVENTS_SPECIAL_FILE", "metadata/events_special.json")
         )
 
     def _connect_client(self):
@@ -204,7 +255,7 @@ class PromoteAnniversary:
         if self.cfg["platform"] == "mastodon":
             return (
                 f"Let's meet {event['name']} ✨\n\n"
-                f"{event['description_mastodon']}\n\n"
+                f"{event['bio_mastodon']}\n\n"
                 f"🔗 {event['wiki_link']}{tags}"
             )
 
@@ -214,7 +265,7 @@ class PromoteAnniversary:
             did = self.get_bluesky_did(event["bluesky"]) if event.get("bluesky") else None
 
             def _build(tag_subset, desc_override=None):
-                desc = desc_override if desc_override is not None else event["description_bluesky"]
+                desc = desc_override if desc_override is not None else event["bio_bluesky"]
                 tb = client_utils.TextBuilder()
                 if event.get("bluesky"):
                     tb.text("Let's meet ")
@@ -252,7 +303,7 @@ class PromoteAnniversary:
             # Still over limit: trim description to fit
             overhead = len(_build([], desc_override="").build_text())
             available = bluesky_max_graphemes - overhead - 1  # -1 for "…"
-            desc_trimmed = event["description_bluesky"][:available].rstrip() + "…"
+            desc_trimmed = event["bio_bluesky"][:available].rstrip() + "…"
             return _build([], desc_override=desc_trimmed)
 
         raise ValueError(
@@ -276,6 +327,20 @@ class PromoteAnniversary:
             )
             self.send_post_to_bluesky(event, client, post_txt, embed_external)
 
+    def _resolve_image(self, event: Dict[str, Any]) -> tuple:
+        """
+        Return (local_filepath, uri) for the event image.
+
+        For gallery persons, img is a pathlib.Path to a local file;
+        for special events it is a bare filename fetched from base_path.
+        """
+        img = event.get("img")
+        if isinstance(img, pathlib.Path) and img.exists():
+            return str(img), event.get("wiki_link", str(img))
+        filename_str = str(img) if img else ""
+        url = f"{self.base_path}/{filename_str}"
+        return self.download_image(url), url
+
     def build_embed_external(
         self,
         event: Dict[str, Any],
@@ -291,8 +356,7 @@ class PromoteAnniversary:
         Returns:
             A Bluesky external embed object.
         """
-        url = f"{self.base_path}/{event['img']}"
-        filename = self.download_image(url)
+        filename, uri = self._resolve_image(event)
 
         with open(filename, "rb") as f:
             img_data = f.read()
@@ -300,7 +364,8 @@ class PromoteAnniversary:
         img_data = self._compress_for_bluesky(img_data)
         if len(img_data) > self._BLUESKY_MAX_BLOB_BYTES:
             self.logger.warning(
-                "Image still exceeds Bluesky blob limit (%d bytes) after compression — upload may fail.",
+                "Image still exceeds Bluesky blob limit (%d bytes) after compression"
+                " — upload may fail.",
                 len(img_data),
             )
         thumb = client.upload_blob(img_data)
@@ -308,8 +373,8 @@ class PromoteAnniversary:
         return models.AppBskyEmbedExternal.Main(
             external=models.AppBskyEmbedExternal.External(
                 title=f"Image of {event['name']}",
-                description=event["alt"],
-                uri=url,
+                description=event.get("alt", ""),
+                uri=uri,
                 thumb=thumb.blob,
             )
         )
@@ -390,8 +455,7 @@ class PromoteAnniversary:
         if event.get("img"):
             try:
                 self.logger.info("Uploading media to Mastodon")
-                url = f"{self.base_path}/{event['img']}"
-                filename = self.download_image(url)
+                filename, _ = self._resolve_image(event)
 
                 media_upload = client.media_post(filename)
                 description = event.get("alt") or str(event["name"])

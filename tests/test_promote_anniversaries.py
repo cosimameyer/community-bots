@@ -1,5 +1,6 @@
 # pylint: disable=missing-class-docstring,missing-function-docstring,protected-access
 # pylint: disable=unused-argument,attribute-defined-outside-init,too-few-public-methods
+# pylint: disable=import-outside-toplevel,reimported,redefined-outer-name,multiple-imports
 """
 Tests for src/promote_anniversaries.py
 
@@ -13,8 +14,9 @@ Covers:
 - Main entry-point flow: dry run, live run, None-client guard
 """
 
-import json
 import os
+import pathlib
+import tempfile
 from datetime import datetime
 from unittest.mock import MagicMock, mock_open, patch
 
@@ -22,7 +24,6 @@ import runpy
 
 import pytest
 
-import promote_anniversaries as pa
 from promote_anniversaries import PromoteAnniversary
 
 
@@ -63,10 +64,10 @@ def make_handler(platform="mastodon", config=None, no_dry_run=False):
 
 # Canonical test event — all fields present.
 SAMPLE_EVENT = {
-    "date": "08-30",
+    "anniversary": "08-30",
     "name": "Ada Lovelace",
-    "description_mastodon": "The first programmer.",
-    "description_bluesky": "The first programmer.",
+    "bio_mastodon": "The first programmer.",
+    "bio_bluesky": "The first programmer.",
     "wiki_link": "https://en.wikipedia.org/wiki/Ada_Lovelace",
     "img": "ada-lovelace.png",
     "alt": "Illustration of Ada Lovelace",
@@ -81,13 +82,13 @@ SAMPLE_EVENT_BLUESKY_HANDLE = {**SAMPLE_EVENT, "bluesky": "@ada.bsky.social"}
 # Event with inline hashtags in the Bluesky description — tests facet splitting.
 SAMPLE_EVENT_INLINE_TAGS = {
     **SAMPLE_EVENT,
-    "description_bluesky": "Pioneer of #computing and #algorithms.",
+    "bio_bluesky": "Pioneer of #computing and #algorithms.",
 }
 
 # Event whose description alone pushes the post well past the 300-grapheme limit.
 SAMPLE_EVENT_LONG_DESC = {
     **SAMPLE_EVENT,
-    "description_bluesky": "A" * 350,
+    "bio_bluesky": "A" * 350,
 }
 
 
@@ -269,7 +270,7 @@ class TestBuildPostMastodon:
         handler = make_handler(platform="mastodon")
         assert "Ada Lovelace" in handler.build_post(SAMPLE_EVENT)
 
-    def test_contains_mastodon_description(self):
+    def test_contains_mastodon_bio(self):
         handler = make_handler(platform="mastodon")
         assert "The first programmer." in handler.build_post(SAMPLE_EVENT)
 
@@ -536,9 +537,9 @@ class TestSendPostToBluesky:
 # ---------------------------------------------------------------------------
 
 class TestBuildEmbedExternal:
-    def test_downloads_image_from_correct_url_and_uploads_blob(self):
-        """The embed builder must derive the URL from base_path + event['img']
-        and upload the raw bytes as a Bluesky blob."""
+    def test_downloads_remote_image_for_special_events_and_uploads_blob(self):
+        """For special events (img is a bare filename, not a local Path),
+        the embed builder must download from base_path and upload the blob."""
         handler = make_handler(platform="bluesky")
         client = MagicMock()
         img_bytes = b"fake image bytes"
@@ -550,6 +551,23 @@ class TestBuildEmbedExternal:
         expected_url = f"{handler.base_path}/{SAMPLE_EVENT['img']}"
         mock_dl.assert_called_once_with(expected_url)
         client.upload_blob.assert_called_once_with(img_bytes)
+
+    def test_uses_local_path_for_gallery_persons(self):
+        """For gallery persons, img is a pathlib.Path to an existing local file —
+        _resolve_image must return the local path directly without downloading."""
+        handler = make_handler(platform="bluesky")
+
+        with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmp:
+            tmp.write(b"png data")
+            tmp_path = pathlib.Path(tmp.name)
+
+        try:
+            event = {**SAMPLE_EVENT, "img": tmp_path}
+            local_path, uri = handler._resolve_image(event)
+            assert local_path == str(tmp_path)
+            assert uri == SAMPLE_EVENT["wiki_link"]
+        finally:
+            os.unlink(tmp_path)
 
     def test_embed_external_title_identifies_the_person(self):
         """The External embed title must be 'Image of <name>'."""
@@ -628,12 +646,12 @@ class TestSetupConfigFromEnv:
 
 class TestPromoteAnniversary:
     def _today_event(self):
-        return {**SAMPLE_EVENT, "date": datetime.now().strftime("%m-%d")}
+        return {**SAMPLE_EVENT, "anniversary": datetime.now().strftime("%m-%d")}
 
     def _off_day_event(self):
         today = datetime.now().strftime("%m-%d")
         other = "01-01" if today != "01-01" else "01-02"
-        return {**SAMPLE_EVENT, "date": other}
+        return {**SAMPLE_EVENT, "anniversary": other}
 
     def test_dry_run_without_config_dict_completes_without_error(self):
         """
@@ -644,7 +662,8 @@ class TestPromoteAnniversary:
         handler = PromoteAnniversary(config_dict=None, no_dry_run=False)
         events = [self._today_event()]
 
-        with patch("builtins.open"), patch("json.load", return_value=events):
+        with patch("promote_anniversaries.load_persons", return_value=events), \
+             patch("builtins.open"), patch("json.load", return_value=[]):
             # Must complete without raising or logging an error.
             handler.promote_anniversary()
 
@@ -653,8 +672,8 @@ class TestPromoteAnniversary:
         handler = PromoteAnniversary(config_dict=None, no_dry_run=False)
         events = [self._today_event()]
 
-        with patch("builtins.open"), \
-             patch("json.load", return_value=events), \
+        with patch("promote_anniversaries.load_persons", return_value=events), \
+             patch("builtins.open"), patch("json.load", return_value=[]), \
              patch.object(handler, "send_post") as mock_send:
             handler.promote_anniversary()
 
@@ -667,22 +686,22 @@ class TestPromoteAnniversary:
         event = self._today_event()
 
         with patch.object(handler, "_connect_client", return_value=client), \
-             patch("builtins.open"), \
-             patch("json.load", return_value=[event]), \
+             patch("promote_anniversaries.load_persons", return_value=[event]), \
+             patch("builtins.open"), patch("json.load", return_value=[]), \
              patch.object(handler, "send_post") as mock_send:
             handler.promote_anniversary()
 
         mock_send.assert_called_once_with(event, client)
 
     def test_non_matching_date_skips_send_post(self):
-        """An event whose date does not match today must not be posted."""
+        """An event whose anniversary does not match today must not be posted."""
         handler = make_handler(platform="mastodon", no_dry_run=True)
         client = MagicMock()
         event = self._off_day_event()
 
         with patch.object(handler, "_connect_client", return_value=client), \
-             patch("builtins.open"), \
-             patch("json.load", return_value=[event]), \
+             patch("promote_anniversaries.load_persons", return_value=[event]), \
+             patch("builtins.open"), patch("json.load", return_value=[]), \
              patch.object(handler, "send_post") as mock_send:
             handler.promote_anniversary()
 
@@ -697,21 +716,23 @@ class TestPromoteAnniversary:
         handler = make_handler(platform="bluesky", no_dry_run=True)
 
         with patch.object(handler, "_connect_client", return_value=None), \
+             patch("promote_anniversaries.load_persons", return_value=[]), \
              patch.object(handler, "send_post") as mock_send:
             handler.promote_anniversary()
 
         mock_send.assert_not_called()
 
     def test_only_todays_event_is_sent_from_a_mixed_list(self):
-        """Multiple events in events.json — only the date-matching one must be posted."""
+        """Multiple events — only the anniversary-matching one must be posted."""
         handler = make_handler(platform="mastodon", no_dry_run=True)
         client = MagicMock()
         today_event = self._today_event()
         off_event = self._off_day_event()
 
+        all_events = [off_event, today_event, off_event]
         with patch.object(handler, "_connect_client", return_value=client), \
-             patch("builtins.open"), \
-             patch("json.load", return_value=[off_event, today_event, off_event]), \
+             patch("promote_anniversaries.load_persons", return_value=all_events), \
+             patch("builtins.open"), patch("json.load", return_value=[]), \
              patch.object(handler, "send_post") as mock_send:
             handler.promote_anniversary()
 
@@ -731,7 +752,7 @@ class TestPromoteAnniversary:
 
     def test_live_run_logs_error_and_aborts_when_config_still_none_after_env_setup(self):
         """If _setup_config_from_env somehow leaves config_dict as None (safety-net),
-        the method must log an error and return without touching events.json."""
+        the method must log an error and return without touching any event source."""
         handler = PromoteAnniversary(config_dict=None, no_dry_run=True)
 
         with patch.object(handler, "_setup_config_from_env"), \
@@ -816,6 +837,7 @@ class TestMain:
                 "USERNAME": "user",
             }),
             patch("helper.login_bluesky.Client", return_value=mock_bsky_client),
+            patch("promote_anniversaries.load_persons", return_value=[]),
             patch("builtins.open"),
             patch("json.load", return_value=[]),
         ):
