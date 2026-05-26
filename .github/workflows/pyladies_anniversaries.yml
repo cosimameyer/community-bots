@@ -30,11 +30,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Checkout gallery content (person SOT)
+        run: git clone --depth=1 https://github.com/cosimameyer/gallery.git gallery
+
       # - name: Execute Python script on Mastodon 🦣
       #   continue-on-error: true
       #   env:
       #     IMAGES: "anniversary_images"
       #     CLIENT_NAME: "pyladies_bot"
+      #     GALLERY_PATH: "gallery/content/amazing-women-in-tech"
       #     ACCESS_TOKEN: ${{ secrets.PYLADIES_MASTODON_ACCESS_TOKEN }}
       #     CLIENT_ID: ${{ secrets.PYLADIES_MASTODON_CLIENT_ID }}
       #     CLIENT_SECRET: ${{ secrets.PYLADIES_MASTODON_CLIENT_SECRET }}
@@ -48,6 +52,7 @@ jobs:
           IMAGES: "anniversary_images"
           CLIENT_NAME: "pyladies_bot"
           PLATFORM: "bluesky"
+          GALLERY_PATH: "gallery/content/amazing-women-in-tech"
           PASSWORD: ${{ secrets.PYLADIES_BSKY_PASSWORD }}
           USERNAME: ${{ secrets.PYLADIES_BSKY_USERNAME }}
         run: python src/promote_anniversaries.py
