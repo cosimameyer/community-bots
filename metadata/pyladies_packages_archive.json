@@ -1,4 +1,5 @@
 {
   "axe-playwright-python": "0.1.7",
-  "deid": "0.4.12"
+  "deid": "0.4.12",
+  "docstringify": "2.0.0"
 }
