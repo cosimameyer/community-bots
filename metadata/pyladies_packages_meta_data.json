@@ -271,6 +271,24 @@
     ]
   },
   {
+    "name": "jupyter-positron-server",
+    "title": "jupyter-positron-server",
+    "description": "A package for running the Positron Server web IDE as a proxy inside a Jupyter environment.",
+    "repo_url": "https://github.com/posit-dev/jupyter-positron-server",
+    "pypi_url": "https://pypi.org/project/jupyter-positron-server/",
+    "pkdown_url": "",
+    "bug_reports_url": "https://github.com/posit-dev/jupyter-positron-server/issues",
+    "logo_url": "https://github.com/isabelizimm.png",
+    "last_updated": "2026-05-01",
+    "contributors": [
+      {
+        "name": "Isabel Zimmermann",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
     "name": "kedro",
     "title": "kedro",
     "description": "An open-source Python framework for creating reproducible, maintainable and modular data science code.",
@@ -369,6 +387,52 @@
         "name": "Cosima Meyer",
         "mastodon": "@cosima_meyer@mas.to",
         "bluesky": "@cosima.bsky.social"
+      }
+    ]
+  },
+  {
+    "name": "paintnine",
+    "title": "paintnine",
+    "description": "Make generative art with plotnine — a Python grammar of graphics library.",
+    "repo_url": "https://github.com/isabelizimm/paintnine",
+    "pypi_url": "https://pypi.org/project/paintnine/",
+    "pkdown_url": "",
+    "bug_reports_url": "https://github.com/isabelizimm/paintnine/issues",
+    "logo_url": "https://github.com/isabelizimm.png",
+    "last_updated": "2023-01-12",
+    "contributors": [
+      {
+        "name": "Isabel Zimmermann",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "pins",
+    "title": "pins",
+    "description": "Publish datasets, models, and other Python objects, making it easy to share them across projects and with colleagues.",
+    "repo_url": "https://github.com/rstudio/pins-python",
+    "pypi_url": "https://pypi.org/project/pins/",
+    "pkdown_url": "",
+    "bug_reports_url": "https://github.com/rstudio/pins-python/issues",
+    "logo_url": "https://github.com/isabelizimm.png",
+    "last_updated": "2025-10-03",
+    "contributors": [
+      {
+        "name": "Isabel Zimmermann",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "juliasilge",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "machow",
+        "mastodon": "",
+        "bluesky": ""
       }
     ]
   },
@@ -544,6 +608,29 @@
       },
       {
         "name": "SuperKogito",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "vetiver",
+    "title": "vetiver",
+    "description": "Version, share, deploy, and monitor machine learning models in Python.",
+    "repo_url": "https://github.com/rstudio/vetiver-python",
+    "pypi_url": "https://pypi.org/project/vetiver/",
+    "pkdown_url": "",
+    "bug_reports_url": "https://github.com/rstudio/vetiver-python/issues",
+    "logo_url": "https://github.com/isabelizimm.png",
+    "last_updated": "2024-12-17",
+    "contributors": [
+      {
+        "name": "Isabel Zimmermann",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "rstudio",
         "mastodon": "",
         "bluesky": ""
       }
