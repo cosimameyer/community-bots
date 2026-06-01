@@ -25,6 +25,15 @@
     "bluesky": ""
   },
   {
+    "name": "Katharine Jarmul",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://blog.kjamistan.com/feeds/rss.xml"
+    ],
+    "mastodon": "",
+    "bluesky": ""
+  },
+  {
     "name": "Thea Flowers",
     "content_type": "blog",
     "rss_feed": [],
@@ -37,6 +46,24 @@
     "rss_feed": [],
     "mastodon": "@victorialslocum@sigmoid.social",
     "bluesky": "@victorialslocum.bsky.social"
+  },
+  {
+    "name": "Cassidy Williams",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://cassidoo.co/rss.xml"
+    ],
+    "mastodon": "",
+    "bluesky": "cassidoo.co"
+  },
+  {
+    "name": "Celia Cintas",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://celiacintas.io/feed/"
+    ],
+    "mastodon": "@RTFMCelia@mastodon.online",
+    "bluesky": ""
   },
   {
     "name": "Cheuk Ting Ho",
@@ -109,6 +136,15 @@
     ],
     "mastodon": "@emmatyping@hachyderm.io",
     "bluesky": "@emmatyping.dev"
+  },
+  {
+    "name": "Gina Häußge",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://foosel.net/tags/python/index.xml"
+    ],
+    "mastodon": "@foosel@chaos.social",
+    "bluesky": ""
   },
   {
     "name": "Katie McLaughlin",
@@ -199,6 +235,13 @@
     "bluesky": ""
   },
   {
+    "name": "Kathleen Lara",
+    "content_type": "blog",
+    "rss_feed": [],
+    "mastodon": "",
+    "bluesky": ""
+  },
+  {
     "name": "Lacey Henschel",
     "content_type": "blog",
     "rss_feed": [
@@ -241,6 +284,15 @@
       "http://blog.pamelafox.org/feeds/posts/default/?q=label:python"
     ],
     "mastodon": "@pamelafox@fosstodon.org",
+    "bluesky": ""
+  },
+  {
+    "name": "Katharine Jarmul",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://probablyprivate.com/rss/"
+    ],
+    "mastodon": "",
     "bluesky": ""
   },
   {
@@ -345,6 +397,33 @@
     "content_type": "blog",
     "rss_feed": [
       "https://szeitlin.github.io/index.xml"
+    ],
+    "mastodon": "",
+    "bluesky": ""
+  },
+  {
+    "name": "Dr. Jodie Burchell",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://t-redactyl.io/index.xml"
+    ],
+    "mastodon": "@t_redactyl@fosstodon.org",
+    "bluesky": "t-redactyl.bsky.social"
+  },
+  {
+    "name": "Kelly Schuster-Paredes",
+    "content_type": "podcast",
+    "rss_feed": [
+      "https://www.teachingpython.fm/rss"
+    ],
+    "mastodon": "",
+    "bluesky": ""
+  },
+  {
+    "name": "Kelly Schuster-Paredes",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://teachingpythonpodcast.substack.com/feed"
     ],
     "mastodon": "",
     "bluesky": ""
