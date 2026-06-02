@@ -410,13 +410,13 @@
     "bluesky": "silviacanelon.com"
   },
   {
-    "name": "Andrea Gómez Vargas",
+    "name": "Andrea Gomez Vargas",
     "content_type": "blog",
     "rss_feed": [
-      "https://soyandrea.netlify.app/tag/r/index.xml"
+      "https://soyandrea.github.io/conoce-arcenso.xml"
     ],
     "mastodon": "@me_andre@mastodon.social",
-    "bluesky": ""
+    "bluesky": "goandre.bsky.social"
   },
   {
     "name": "Steph Orellana Bello",
