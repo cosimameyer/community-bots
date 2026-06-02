@@ -9683,6 +9683,161 @@
     ]
   },
   {
+    "name": "skimr",
+    "title": "Compact and Flexible Summaries of Data",
+    "description": "A simple to use summary function that can be used with pipes and displays nicely in the console. The default summary statistics may be modified by the user as can the default formatting. Support for data frames and vectors is included, and users can implement their own skim methods for specific object types as described in a vignette. Default summaries include support for inline spark graphs. Instructions for managing these on specific operating systems are given in the \"Using skimr\" vignette and the README.",
+    "repo_url": "https://github.com/ropensci/skimr/",
+    "pypi_url": "",
+    "pkdown_url": "https://docs.ropensci.org/skimr/",
+    "bug_reports_url": "https://github.com/ropensci/skimr/issues",
+    "logo_url": "https://docs.ropensci.org/skimr/logo.png",
+    "last_updated": "2026-01-10",
+    "contributors": [
+      {
+        "name": "Elin Waring",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Michael Quinn",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Amelia McNamara",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "amelia-mcnamara"
+      },
+      {
+        "name": "Eduardo Arino de la Rubia",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Hao Zhu",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Julia Lowndes",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Shannon Ellis",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Hope McLeod",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Hadley Wickham",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Kirill Müller",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "RStudio",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Inc.",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Connor Kirkpatrick",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Scott Brenstuhl",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Patrick Schratz",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "lbusett",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Mikko Korpela",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Jennifer Thompson",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "jennifer-thompson"
+      },
+      {
+        "name": "Harris McGehee",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Mark Roepke",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Patrick Kennedy",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Daniel Possenriede",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "David Zimmermann",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Kyle Butts",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Bastian Torges",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Rick Saporta",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Henry Morgan Stewart",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Olivier Roy",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
     "name": "sknifedatar",
     "title": "Swiss Knife of Data",
     "description": "Extension of the 'modeltime' ecosystem. In addition. Allows fitting of multiple models over multiple time series. It also provides a bridge for using the 'workflowsets' package with 'modeltime'. It includes some functionalities for spatial data and visualization.",
