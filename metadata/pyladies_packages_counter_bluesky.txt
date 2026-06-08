@@ -1,1 +1,1 @@
-emojificate
+exif-stripper
