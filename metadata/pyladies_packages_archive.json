@@ -3,5 +3,6 @@
   "deid": "0.4.12",
   "docstringify": "2.0.0",
   "emojificate": "0.7.0",
-  "exif-stripper": "1.2.0"
+  "exif-stripper": "1.2.0",
+  "expfactory": "3.19"
 }
