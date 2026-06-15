@@ -1,1 +1,1 @@
-exif-stripper
+expfactory
