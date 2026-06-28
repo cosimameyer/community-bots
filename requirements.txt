@@ -6,7 +6,7 @@ anyio==4.13.0
 appnope==0.1.4; platform_system == "Darwin"
 astroid==4.0.4
 asttokens==3.0.1
-atproto==0.0.65
+atproto==0.0.69
 babel==2.18.0
 backrefs==6.2
 beautifulsoup4==4.14.3
@@ -18,7 +18,7 @@ charset-normalizer==3.4.7
 click==8.3.3
 colorama==0.4.6
 comm==0.2.3
-cryptography==48.0.1
+cryptography==46.0.7
 debugpy==1.8.20
 decorator==5.2.1
 dill==0.4.1; python_version >= "3.11"
