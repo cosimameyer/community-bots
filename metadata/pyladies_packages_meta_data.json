@@ -312,6 +312,24 @@
     ]
   },
   {
+    "name": "matcouply",
+    "title": "matcouply",
+    "description": "Python library for fitting coupled matrix and tensor factorizations — regularized AO-ADMM decompositions for coupled data.",
+    "repo_url": "https://github.com/MarieRoald/matcouply",
+    "pypi_url": "https://pypi.org/project/matcouply/",
+    "pkdown_url": "",
+    "bug_reports_url": "https://github.com/MarieRoald/matcouply/issues",
+    "logo_url": "https://github.com/MarieRoald.png",
+    "last_updated": "2026-02-08",
+    "contributors": [
+      {
+        "name": "Marie Roald",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
     "name": "nox",
     "title": "nox",
     "description": "Flexible test automation for Python.",
@@ -585,6 +603,29 @@
       },
       {
         "name": "yarikoptic",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "turtlethread",
+    "title": "turtlethread",
+    "description": "Use Python's turtle graphics to create embroidery patterns — generates stitch files for embroidery machines.",
+    "repo_url": "https://github.com/TurtleThread/TurtleThread",
+    "pypi_url": "https://pypi.org/project/turtlethread/",
+    "pkdown_url": "",
+    "bug_reports_url": "https://github.com/TurtleThread/TurtleThread/issues",
+    "logo_url": "https://github.com/MarieRoald.png",
+    "last_updated": "2024-01-19",
+    "contributors": [
+      {
+        "name": "Marie Roald",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Yngve Mardal Moe",
         "mastodon": "",
         "bluesky": ""
       }
