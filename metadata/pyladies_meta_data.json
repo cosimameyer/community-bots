@@ -375,6 +375,15 @@
     "bluesky": ""
   },
   {
+    "name": "Sarah Abderemane",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://sarahabd.com/feeds/rss.xml"
+    ],
+    "mastodon": "@sabderemane@mastodon.social",
+    "bluesky": "@sabderemane.bsky.social"
+  },
+  {
     "name": "Theresa Seyram Agbenyegah",
     "content_type": "blog",
     "rss_feed": [
