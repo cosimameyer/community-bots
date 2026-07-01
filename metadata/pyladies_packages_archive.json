@@ -5,5 +5,6 @@
   "emojificate": "0.7.0",
   "exif-stripper": "1.2.0",
   "expfactory": "3.19",
-  "fairlearn": "0.14.0"
+  "fairlearn": "0.14.0",
+  "flask-talisman": "1.1.0"
 }
