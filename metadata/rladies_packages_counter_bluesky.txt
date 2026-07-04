@@ -1,1 +1,1 @@
-BLModel
+BayesCVI
