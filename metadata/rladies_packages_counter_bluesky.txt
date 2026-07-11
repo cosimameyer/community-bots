@@ -1,1 +1,1 @@
-BayesCVI
+BayesERtools
