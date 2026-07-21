@@ -27,5 +27,5 @@ repos:
         name: 🔄 Sync uv.lock with pyproject.toml
       - id: uv-export
         name: 💾  Export your requirements.txt based on uv.lock
-        args: ['--frozen', '-o', 'requirements.txt', '--no-hashes']
+        args: ['--frozen', '-o', 'requirements.txt', '--no-hashes', '--all-groups']
         files: ^uv\.lock$
