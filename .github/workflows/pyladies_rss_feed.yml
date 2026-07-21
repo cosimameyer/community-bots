@@ -13,7 +13,7 @@ jobs:
       pull-requests: write
     steps:
       - name: checkout repo content
-        uses: actions/checkout@v2
+        uses: actions/checkout@v7
         with:
           token: ${{ secrets.SECRET_WRITE }}
 
