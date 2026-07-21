@@ -328,7 +328,7 @@ watchdog==6.0.0
     # via mkdocs
 wcwidth==0.8.2
     # via prompt-toolkit
-websockets==15.0.1
+websockets==16.1.1
     # via
     #   atproto
     #   google-genai
