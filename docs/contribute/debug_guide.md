@@ -79,7 +79,6 @@ RLADIES_BOT_CLIENTCRED_SECRET=path/to/rladies.secret
 
 # --- AI summaries (blog scenario only) ---
 GEMINI_API_KEY=your-gemini-key
-GEMINI_MODEL_NAME=gemini-2.5-flash
 ```
 
 > **Bluesky:** use an *app password* (Bluesky Settings → Privacy & Security → App Passwords), not your main account password.
