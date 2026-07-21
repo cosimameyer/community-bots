@@ -52,7 +52,7 @@ colorama==0.4.6
     #   pytest
 comm==0.2.3
     # via ipykernel
-cryptography==46.0.7
+cryptography==49.0.0
     # via
     #   atproto
     #   google-auth
