@@ -58,7 +58,7 @@ class TestGetConfigBlog:
     def test_pyladies_bluesky_gen_ai_support(self):
         cfg = make_debug(bot='pyladies', platform='bluesky').get_config_blog()
         assert cfg.get('gen_ai_support') is True
-        assert cfg.get('gemini_model_name') == 'gemini-2.5-flash'
+        assert cfg.get('gemini_model_name') == 'gemini-3.1-flash-lite'
 
     def test_pyladies_bluesky_platform_field_matches(self):
         d = make_debug(bot='pyladies', platform='bluesky')
@@ -83,7 +83,7 @@ class TestGetConfigBlog:
     def test_rladies_bluesky_gen_ai_support(self):
         cfg = make_debug(bot='rladies', platform='bluesky').get_config_blog()
         assert cfg.get('gen_ai_support') is True
-        assert cfg.get('gemini_model_name') == 'gemini-2.5-flash'
+        assert cfg.get('gemini_model_name') == 'gemini-3.1-flash-lite'
 
     def test_rladies_mastodon_client_name(self):
         cfg = make_debug(bot='rladies', platform='mastodon').get_config_blog()

@@ -59,7 +59,7 @@ class PromoteBlogPost():
                 ),
                 "gen_ai_support": bool(os.getenv("GEMINI_API_KEY")),
                 "gemini_api_key": os.getenv("GEMINI_API_KEY"),
-                "gemini_model_name": "gemini-2.5-flash"
+                "gemini_model_name": "gemini-3.1-flash-lite"
             }
             if self.config_dict["platform"] == "mastodon":
                 self.config_dict["api_base_url"] = config.API_BASE_URL
@@ -452,7 +452,7 @@ class PromoteBlogPost():
                     raise
         response_cleaned = self.clean_response(response)
         safety_ratings = response.candidates[0].safety_ratings
-        if safety_ratings and all(
+        if not safety_ratings or all(
             rating.probability.name == 'NEGLIGIBLE'
             for rating in safety_ratings
         ):

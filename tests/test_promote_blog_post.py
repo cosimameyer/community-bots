@@ -388,19 +388,19 @@ class TestSummarizeText:
         entry = {"title": "Title", "summary": "Body", "pub_date": "2024-01-01"}
         assert handler.summarize_text(entry) == "Great post"
 
-    def test_returns_empty_when_safety_ratings_none(self):
+    def test_returns_summary_when_safety_ratings_none(self):
         handler = self._make_handler()
         response = self._make_response("Great post", None)
         handler.genai_client.models.generate_content.return_value = response
         entry = {"title": "Title", "summary": "Body", "pub_date": "2024-01-01"}
-        assert handler.summarize_text(entry) == ""
+        assert handler.summarize_text(entry) == "Great post"
 
-    def test_returns_empty_when_safety_ratings_empty(self):
+    def test_returns_summary_when_safety_ratings_empty(self):
         handler = self._make_handler()
         response = self._make_response("Great post", [])
         handler.genai_client.models.generate_content.return_value = response
         entry = {"title": "Title", "summary": "Body", "pub_date": "2024-01-01"}
-        assert handler.summarize_text(entry) == ""
+        assert handler.summarize_text(entry) == "Great post"
 
     def test_returns_empty_when_rating_not_negligible(self):
         handler = self._make_handler()
