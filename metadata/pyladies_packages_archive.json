@@ -8,5 +8,6 @@
   "fairlearn": "0.14.0",
   "flask-talisman": "1.1.0",
   "gidgethub": "5.4.0",
-  "ih": "0.6.0"
+  "ih": "0.6.0",
+  "jupyter-positron-server": "0.0.5"
 }
