@@ -25,6 +25,13 @@
     "bluesky": ""
   },
   {
+    "name": "Isabel Drost-Fromm",
+    "content_type": "blog",
+    "rss_feed": [],
+    "mastodon": "",
+    "bluesky": ""
+  },
+  {
     "name": "Katharine Jarmul",
     "content_type": "blog",
     "rss_feed": [
@@ -144,6 +151,15 @@
       "https://foosel.net/tags/python/index.xml"
     ],
     "mastodon": "@foosel@chaos.social",
+    "bluesky": ""
+  },
+  {
+    "name": "Georgi Ker",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://georgiker.com/blog/index.xml"
+    ],
+    "mastodon": "",
     "bluesky": ""
   },
   {
@@ -481,6 +497,15 @@
     ],
     "mastodon": "@whykay@mastodon.ie",
     "bluesky": "@whykay.bsky.social"
+  },
+  {
+    "name": "Yodra López",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://yodralopez.dev/rss.xml"
+    ],
+    "mastodon": "",
+    "bluesky": ""
   },
   {
     "name": "Pamela Fox",
