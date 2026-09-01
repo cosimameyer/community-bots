@@ -15,5 +15,6 @@
   "nox": "2026.7.11",
   "oras": "0.2.43",
   "overviewpy": "0.2.0",
-  "paintnine": "0.0.1"
+  "paintnine": "0.0.1",
+  "pins": "0.9.1"
 }
