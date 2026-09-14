@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Checkout repo content
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           token: ${{ secrets.SECRET_WRITE }} # Uses PAT for checkout to handle protected branch
           fetch-depth: 0 
