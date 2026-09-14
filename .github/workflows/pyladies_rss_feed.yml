@@ -39,7 +39,7 @@ jobs:
 
       - name: Push changes
         id: cpr
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.SECRET_WRITE }}
           commit-message: "Update PyLadies RSS feed metadata"
