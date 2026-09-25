@@ -22,7 +22,7 @@ beautifulsoup4==4.15.0
     # via community-bots
 blurhash==1.1.5
     # via community-bots
-certifi==2026.6.17
+certifi==2026.7.22
     # via
     #   community-bots
     #   httpcore
