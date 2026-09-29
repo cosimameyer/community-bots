@@ -19,5 +19,6 @@
   "pins": "0.9.1",
   "pokemon": "0.36",
   "pull-request-action": "",
-  "roctet": "0.1.0"
+  "roctet": "0.1.0",
+  "singularity-compose": "0.1.19"
 }
