@@ -402,6 +402,74 @@
     ]
   },
   {
+    "name": "DOPE",
+    "title": "Drug Ontology Parsing Engine",
+    "description": "Provides information on drug names (brand, generic and street) for drugs tracked by the DEA. There are functions that will search synonyms and return the drug names and types. The vignettes have extensive information on the work done to create the data for the package.",
+    "repo_url": "https://github.com/CTN-0094/DOPE",
+    "pypi_url": "",
+    "pkdown_url": "https://ctn-0094.github.io/DOPE/",
+    "bug_reports_url": "https://github.com/CTN-0094/DOPE/issues",
+    "logo_url": "https://raw.githubusercontent.com/CTN-0094/DOPE/HEAD/man/figures/DOPE_hex.png",
+    "last_updated": "2021-06-18",
+    "contributors": [
+      {
+        "name": "Raymond Balise",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Layla Bouzoubaa",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "layla-bouzoubaa"
+      },
+      {
+        "name": "Gabriel Odom",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Nathaniel Castor",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "DescribeDisplay",
+    "title": "An Interface to the 'DescribeDisplay' 'GGobi' Plugin",
+    "description": "Produce publication quality graphics from output of 'GGobi' describe display plugin.",
+    "repo_url": "https://github.com/ggobi/DescribeDisplay",
+    "pypi_url": "",
+    "pkdown_url": "",
+    "bug_reports_url": "https://github.com/ggobi/DescribeDisplay/issues",
+    "logo_url": null,
+    "last_updated": "2023-08-25",
+    "contributors": [
+      {
+        "name": "Dianne Cook",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "dianne-cook"
+      },
+      {
+        "name": "Hadley Wickham",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Andreas Buja",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Barret Schloerke",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
     "name": "EPACmodel",
     "title": "Use the Early Pandemic Age-structured Compartmental (EPAC) model",
     "description": "Simulate versions of the EPAC model.",
@@ -1223,6 +1291,36 @@
     ]
   },
   {
+    "name": "PPtreeExt",
+    "title": "Projection Pursuit Classification Tree Extensions",
+    "description": "Implements extensions to the projection pursuit tree algorithm for supervised classification, see Lee, Y. (2013), <doi:10.1214/13-EJS810> and Lee, E-K. (2018) <doi:10.18637/jss.v083.i08>. The algorithm is changed in two ways: improving prediction boundaries by modifying the choice of split points-through class subsetting; and increasing flexibility by allowing multiple splits per group.",
+    "repo_url": "https://github.com/natydasilva/PPtreeExt",
+    "pypi_url": "",
+    "pkdown_url": "",
+    "bug_reports_url": null,
+    "logo_url": "https://raw.githubusercontent.com/natydasilva/PPtreeExt/HEAD/man/figures/logo.png",
+    "last_updated": "2026-02-06",
+    "contributors": [
+      {
+        "name": "Natalia da Silva",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Dianne Cook",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "dianne-cook"
+      },
+      {
+        "name": "Eun-Kyung Lee",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "eunkyung-lee"
+      }
+    ]
+  },
+  {
     "name": "PlackettLuce",
     "title": "Plackett-Luce Models for Rankings",
     "description": "Functions to prepare rankings data and fit the Plackett-Luce model jointly attributed to Plackett (1975) <doi:10.2307/2346567> and Luce (1959, ISBN:0486441369). The standard Plackett-Luce model is generalized to accommodate ties of any order in the ranking. Partial rankings, in which only a subset of items are ranked in each ranking, are also accommodated in the implementation. Disconnected/weakly connected networks implied by the rankings may be handled by adding pseudo-rankings with a hypothetical item. Optionally, a multivariate normal prior may be set on the log-worth parameters and ranker reliabilities may be incorporated as proposed by Raman and Joachims (2014) <doi:10.1145/2623330.2623654>. Maximum a posteriori estimation is used when priors are set. Methods are provided to estimate standard errors or quasi-standard errors for inference as well as to fit Plackett-Luce trees. See the package website or vignette for further details.",
@@ -2014,7 +2112,7 @@
     "pkdown_url": "https://docs.ropensci.org/agroclimatico/",
     "bug_reports_url": "https://github.com/ropensci/agroclimatico/issues",
     "logo_url": "https://docs.ropensci.org/agroclimatico/logo.png",
-    "last_updated": null,
+    "last_updated": "2025-05-05",
     "contributors": [
       {
         "name": "Yanina Bellini Saibene",
@@ -2081,13 +2179,37 @@
     "pkdown_url": "https://emitanaka.github.io/anicon/",
     "bug_reports_url": "https://github.com/emitanaka/anicon/issues",
     "logo_url": null,
-    "last_updated": null,
+    "last_updated": "2026-07-13",
     "contributors": [
       {
         "name": "Emi Tanaka",
         "mastodon": "",
         "bluesky": "",
         "directory_id": "emi-tanaka"
+      }
+    ]
+  },
+  {
+    "name": "animbook",
+    "title": "Visualizing Changes in Performance Measures and Demographic\nAffiliations using Animation",
+    "description": "Create an interactive visualization to be used for communication purposes. Providing the function for preparing, plotting, and animating the data. Krisanat Anukarnsakulchularp (2023) <https://github.com/KrisanatA/animbook-journal>.",
+    "repo_url": "https://github.com/KrisanatA/animbook",
+    "pypi_url": "",
+    "pkdown_url": "",
+    "bug_reports_url": "https://github.com/KrisanatA/animbook/issues",
+    "logo_url": "https://raw.githubusercontent.com/KrisanatA/animbook/HEAD/man/figures/logo.png",
+    "last_updated": "2025-09-02",
+    "contributors": [
+      {
+        "name": "Krisanat Anukarnsakulchularp",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Dianne Cook",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "dianne-cook"
       }
     ]
   },
@@ -2134,6 +2256,90 @@
       },
       {
         "name": "Collin Schwantes",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "arrow",
+    "title": "Integration to 'Apache' 'Arrow'",
+    "description": "'Apache' 'Arrow' <https://arrow.apache.org/> is a cross-language development platform for in-memory data. It specifies a standardized language-independent columnar memory format for flat and hierarchical data, organized for efficient analytic operations on modern hardware. This package provides an interface to the 'Arrow C++' library.",
+    "repo_url": "https://github.com/apache/arrow/",
+    "pypi_url": "",
+    "pkdown_url": "https://arrow.apache.org/docs/r/",
+    "bug_reports_url": "https://github.com/apache/arrow/issues",
+    "logo_url": null,
+    "last_updated": "2026-04-29",
+    "contributors": [
+      {
+        "name": "Neal Richardson",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Ian Cook",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Nic Crane",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "nic-crane"
+      },
+      {
+        "name": "Dewey Dunnington",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Romain François",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Jonathan Keane",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Bryce Mecum",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Dragoș Moldovan-Grünfeld",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Jeroen Ooms",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Jacob Wujciak-Jens",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Javier Luraschi",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Karl Dunkle Werner",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Jeffrey Wong",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Apache Arrow",
         "mastodon": "",
         "bluesky": ""
       }
@@ -2509,6 +2715,40 @@
     ]
   },
   {
+    "name": "biovizBase",
+    "title": "Basic graphic utilities for visualization of genomic data.",
+    "description": "The biovizBase package is designed to provide a set of utilities, color schemes and conventions for genomic data. It serves as the base for various high-level packages for biological data visualization. This saves development effort and encourages consistency.",
+    "repo_url": null,
+    "pypi_url": "",
+    "pkdown_url": "",
+    "bug_reports_url": null,
+    "logo_url": null,
+    "last_updated": "2026-04-28",
+    "contributors": [
+      {
+        "name": "Tengfei Yin",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Michael Lawrence",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Dianne Cook",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "dianne-cook"
+      },
+      {
+        "name": "Johannes Rainer",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
     "name": "biwt",
     "title": "Compute the Biweight Mean Vector and Covariance & Correlation\nMatrice",
     "description": "Compute multivariate location, scale, and correlation estimates based on Tukey's biweight M-estimator.",
@@ -2865,6 +3105,25 @@
     ]
   },
   {
+    "name": "canvasquiz",
+    "title": "Quiz For Canvas Learning Management System",
+    "description": "Create, manipulate and get classic quizzes directly via Canvas learning management system's API.",
+    "repo_url": "https://github.com/emitanaka/canvasquiz",
+    "pypi_url": "",
+    "pkdown_url": "http://emitanaka.org/canvasquiz/",
+    "bug_reports_url": "https://github.com/emitanaka/canvasquiz/issues",
+    "logo_url": null,
+    "last_updated": "2026-04-21",
+    "contributors": [
+      {
+        "name": "Emi Tanaka",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "emi-tanaka"
+      }
+    ]
+  },
+  {
     "name": "capesData",
     "title": "Data on Scholarships in CAPES International Mobility Programs",
     "description": "Information on activities to promote scholarships in Brazil and abroad for international mobility programs, recorded in Capes' computerized payment systems. The CAPES database refers to international mobility programs for the period from 2010 to 2019 <https://dadosabertos.capes.gov.br/dataset/>.",
@@ -2894,6 +3153,79 @@
         "name": "Izabela R. Cardoso de Oliveira",
         "mastodon": "",
         "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "cardinalR",
+    "title": "Collection of Data Structures",
+    "description": "A collection of functions to generate a large variety of structures in high dimensions. These data structures are useful for testing, validating, and improving algorithms used in dimensionality reduction, clustering, machine learning, and visualization.",
+    "repo_url": "https://github.com/JayaniLakshika/cardinalR",
+    "pypi_url": "",
+    "pkdown_url": "https://jayanilakshika.github.io/cardinalR/",
+    "bug_reports_url": "https://github.com/JayaniLakshika/cardinalR/issues",
+    "logo_url": "https://jayanilakshika.github.io/cardinalR/logo.png",
+    "last_updated": "2025-12-18",
+    "contributors": [
+      {
+        "name": "Jayani P. Gamage",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Dianne Cook",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "dianne-cook"
+      },
+      {
+        "name": "Paul Harrison",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Michael Lydeamore",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Thiyanga S. Talagala",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "cassowaryr",
+    "title": "Compute Scagnostics on Pairs of Numeric Variables in a Data Set",
+    "description": "Computes a range of scatterplot diagnostics (scagnostics) on pairs of numerical variables in a data set. A range of scagnostics, including graph and association-based scagnostics described by Leland Wilkinson and Graham Wills (2008) <doi:10.1198/106186008X320465> and association-based scagnostics described by Katrin Grimm (2016,ISBN:978-3-8439-3092-5) can be computed. Summary and plotting functions are provided.",
+    "repo_url": "https://github.com/numbats/cassowaryr",
+    "pypi_url": "",
+    "pkdown_url": "",
+    "bug_reports_url": "https://github.com/numbats/cassowaryr/issues",
+    "logo_url": "https://raw.githubusercontent.com/numbats/cassowaryr/HEAD/man/figures/logo.png",
+    "last_updated": "2024-09-13",
+    "contributors": [
+      {
+        "name": "Harriet Mason",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Stuart Lee",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Ursula Laa",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Dianne Cook",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "dianne-cook"
       }
     ]
   },
@@ -3110,6 +3442,30 @@
     ]
   },
   {
+    "name": "classifly",
+    "title": "Explore Classification Models in High Dimensions",
+    "description": "Given $p$-dimensional training data containing $d$ groups (the design space), a classification algorithm (classifier) predicts which group new data belongs to. Generally the input to these algorithms is high dimensional, and the boundaries between groups will be high dimensional and perhaps non-linear. This package implements methods for understanding the division of space between the groups.",
+    "repo_url": null,
+    "pypi_url": "",
+    "pkdown_url": "http://had.co.nz/classifly",
+    "bug_reports_url": null,
+    "logo_url": null,
+    "last_updated": "2026-03-15",
+    "contributors": [
+      {
+        "name": "Hadley Wickham",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Dianne Cook",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "dianne-cook"
+      }
+    ]
+  },
+  {
     "name": "clinPK",
     "title": "Clinical Pharmacokinetics Toolkit",
     "description": "Provides equations commonly used in clinical pharmacokinetics and clinical pharmacology, such as equations for dose individualization, compartmental pharmacokinetics, drug exposure, anthropomorphic calculations, clinical chemistry, and conversion of common clinical parameters. Where possible and relevant, it provides multiple published and peer-reviewed equations within the respective R function.",
@@ -3145,6 +3501,25 @@
         "name": "InsightRX",
         "mastodon": "",
         "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "cloudflarer",
+    "title": "Interface to the 'Cloudflare' API",
+    "description": "An 'R' interface to the 'Cloudflare' REST API (<https://developers.cloudflare.com/api/>). Wraps the v4 API with authenticated requests, response unwrapping, paginated list helpers, and a generic request function so users can call any endpoint that is not yet covered by a dedicated wrapper.",
+    "repo_url": "https://github.com/drmowinckels/cloudflarer",
+    "pypi_url": "",
+    "pkdown_url": "https://drmowinckels.io/cloudflarer/",
+    "bug_reports_url": "https://github.com/drmowinckels/cloudflarer/issues",
+    "logo_url": "https://drmowinckels.io/cloudflarer/logo.png",
+    "last_updated": "2026-07-09",
+    "contributors": [
+      {
+        "name": "Athanasia Mo Mowinckel",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "athanasia-mo-mowinckel"
       }
     ]
   },
@@ -3298,6 +3673,25 @@
         "name": "Thierry Onkelinx",
         "mastodon": "",
         "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "codewhere",
+    "title": "Find the Location of an R Package's Code",
+    "description": "Find the location of the code for an R package based on the package's name or string representation. Checks on CRAN based on information in the URL field or BioConductor and GitHub based on constructing a URL, and verifies all paths via testing for a successful response. This can be useful when automating static code analysis based on a list of package names, and similar tasks.",
+    "repo_url": "https://github.com/thisisnic/codewhere/",
+    "pypi_url": "",
+    "pkdown_url": "https://thisisnic.github.io/codewhere/",
+    "bug_reports_url": "https://github.com/thisisnic/codewhere/issues",
+    "logo_url": null,
+    "last_updated": "2024-06-05",
+    "contributors": [
+      {
+        "name": "Nic Crane",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "nic-crane"
       }
     ]
   },
@@ -3462,6 +3856,40 @@
     ]
   },
   {
+    "name": "covidnor",
+    "title": "Public COVID-19 Data for Norway",
+    "description": "Publicly available COVID-19 data for Norway cleaned and merged into one dataset, including PCR confirmed cases, tests, hospitalisation and vaccination.",
+    "repo_url": "https://github.com/csids/covidnor",
+    "pypi_url": "",
+    "pkdown_url": "https://www.csids.no/covidnor/",
+    "bug_reports_url": "https://github.com/csids/covidnor/issues",
+    "logo_url": "https://raw.githubusercontent.com/csids/covidnor/HEAD/man/figures/logo.png",
+    "last_updated": "2023-05-26",
+    "contributors": [
+      {
+        "name": "Chi Zhang",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "andrea-chi"
+      },
+      {
+        "name": "Richard Aubrey White",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "CSIDS",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Folkehelseinstituttet",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
     "name": "cowsay",
     "title": "Messages, Warnings, Strings with Ascii Animals",
     "description": "Allows printing of character strings as messages/warnings/etc. with ASCII animals, including cats, cows, frogs, chickens, ghosts, and more.",
@@ -3562,6 +3990,25 @@
     ]
   },
   {
+    "name": "cranlint",
+    "title": "Static Checks for Common CRAN Submission Mistakes",
+    "description": "A personal-use package that runs static checks against a package source tree to catch recurring mistakes made before CRAN submission, such as DESCRIPTION formatting issues, fixed random seeds, and leftover debugging statements. Complements tools like 'checkhelper' and 'rcmdcheck' rather than replacing them.",
+    "repo_url": "https://github.com/djnavarro/cranlint",
+    "pypi_url": "",
+    "pkdown_url": "https://cranlint.djnavarro.net/",
+    "bug_reports_url": "https://github.com/djnavarro/cranlint/issues",
+    "logo_url": null,
+    "last_updated": "2026-08-29",
+    "contributors": [
+      {
+        "name": "Danielle Navarro",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "danielle-navarro"
+      }
+    ]
+  },
+  {
     "name": "cransays",
     "title": "Creates an Overview of CRAN Incoming Submissions",
     "description": "It scrapes the CRAN incoming FTP folder to find where each submission is.",
@@ -3610,6 +4057,93 @@
       },
       {
         "name": "Hadley Wickham",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "csalert",
+    "title": "Alerts from Public Health Surveillance Data",
+    "description": "Helps create alerts and determine trends by using various methods to analyze public health surveillance data. The primary analysis method is based upon a published analytics strategy by Benedetti (2019) <doi:10.5588/pha.19.0002>.",
+    "repo_url": "https://github.com/csids/csalert",
+    "pypi_url": "",
+    "pkdown_url": "https://www.csids.no/csalert/",
+    "bug_reports_url": "https://github.com/csids/csalert/issues",
+    "logo_url": null,
+    "last_updated": "2024-06-24",
+    "contributors": [
+      {
+        "name": "Beatriz Valcarcel Salamanca",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Chi Zhang",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "andrea-chi"
+      },
+      {
+        "name": "Richard Aubrey White",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "CSIDS",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "csdata",
+    "title": "Structural Data for Norway",
+    "description": "Datasets relating to population in municipalities, municipality/county matching, and how different municipalities have merged/redistricted over time from 2006 to 2024.",
+    "repo_url": "https://github.com/niphr/csdata",
+    "pypi_url": "",
+    "pkdown_url": "https://niphr.github.io/csdata/",
+    "bug_reports_url": "https://github.com/niphr/csdata/issues",
+    "logo_url": "https://niphr.github.io/csdata/logo.png",
+    "last_updated": "2026-03-31",
+    "contributors": [
+      {
+        "name": "Richard Aubrey White",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Chi Zhang",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "andrea-chi"
+      }
+    ]
+  },
+  {
+    "name": "csmaps",
+    "title": "Preformatted Maps of Norway that Don't Need Geolibraries",
+    "description": "Provides datasets containing preformatted maps of Norway at the county, municipality, and ward (Oslo only) level for redistricting in 2024, 2020, 2018, and 2017. Multiple layouts are provided (normal, split, and with an insert for Oslo), allowing the user to rapidly create choropleth maps of Norway without any geolibraries.",
+    "repo_url": "https://github.com/csids/csmaps",
+    "pypi_url": "",
+    "pkdown_url": "https://www.csids.no/csmaps/",
+    "bug_reports_url": "https://github.com/csids/csmaps/issues",
+    "logo_url": null,
+    "last_updated": "2025-08-21",
+    "contributors": [
+      {
+        "name": "Richard Aubrey White",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Chi Zhang",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "andrea-chi"
+      },
+      {
+        "name": "CSIDS",
         "mastodon": "",
         "bluesky": ""
       }
@@ -3845,7 +4379,7 @@
     "pkdown_url": "",
     "bug_reports_url": "https://github.com/emitanaka/datalegreyar/issues",
     "logo_url": null,
-    "last_updated": null,
+    "last_updated": "2018-07-16",
     "contributors": [
       {
         "name": "Emi Tanaka",
@@ -4117,6 +4651,25 @@
     ]
   },
   {
+    "name": "deggust",
+    "title": "Visualise experimental designs from edibble as ggplot graphics",
+    "description": "Visualisation of designs as ggplot graphics.",
+    "repo_url": "https://github.com/emitanaka/deggust",
+    "pypi_url": "",
+    "pkdown_url": "http://deggust.emitanaka.org",
+    "bug_reports_url": "https://github.com/emitanaka/deggust/issues",
+    "logo_url": "http://deggust.emitanaka.org/logo.png",
+    "last_updated": "2023-12-12",
+    "contributors": [
+      {
+        "name": "Emi Tanaka",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "emi-tanaka"
+      }
+    ]
+  },
+  {
     "name": "devtools",
     "title": "Tools to Make Developing R Packages Easier",
     "description": "Collection of package development tools.",
@@ -4191,6 +4744,25 @@
         "name": "PBC",
         "mastodon": "",
         "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "dir",
+    "title": "Interactive Directory Listing",
+    "description": "A HTML widget for pretty directory listing with collapsible folders.",
+    "repo_url": "https://github.com/emitanaka/dir",
+    "pypi_url": "",
+    "pkdown_url": "https://emitanaka.org/dir/",
+    "bug_reports_url": "https://github.com/emitanaka/dir/issues",
+    "logo_url": null,
+    "last_updated": "2024-02-17",
+    "contributors": [
+      {
+        "name": "Emi Tanaka",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "emi-tanaka"
       }
     ]
   },
@@ -4369,6 +4941,35 @@
     ]
   },
   {
+    "name": "ecotourism",
+    "title": "Collection of Data on Wildlife Sightings, Tourism Counts, and\nWeather from Australia",
+    "description": "This is a collection of data files for exploring sightings of wild things, relative to weather and tourism patterns in Australia.",
+    "repo_url": "https://github.com/vahdatjavad/ecotourism",
+    "pypi_url": "",
+    "pkdown_url": "",
+    "bug_reports_url": "https://github.com/vahdatjavad/ecotourism/issues",
+    "logo_url": "https://raw.githubusercontent.com/vahdatjavad/ecotourism/HEAD/man/figures/logo.png",
+    "last_updated": "2025-09-16",
+    "contributors": [
+      {
+        "name": "Dianne Cook",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "dianne-cook"
+      },
+      {
+        "name": "Lyn Cook",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Javad Vahdat Atashgah",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
     "name": "edibble",
     "title": "Encapsulating Elements of Experimental Design",
     "description": "A system to facilitate designing comparative (and non-comparative) experiments using the grammar of experimental designs <https://emitanaka.org/edibble-book/>. An experimental design is treated as an intermediate, mutable object that is built progressively by fundamental experimental components like units, treatments, and their relation. The system aids in experimental planning, management and workflow.",
@@ -4384,6 +4985,49 @@
         "mastodon": "",
         "bluesky": "",
         "directory_id": "emi-tanaka"
+      }
+    ]
+  },
+  {
+    "name": "emaxnls",
+    "title": "Nonlinear Least Squares Estimation for Emax Regression Models",
+    "description": "Provides estimation and covariate selection tools for Emax regression models using nonlinear least squares methods. Supported optimisation algorithms are Gauss-Newton, Levenberg-Marquardt, and the port library for bounded optimisation. The package also provides tools to assist in simulation work using Emax regression.",
+    "repo_url": "https://github.com/djnavarro/emaxnls",
+    "pypi_url": "",
+    "pkdown_url": "https://emaxnls.djnavarro.net/",
+    "bug_reports_url": "https://github.com/djnavarro/emaxnls/issues",
+    "logo_url": null,
+    "last_updated": "2026-09-16",
+    "contributors": [
+      {
+        "name": "Danielle Navarro",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "danielle-navarro"
+      }
+    ]
+  },
+  {
+    "name": "emend",
+    "title": "Cleaning Text Data with an AI Assistant",
+    "description": "Provides functions to clean and standardize messy data, including textual categories and free-text addresses, using Large Language Models. The package corrects typos, expands abbreviations, and maps inconsistent entries to standardized values. Ideal for Bioinformatics, business, and general data cleaning tasks.",
+    "repo_url": "https://github.com/anuopensci/emend",
+    "pypi_url": "",
+    "pkdown_url": "https://anuopensci.github.io/emend/",
+    "bug_reports_url": "https://github.com/anuopensci/emend/issues",
+    "logo_url": null,
+    "last_updated": "2025-04-08",
+    "contributors": [
+      {
+        "name": "Emi Tanaka",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "emi-tanaka"
+      },
+      {
+        "name": "Jiajia Li",
+        "mastodon": "",
+        "bluesky": ""
       }
     ]
   },
@@ -4526,6 +5170,25 @@
     ]
   },
   {
+    "name": "erglm",
+    "title": "Exposure-Response Tools for GLM-Based Models",
+    "description": "Provides estimation tools for exposure-response models based on glm(): model fitting and prediction, stepwise covariate modelling, and simulation-based visual predictive checks. Tested and supported for binomial, Poisson, Gaussian, and gamma families. For a model-agnostic mini-language to visualise exposure-response models (including those fitted with 'erglm'), see the companion package 'erplots'.",
+    "repo_url": "https://github.com/djnavarro/erglm",
+    "pypi_url": "",
+    "pkdown_url": "https://erglm.djnavarro.net/",
+    "bug_reports_url": "https://github.com/djnavarro/erglm/issues",
+    "logo_url": null,
+    "last_updated": "2026-09-29",
+    "contributors": [
+      {
+        "name": "Danielle Navarro",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "danielle-navarro"
+      }
+    ]
+  },
+  {
     "name": "ern",
     "title": "Effective Reproduction Number Estimation",
     "description": "Estimate the effective reproduction number from wastewater and clinical data sources.",
@@ -4551,6 +5214,44 @@
         "mastodon": "",
         "bluesky": "",
         "directory_id": "irena-papst"
+      }
+    ]
+  },
+  {
+    "name": "erplots",
+    "title": "Model-Agnostic Exposure-Response Plots",
+    "description": "Provides a fluent mini-language for building exposure-response plots (model curves/ribbons, quantile-binned summaries, data strips, and grouped distribution panels) from observed data and a fitted exposure-response model. Designed to be model-agnostic: any model object that implements the er_predict() generic (and, optionally, er_simulate() and er_summary()) can be visualised.",
+    "repo_url": "https://github.com/djnavarro/erplots",
+    "pypi_url": "",
+    "pkdown_url": "https://erplots.djnavarro.net/",
+    "bug_reports_url": "https://github.com/djnavarro/erplots/issues",
+    "logo_url": null,
+    "last_updated": "2026-10-04",
+    "contributors": [
+      {
+        "name": "Danielle Navarro",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "danielle-navarro"
+      }
+    ]
+  },
+  {
+    "name": "ertte",
+    "title": "Exposure-Response Tools for Time-to-Event Models",
+    "description": "Provides estimation tools for exposure-response models of time-to-event endpoints based on the 'survival' package: parametric accelerated failure time model fitting and prediction with AIC-based distribution selection, stepwise covariate modelling, and simulation-based visual predictive checks. Tested and supported for the exponential, Weibull, log-normal, and log-logistic distributions. For a model-agnostic mini-language to visualise exposure-response models (including those fitted with 'ertte'), see the companion package 'erplots'.",
+    "repo_url": "https://github.com/djnavarro/ertte",
+    "pypi_url": "",
+    "pkdown_url": "https://ertte.djnavarro.net/",
+    "bug_reports_url": "https://github.com/djnavarro/ertte/issues",
+    "logo_url": null,
+    "last_updated": "2026-10-04",
+    "contributors": [
+      {
+        "name": "Danielle Navarro",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "danielle-navarro"
       }
     ]
   },
@@ -4927,6 +5628,79 @@
     ]
   },
   {
+    "name": "ggbio",
+    "title": "Visualization tools for genomic data",
+    "description": "The ggbio package extends and specializes the grammar of graphics for biological data. The graphics are designed to answer common scientific questions, in particular those often asked of high throughput genomics data. All core Bioconductor data structures are supported, where appropriate. The package supports detailed views of particular genomic regions, as well as genome-wide overviews. Supported overviews include ideograms and grand linear views. High-level plots include sequence fragment length, edge-linked interval to data view, mismatch pileup, and several splicing summaries.",
+    "repo_url": "https://github.com/lawremi/ggbio",
+    "pypi_url": "",
+    "pkdown_url": "https://lawremi.github.io/ggbio/",
+    "bug_reports_url": "https://github.com/lawremi/ggbio/issues",
+    "logo_url": null,
+    "last_updated": "2026-04-28",
+    "contributors": [
+      {
+        "name": "Tengfei Yin",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Michael Lawrence",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Dianne Cook",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "dianne-cook"
+      },
+      {
+        "name": "Sanchit Saini",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Johannes Rainer",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "ggdibbler",
+    "title": "Add Uncertainty to Data Visualisations",
+    "description": "A 'ggplot2' extension for visualising uncertainty with the goal of signal suppression. Usually, uncertainty visualisation focuses on expressing uncertainty as a distribution or probability, whereas 'ggdibbler' differentiates itself by viewing an uncertainty visualisation as an adjustment to an existing graphic that incorporates the inherent uncertainty in the estimates. You provide the code for an existing plot, but replace any of the variables with a vector of distributions, and it will convert the visualisation into it's signal suppression counterpart.",
+    "repo_url": "https://github.com/harriet-mason/ggdibbler",
+    "pypi_url": "",
+    "pkdown_url": "https://harriet-mason.github.io/ggdibbler/",
+    "bug_reports_url": "https://github.com/harriet-mason/ggdibbler/issues",
+    "logo_url": "https://harriet-mason.github.io/ggdibbler/logo.png",
+    "last_updated": "2025-12-06",
+    "contributors": [
+      {
+        "name": "Harriet Mason",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Dianne Cook",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "dianne-cook"
+      },
+      {
+        "name": "Sarah Goodwin",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Susan VanderPlas",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
     "name": "ggflowchart",
     "title": "Flowcharts with 'ggplot2'",
     "description": "Flowcharts can be a useful way to visualise complex processes. This package uses the layered grammar of graphics of 'ggplot2' to create simple flowcharts.",
@@ -5056,7 +5830,7 @@
     "pypi_url": "",
     "pkdown_url": "https://ggsegverse.github.io/ggseg.formats/",
     "bug_reports_url": "https://github.com/ggsegverse/ggseg.formats/issues",
-    "logo_url": null,
+    "logo_url": "https://ggsegverse.github.io/ggseg.formats/logo.png",
     "last_updated": "2026-04-03",
     "contributors": [
       {
@@ -5571,6 +6345,30 @@
     ]
   },
   {
+    "name": "granular",
+    "title": "Resolving starch granule distributions",
+    "description": "Work out distributions.",
+    "repo_url": "https://github.com/csiro-crop-informatics/granular",
+    "pypi_url": "",
+    "pkdown_url": "",
+    "bug_reports_url": "https://github.com/csiro-crop-informatics/granular/issues",
+    "logo_url": null,
+    "last_updated": "2020-06-04",
+    "contributors": [
+      {
+        "name": "Alex Whan",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Emi Tanaka",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "emi-tanaka"
+      }
+    ]
+  },
+  {
     "name": "gtreg",
     "title": "Regulatory Tables for Clinical Research",
     "description": "Creates tables suitable for regulatory agency submission by leveraging the 'gtsummary' package as the back end. Tables can be exported to HTML, Word, PDF and more. Highly customized outputs are available by utilizing existing styling functions from 'gtsummary' as well as custom options designed for regulatory tables.",
@@ -5961,6 +6759,45 @@
     ]
   },
   {
+    "name": "heritable",
+    "title": "Heritability Estimation from Linear Mixed Models",
+    "description": "Provides flexible estimation of broad- and narrow-sense heritability from linear mixed models fitted with 'asreml' or 'lme4'. Implements commonly used estimators, including the Standard, Cullis, Oakey, Piepho, and Delta methods. Supports complex model structures, marginal and environment-specific heritability for genotype-by-environment models, and confidence intervals based on parametric bootstrap. The implemented estimators include methods discussed by Schmidt et al. (2019) <doi:10.1534/genetics.119.302134>.",
+    "repo_url": "https://github.com/anu-aagi/heritable",
+    "pypi_url": "",
+    "pkdown_url": "https://anu-aagi.github.io/heritable/",
+    "bug_reports_url": null,
+    "logo_url": null,
+    "last_updated": "2026-08-18",
+    "contributors": [
+      {
+        "name": "Emi Tanaka",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "emi-tanaka"
+      },
+      {
+        "name": "Yidi Deng",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Fonti Kar",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Weihao",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Paul Schmidt",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
     "name": "hexify",
     "title": "Create Hex Stickers",
     "description": "Allows the user to create hex stickers from images.",
@@ -6093,6 +6930,35 @@
         "mastodon": "",
         "bluesky": "",
         "directory_id": "federica-gazzelloni"
+      }
+    ]
+  },
+  {
+    "name": "holiglm",
+    "title": "Holistic Generalized Linear Models",
+    "description": "Holistic generalized linear models (HGLMs) extend generalized linear models (GLMs) by enabling the possibility to add further constraints to the model. The 'holiglm' package simplifies estimating HGLMs using convex optimization. Additional information about the package can be found in the reference manual, the 'README' and the accompanying paper <doi:10.18637/jss.v108.i07>.",
+    "repo_url": null,
+    "pypi_url": "",
+    "pkdown_url": "",
+    "bug_reports_url": null,
+    "logo_url": null,
+    "last_updated": "2024-12-20",
+    "contributors": [
+      {
+        "name": "Benjamin Schwendinger",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Florian Schwendinger",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Laura Vana",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "laura-vana"
       }
     ]
   },
@@ -6409,6 +7275,95 @@
     ]
   },
   {
+    "name": "jugglr",
+    "title": "Juggling Pattern Validation and Visualisation",
+    "description": "Validate and visualise juggling patterns expressed in siteswap notation. Supports vanilla, synchronous, multiplex, synchronous multiplex, and passing siteswap, with tools to check pattern validity and to retrieve raw throw data for custom visualisations. Patterns can be plotted as timeline arc diagrams or ladder diagrams, and animated via the 'JugglingLab' animation server (<https://jugglinglab.org/html/animinfo.html>).",
+    "repo_url": "https://github.com/EllaKaye/jugglr",
+    "pypi_url": "",
+    "pkdown_url": "https://ellakaye.github.io/jugglr/",
+    "bug_reports_url": "https://github.com/EllaKaye/jugglr/issues",
+    "logo_url": "https://ellakaye.github.io/jugglr/logo.png",
+    "last_updated": "2026-07-08",
+    "contributors": [
+      {
+        "name": "Ella Kaye",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "ella-kaye"
+      }
+    ]
+  },
+  {
+    "name": "learningtower",
+    "title": "OECD PISA Datasets from 2000-2022 in an Easy-to-Use Format",
+    "description": "The Programme for International Student Assessment (PISA) is a global study conducted by the Organization for Economic Cooperation and Development (OECD) in member and non-member countries to assess educational systems by assessing 15-year-old school students academic performance in mathematics, science, and reading. This datasets contains information on their scores and other socioeconomic characteristics, information about their school and its infrastructure, as well as the countries that are taking part in the program.",
+    "repo_url": "https://github.com/kevinwang09/learningtower",
+    "pypi_url": "",
+    "pkdown_url": "https://kevinwang09.github.io/learningtower/",
+    "bug_reports_url": "https://github.com/kevinwang09/learningtower/issues",
+    "logo_url": "https://kevinwang09.github.io/learningtower/logo.png",
+    "last_updated": "2024-12-21",
+    "contributors": [
+      {
+        "name": "Kevin Wang",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Paul Yacobellis",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Erika Siregar",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "erika-siregar"
+      },
+      {
+        "name": "Sarah Romanes",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Kim Fitter",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Giulio Valentino Dalla Riva",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Dianne Cook",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "dianne-cook"
+      },
+      {
+        "name": "Nick Tierney",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Priya Dingorkar",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Shabarish Sai Subramanian",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Guan Ru Chen",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
     "name": "learnres",
     "title": "Templates for different learnr tutorials in Spanish",
     "description": "Contains templates and themeing files.",
@@ -6548,6 +7503,35 @@
     ]
   },
   {
+    "name": "mapycusmaximus",
+    "title": "Focus-Glue-Context Fisheye Transformations for Spatial\nVisualization",
+    "description": "Focus-glue-context (FGC) fisheye transformations to two-dimensional coordinates and spatial vector geometries. Implements a smooth radial distortion that enlarges a focal region, transitions through a glue ring, and preserves outside context. Methods build on generalized fisheye views and focus+context mapping. For more details see Furnas (1986) <doi:10.1145/22339.22342>, Furnas (2006) <doi:10.1145/1124772.1124921> and Yamamoto et al. (2009) <doi:10.1145/1653771.1653788>.",
+    "repo_url": "https://github.com/Alex-Nguyen-VN/mapycusmaximus",
+    "pypi_url": "",
+    "pkdown_url": "https://alex-nguyen-vn.github.io/mapycusmaximus/",
+    "bug_reports_url": "https://github.com/Alex-Nguyen-VN/mapycusmaximus/issues",
+    "logo_url": "https://alex-nguyen-vn.github.io/mapycusmaximus/logo.png",
+    "last_updated": "2026-02-06",
+    "contributors": [
+      {
+        "name": "Alex Nguyen",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Dianne Cook",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "dianne-cook"
+      },
+      {
+        "name": "Michael Lydeamore",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
     "name": "meetupr",
     "title": "Access Meetup Data",
     "description": "Provides programmatic access to the 'Meetup' 'GraphQL' API (<https://www.meetup.com/graphql/>), enabling users to retrieve information about groups, events, and members from 'Meetup' (<https://www.meetup.com/>). Supports authentication via 'OAuth2' and includes functions for common queries and data manipulation tasks.",
@@ -6661,6 +7645,25 @@
     ]
   },
   {
+    "name": "mesoda",
+    "title": "Mesoscale Data Assimilation - PhD Thesis",
+    "description": "En el futuro: mi tesis de doctorado. Por ahora será un compendio de análisis ordenados.",
+    "repo_url": "https://github.com/paocorrales/mesoda",
+    "pypi_url": "",
+    "pkdown_url": "",
+    "bug_reports_url": null,
+    "logo_url": null,
+    "last_updated": "2022-10-31",
+    "contributors": [
+      {
+        "name": "Paola Corrales",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "paola-corrales"
+      }
+    ]
+  },
+  {
     "name": "messy",
     "title": "Create Messy Data from Clean Data Frames",
     "description": "For the purposes of teaching, it is often desirable to show examples of working with messy data and how to clean it. This R package creates messy data from clean, tidy data frames so that students have a clean example to work towards.",
@@ -6708,6 +7711,35 @@
       },
       {
         "name": "Samuel Blanck",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "metaextractoR",
+    "title": "Data Extraction for Meta-Analysis with Large Language Models",
+    "description": "Use Large Language Models (LLMs) to assist with data extraction for meta-analysis. This package incorporates three modular Shiny apps to implement a human-in-the-loop framework. (1) a manual extraction interface for abstracts, (2) refining prompt engineering and model selection, and (3) validation of LLM-generated outputs. These apps enable researchers to iteratively collaborate with LLMs, with each abstract undergoing double data extraction—once manually by a human researcher and once independently by an LLM-assisted process—to emulate the double extraction process recommended by international standards. Notably, the package runs fully on local machines, with no need for API setup or external data transfer, maximising data privacy and accessibility. Robust logging features further enhance transparency and reproducibility by recording all prompt iterations and outputs.",
+    "repo_url": "https://github.com/danyangdai/metaextractoR",
+    "pypi_url": "",
+    "pkdown_url": "https://danyangdai.github.io/metaextractoR/",
+    "bug_reports_url": "https://github.com/DanyangDai/metaextractoR/issues",
+    "logo_url": null,
+    "last_updated": "2026-04-07",
+    "contributors": [
+      {
+        "name": "Danyang Dai",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Emi Tanaka",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "emi-tanaka"
+      },
+      {
+        "name": "Jason Pole",
         "mastodon": "",
         "bluesky": ""
       }
@@ -7069,6 +8101,69 @@
     ]
   },
   {
+    "name": "moodlequiz",
+    "title": "R Markdown format for 'Moodle' XML cloze quizzes",
+    "description": "Enables the creation of 'Moodle' quiz questions using literate programming with R Markdown. This makes it easy to quickly create a quiz that can be randomly replicated with new datasets, questions, and options for answers.",
+    "repo_url": "https://github.com/numbats/moodlequiz",
+    "pypi_url": "",
+    "pkdown_url": "https://numbats.github.io/moodlequiz/",
+    "bug_reports_url": "https://github.com/numbats/moodlequiz/issues",
+    "logo_url": null,
+    "last_updated": "2026-04-10",
+    "contributors": [
+      {
+        "name": "Mitchell O'Hara-Wild",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Emi Tanaka",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "emi-tanaka"
+      }
+    ]
+  },
+  {
+    "name": "moosecounter",
+    "title": "Adaptive Moose Surveys",
+    "description": "Adaptive Moose surveys.",
+    "repo_url": "https://github.com/psolymos/moosecounter",
+    "pypi_url": "",
+    "pkdown_url": "",
+    "bug_reports_url": null,
+    "logo_url": null,
+    "last_updated": "2026-04-25",
+    "contributors": [
+      {
+        "name": "Subhash Lele",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Sophie Czetwertynski",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Peter Solymos",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Steffi LaZerte",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "steffi-lazerte"
+      },
+      {
+        "name": "Government of Yukon",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
     "name": "mortAAR",
     "title": "Analysis of Archaeological Mortality Data",
     "description": "A collection of functions for the analysis of archaeological mortality data (on the topic see e.g. Chamberlain 2006 <https://books.google.de/books?id=nG5FoO_becAC&lpg=PA27&ots=LG0b_xrx6O&dq=life%20table%20archaeology&pg=PA27#v=onepage&q&f=false>). It takes demographic data in different formats and displays the result in a standard life table as well as plots the relevant indices (percentage of deaths, survivorship, probability of death, life expectancy, percentage of population). It also checks for possible biases in the age structure and applies corrections to life tables.",
@@ -7133,6 +8228,30 @@
     ]
   },
   {
+    "name": "mulgar",
+    "title": "Functions for Pre-Processing Data for Multivariate Data\nVisualisation using Tours",
+    "description": "This is a companion to the book Cook, D. and Laa, U. (2023) <https://dicook.github.io/mulgar_book/> \"Interactively exploring high-dimensional data and models in R\". by Cook and Laa. It contains useful functions for processing data in preparation for visualising with a tour. There are also several sample data sets.",
+    "repo_url": "https://github.com/dicook/mulgar",
+    "pypi_url": "",
+    "pkdown_url": "https://dicook.github.io/mulgar/",
+    "bug_reports_url": "https://github.com/dicook/mulgar/issues",
+    "logo_url": "https://dicook.github.io/mulgar/logo.png",
+    "last_updated": "2025-07-13",
+    "contributors": [
+      {
+        "name": "Dianne Cook",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "dianne-cook"
+      },
+      {
+        "name": "Ursula Laa",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
     "name": "multilevelmod",
     "title": "Model Wrappers for Multi-Level Models",
     "description": "Bindings for hierarchical regression models for use with the 'parsnip' package. Models include longitudinal generalized linear models (Liang and Zeger, 1986) <doi:10.1093/biomet/73.1.13>, and mixed-effect models (Pinheiro and Bates) <doi:10.1007/978-1-4419-0318-1_1>.",
@@ -7156,6 +8275,64 @@
       },
       {
         "name": "RStudio",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "munsell",
+    "title": "Utilities for Using Munsell Colours",
+    "description": "Provides easy access to, and manipulation of, the Munsell colours. Provides a mapping between Munsell's original notation (e.g. \"5R 5/10\") and hexadecimal strings suitable for use directly in R graphics. Also provides utilities to explore slices through the Munsell colour tree, to transform Munsell colours and display colour palettes.",
+    "repo_url": "https://github.com/cwickham/munsell/",
+    "pypi_url": "",
+    "pkdown_url": "https://cran.r-project.org/package=munsell",
+    "bug_reports_url": "https://github.com/cwickham/munsell/issues",
+    "logo_url": "http://cranlogs.r-pkg.org/badges/last-week/munsell",
+    "last_updated": "2024-04-02",
+    "contributors": [
+      {
+        "name": "Charlotte Wickham <cwickham@gmail.com>",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Charlotte Wickham",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "charlotte-wickham"
+      }
+    ]
+  },
+  {
+    "name": "mvord",
+    "title": "Multivariate Ordinal Regression Models",
+    "description": "A flexible framework for fitting multivariate ordinal regression models with composite likelihood methods. Methodological details are given in Hirk, Hornik, Vana (2020) <doi:10.18637/jss.v093.i04>.",
+    "repo_url": "https://github.com/lauravana/mvord",
+    "pypi_url": "",
+    "pkdown_url": "",
+    "bug_reports_url": "https://github.com/lauravana/mvord/issues",
+    "logo_url": null,
+    "last_updated": "2025-06-02",
+    "contributors": [
+      {
+        "name": "Rainer Hirk",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Kurt Hornik",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Laura Vana",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "laura-vana"
+      },
+      {
+        "name": "Alan Gentz",
         "mastodon": "",
         "bluesky": ""
       }
@@ -7245,7 +8422,7 @@
     "name": "nestr",
     "title": "Build Nesting or Hierarchical Structures",
     "description": "Facilitates building a nesting or hierarchical structure as a list or data frame by using a human friendly syntax.",
-    "repo_url": null,
+    "repo_url": "https://github.com/emitanaka/nestr",
     "pypi_url": "",
     "pkdown_url": "",
     "bug_reports_url": null,
@@ -7774,6 +8951,35 @@
     ]
   },
   {
+    "name": "palmtree",
+    "title": "Partially Additive (Generalized) Linear Model Trees",
+    "description": "This is an implementation of model-based trees with global model parameters (PALM trees). The PALM tree algorithm is an extension to the MOB algorithm (implemented in the 'partykit' package), where some parameters are fixed across all groups. Details about the method can be found in Seibold, Hothorn, Zeileis (2016) <arXiv:1612.07498>. The package offers coef(), logLik(), plot(), and predict() functions for PALM trees.",
+    "repo_url": null,
+    "pypi_url": "",
+    "pkdown_url": "",
+    "bug_reports_url": null,
+    "logo_url": null,
+    "last_updated": "2020-05-15",
+    "contributors": [
+      {
+        "name": "Heidi Seibold",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "heidi-seibold"
+      },
+      {
+        "name": "Torsten Hothorn",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Achim Zeileis",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
     "name": "pangaear",
     "title": "Client for the 'Pangaea' Database",
     "description": "Tools to interact with the 'Pangaea' Database (<https://www.pangaea.de>), including functions for searching for data, fetching 'datasets' by 'dataset' 'ID', and working with the 'Pangaea' 'OAI-PMH' service.",
@@ -8051,6 +9257,50 @@
     ]
   },
   {
+    "name": "plyranges",
+    "title": "A fluent interface for manipulating GenomicRanges",
+    "description": "A dplyr-like interface for interacting with the common Bioconductor classes Ranges and GenomicRanges. By providing a grammatical and consistent way of manipulating these classes their accessiblity for new Bioconductor users is hopefully increased.",
+    "repo_url": "https://github.com/tidyomics/plyranges",
+    "pypi_url": "",
+    "pkdown_url": "https://tidyomics.github.io/plyranges",
+    "bug_reports_url": "https://github.com/tidyomics/plyranges",
+    "logo_url": "https://tidyomics.github.io/plyranges/logo.png",
+    "last_updated": "2026-04-28",
+    "contributors": [
+      {
+        "name": "Stuart Lee",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Michael Lawrence",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Dianne Cook",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "dianne-cook"
+      },
+      {
+        "name": "Spencer Nystrom",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Pierre-Paul Axisa",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Michael Love",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
     "name": "poissonreg",
     "title": "Model Wrappers for Poisson Regression",
     "description": "Bindings for Poisson regression models for use with the 'parsnip' package. Models include simple generalized linear models, Bayesian models, and zero-inflated Poisson models (Zeileis, Kleiber, and Jackman (2008) <doi:10.18637/jss.v027.i08>).",
@@ -8079,6 +9329,35 @@
       },
       {
         "name": "PBC",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "prefviz",
+    "title": "Visualizes Preferential Data in One and More Contests",
+    "description": "A visualization toolkit for preferential data, such as ranked-choice election results, tournament outcomes, and survey responses. The package provides methods to visualise the preference distribution of one contest with bar charts and pairwise comparisons of two contestants, as well as methods to visualise multiple contests through 2D and high-dimensional simplex plots both statically and interactively. HD simplex displays are implemented via projection methods using the 'tourr' and 'detourr' packages, enabling dynamic exploration of high-dimensional preference structure. For more details on HD simplex projection, see Wickham et al. (2011) <doi:10.21105/joss.03419>.",
+    "repo_url": "https://github.com/numbats/prefviz",
+    "pypi_url": "",
+    "pkdown_url": "https://numbats.github.io/prefviz/",
+    "bug_reports_url": "https://github.com/numbats/prefviz/issues",
+    "logo_url": null,
+    "last_updated": "2026-05-01",
+    "contributors": [
+      {
+        "name": "Linh Ngo",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Dianne Cook",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "dianne-cook"
+      },
+      {
+        "name": "Damjan Vukcevic",
         "mastodon": "",
         "bluesky": ""
       }
@@ -8456,6 +9735,45 @@
     ]
   },
   {
+    "name": "quollr",
+    "title": "Visualising How Nonlinear Dimension Reduction Warps Your Data",
+    "description": "To construct a model in 2-D space from 2-D nonlinear dimension reduction data and then lift it to the high-dimensional space. Additionally, provides tools to visualise the model overlay the data in 2-D and high-dimensional space. Furthermore, provides summaries and diagnostics to evaluate the nonlinear dimension reduction layout.",
+    "repo_url": "https://github.com/jayanilakshika/quollr",
+    "pypi_url": "",
+    "pkdown_url": "https://jayanilakshika.github.io/quollr/",
+    "bug_reports_url": "https://github.com/jayanilakshika/quollr/issues",
+    "logo_url": "https://jayanilakshika.github.io/quollr/logo.png",
+    "last_updated": "2025-12-18",
+    "contributors": [
+      {
+        "name": "Jayani P. Gamage",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Dianne Cook",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "dianne-cook"
+      },
+      {
+        "name": "Paul Harrison",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Michael Lydeamore",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Thiyanga S. Talagala",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
     "name": "rHealthDataGov",
     "title": "Retrieve data sets from the HealthData.gov data API",
     "description": "An R interface for the HealthData.gov data API. For each data resource, you can filter results (server-side) to select subsets of data.",
@@ -8490,6 +9808,25 @@
         "mastodon": "",
         "bluesky": "",
         "directory_id": "danielle-navarro"
+      }
+    ]
+  },
+  {
+    "name": "rambutan",
+    "title": "Fast Link Checking Powered by 'lychee'",
+    "description": "An interface to the 'lychee' Rust crate (<https://github.com/lycheeverse/lychee>), a fast, async link checker. Wraps 'lychee-lib' via 'extendr' to check URLs, files, and directories for broken links.",
+    "repo_url": "https://github.com/drmowinckels/rambutan",
+    "pypi_url": "",
+    "pkdown_url": "http://drmowinckels.io/rambutan/",
+    "bug_reports_url": "https://github.com/drmowinckels/rambutan/issues",
+    "logo_url": "http://drmowinckels.io/rambutan/logo.png",
+    "last_updated": "2026-07-13",
+    "contributors": [
+      {
+        "name": "Athanasia Mo Mowinckel",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "athanasia-mo-mowinckel"
       }
     ]
   },
@@ -9214,6 +10551,304 @@
     ]
   },
   {
+    "name": "rticles",
+    "title": "Article Formats for R Markdown",
+    "description": "A suite of custom R Markdown formats and templates for authoring journal articles and conference submissions.",
+    "repo_url": "https://github.com/rstudio/rticles",
+    "pypi_url": "",
+    "pkdown_url": "https://pkgs.rstudio.com/rticles/",
+    "bug_reports_url": "https://github.com/rstudio/rticles/issues",
+    "logo_url": "https://pkgs.rstudio.com/rticles/logo.png",
+    "last_updated": "2024-04-06",
+    "contributors": [
+      {
+        "name": "JJ Allaire",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Yihui Xie",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Christophe Dervieux",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Posit Software",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "PBC",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "R Foundation",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Hadley Wickham",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Journal of Statistical Software",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Ramnath Vaidyanathan",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Association for Computing Machinery",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Carl Boettiger",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Elsevier",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Karl Broman",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Kirill Mueller",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Bastiaan Quast",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Randall Pruim",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Ben Marwick",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Charlotte Wickham",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "charlotte-wickham"
+      },
+      {
+        "name": "Oliver Keyes",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Miao Yu",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Daniel Emaasit",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Thierry Onkelinx",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Alessandro Gasparini",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Marc-Andre Desautels",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Dominik Leutnant",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "MDPI",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Taylor and Francis",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Oğuzhan Öğreden",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Dalton Hance",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Daniel Nüst",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Petter Uvesten",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Elio Campitelli",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "John Muschelli",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Alex Hayes",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Zhian N. Kamvar",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Noam Ross",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Robrecht Cannoodt",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Duncan Luguern",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "David M. Kaplan",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Sebastian Kreutzer",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Shixiang Wang",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Jay Hesselberth",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Alfredo Hernández",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Stefano Coretta",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Greg Macfarlane",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Matthias Templ",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Alvaro Uzaheta",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "JooYoung Seo",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Callum Arnold",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Rob Hyndman",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Dmytro Perepolkin",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Tom Palmer",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "rvad",
+    "title": "Velocity Azimuth Display of Meteorological Radars",
+    "description": "This package implement an algorithm to process radial wind from Doppler radars obtainning the proper horizontal wind. The implementation is based on Browning and Wexler (1968) <doi: 10.1175/1520-0450(1968)007%3C0105:TDOKPO%3E2.0.CO;2> with the addition of several quality controls.",
+    "repo_url": "https://github.com/paocorrales/rvad",
+    "pypi_url": "",
+    "pkdown_url": "",
+    "bug_reports_url": "https://github.com/paocorrales/rvad/issues",
+    "logo_url": null,
+    "last_updated": "2020-07-16",
+    "contributors": [
+      {
+        "name": "Paola Corrales",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "paola-corrales"
+      },
+      {
+        "name": "Elio Campitelli",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
     "name": "saguaRo",
     "title": "Arizona desert colors in R",
     "description": "Combining Arizona's desert beauty and the exciting world of data visualization. This package highlights the beautiful images taken in the Sonoran desert as captured by Tucson residents and friends of the Arizona-Sonora Desert Museum.",
@@ -9267,6 +10902,31 @@
         "mastodon": "",
         "bluesky": "",
         "directory_id": "malindrie-dharmaratne"
+      }
+    ]
+  },
+  {
+    "name": "secrettext",
+    "title": "Encrypt Text Using a Shifting Substitution Cipher",
+    "description": "Encrypt text using a simple shifting substitution cipher with setcode(), providing two numeric keys used to define the encryption algorithm. The resulting text can be decoded using decode() function and the two numeric keys specified during encryption.",
+    "repo_url": null,
+    "pypi_url": "",
+    "pkdown_url": "",
+    "bug_reports_url": null,
+    "logo_url": null,
+    "last_updated": "2020-02-13",
+    "contributors": [
+      {
+        "name": "Danielle Quinn",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "danielle-quinn"
+      },
+      {
+        "name": "Danielle Quinn",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "danielle-quinn"
       }
     ]
   },
@@ -9507,11 +11167,11 @@
     "name": "shinycustomloader",
     "title": "Custom Loader for Shiny Outputs",
     "description": "A custom css/html or gif/image file for the loading screen in R 'shiny'. It also can use the marquee to have custom text loading screen.",
-    "repo_url": null,
+    "repo_url": "https://github.com/emitanaka/shinycustomloader",
     "pypi_url": "",
     "pkdown_url": "",
-    "bug_reports_url": null,
-    "logo_url": null,
+    "bug_reports_url": "https://github.com/emitanaka/shinycustomloader/issues",
+    "logo_url": "https://user-images.githubusercontent.com/7620319/38168572-71e4543e-3593-11e8-9487-9c6c484b896a.png",
     "last_updated": "2018-03-27",
     "contributors": [
       {
@@ -9679,6 +11339,25 @@
         "name": "Rasmus Froberg Brøndum",
         "mastodon": "",
         "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "sketchpad",
+    "title": "A Minimal Drawing System For Generative Art",
+    "description": "A lightweight drawing system built on S7 classes and grid graphics that can be used for generative art.",
+    "repo_url": "https://github.com/djnavarro/sketchpad",
+    "pypi_url": "",
+    "pkdown_url": "https://sketchpad.djnavarro.net/",
+    "bug_reports_url": "https://github.com/djnavarro/sketchpad/issues",
+    "logo_url": null,
+    "last_updated": "2026-08-23",
+    "contributors": [
+      {
+        "name": "Danielle Navarro",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "danielle-navarro"
       }
     ]
   },
@@ -9950,6 +11629,34 @@
     ]
   },
   {
+    "name": "spareg",
+    "title": "Sparse Projected Averaged Regression",
+    "description": "A flexible framework combining variable screening and random projection techniques for fitting ensembles of predictive generalized linear models to high-dimensional data. Designed for extensibility, the package implements key techniques as S3 classes with user-friendly constructors, enabling easy integration and development of new procedures for high-dimensional applications. For more details see Parzer et al (2024a) <doi:10.48550/arXiv.2312.00130> and Parzer et al (2024b) <doi:10.48550/arXiv.2410.00971>.",
+    "repo_url": "https://github.com/lauravana/spareg",
+    "pypi_url": "",
+    "pkdown_url": "",
+    "bug_reports_url": "https://github.com/lauravana/spareg/issues",
+    "logo_url": null,
+    "last_updated": "2025-08-19",
+    "contributors": [
+      {
+        "name": "Laura Vana-Gür",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Roman Parzer",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Peter Filzmoser",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
     "name": "spatialsample",
     "title": "Spatial Resampling Infrastructure",
     "description": "Functions and classes for spatial resampling to use with the 'rsample' package, such as spatial cross-validation (Brenning, 2012) <doi:10.1109/IGARSS.2012.6352393>. The scope of 'rsample' and 'spatialsample' is to provide the basic building blocks for creating and analyzing resamples of a spatial data set, but neither package includes functions for modeling or computing statistics. The resampled spatial data sets created by 'spatialsample' do not contain much overhead in memory.",
@@ -9980,6 +11687,78 @@
         "name": "PBC",
         "mastodon": "",
         "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "speechmatics",
+    "title": "Client for the 'Speechmatics' Speech-to-Text API",
+    "description": "Transcribe audio files using the 'Speechmatics' speech-to-text API <https://www.speechmatics.com/>. Supports custom vocabulary, speaker diarization, punctuation control, and audio filtering.",
+    "repo_url": "https://github.com/thisisnic/speechmatics",
+    "pypi_url": "",
+    "pkdown_url": "https://thisisnic.github.io/speechmatics",
+    "bug_reports_url": "https://github.com/thisisnic/speechmatics/issues",
+    "logo_url": null,
+    "last_updated": "2026-06-06",
+    "contributors": [
+      {
+        "name": "Nic Crane",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "nic-crane"
+      }
+    ]
+  },
+  {
+    "name": "spinebil",
+    "title": "Investigating New Projection Pursuit Index Functions",
+    "description": "Projection pursuit is used to find interesting low-dimensional projections of high-dimensional data by optimizing an index over all possible projections. The 'spinebil' package contains methods to evaluate the performance of projection pursuit index functions using tour methods. A paper describing the methods can be found at <doi:10.1007/s00180-020-00954-8>.",
+    "repo_url": "https://github.com/uschiLaa/spinebil",
+    "pypi_url": "",
+    "pkdown_url": "https://uschilaa.github.io/spinebil/index.html",
+    "bug_reports_url": "https://github.com/uschiLaa/spinebil/issues",
+    "logo_url": "https://raw.githubusercontent.com/uschiLaa/spinebil/HEAD/man/figures/spinebil.png",
+    "last_updated": "2025-10-17",
+    "contributors": [
+      {
+        "name": "Ursula Laa",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Dianne Cook",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "dianne-cook"
+      },
+      {
+        "name": "Tina Rashid Jafari",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "spinifex",
+    "title": "Manual Tours, Manual Control of Dynamic Projections of Numeric\nMultivariate Data",
+    "description": "Data visualization tours animates linear projection of multivariate data as its basis (ie. orientation) changes. The 'spinifex' packages generates paths for manual tours by manipulating the contribution of a single variable at a time Cook & Buja (1997) <doi:10.1080/10618600.1997.10474754>. Other types of tours, such as grand (random walk) and guided (optimizing some objective function) are available in the 'tourr' package Wickham et al. <doi:10.18637/jss.v040.i02>. 'spinifex' builds on 'tourr' and can render tours with 'gganimate' and 'plotly' graphics, and allows for exporting as an .html widget and as an .gif, respectively. This work is fully discussed in Spyrison & Cook (2020) <doi:10.32614/RJ-2020-027>.",
+    "repo_url": "https://github.com/nspyrison/spinifex/",
+    "pypi_url": "",
+    "pkdown_url": "",
+    "bug_reports_url": "https://github.com/nspyrison/spinifex/issues",
+    "logo_url": "https://raw.githubusercontent.com/nspyrison/spinifex/HEAD/man/figures/spinifex_hex.png",
+    "last_updated": "2025-09-18",
+    "contributors": [
+      {
+        "name": "Nicholas Spyrison",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Dianne Cook",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "dianne-cook"
       }
     ]
   },
@@ -10069,6 +11848,35 @@
       },
       {
         "name": "Mark van der Laan",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "sugarbag",
+    "title": "Create Tessellated Hexagon Maps",
+    "description": "Create a hexagon tile map display from spatial polygons. Each polygon is represented by a hexagon tile, placed as close to it's original centroid as possible, with a focus on maintaining spatial relationship to a focal point. Developed to aid visualisation and analysis of spatial distributions across Australia, which can be challenging due to the concentration of the population on the coast and wide open interior.",
+    "repo_url": "https://github.com/srkobakian/sugarbag",
+    "pypi_url": "",
+    "pkdown_url": "https://srkobakian.github.io/sugarbag/",
+    "bug_reports_url": null,
+    "logo_url": "https://srkobakian.github.io/sugarbag/logo.png",
+    "last_updated": "2026-01-22",
+    "contributors": [
+      {
+        "name": "Dianne Cook",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "dianne-cook"
+      },
+      {
+        "name": "Stephanie Kobakian",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Matt Cowgill",
         "mastodon": "",
         "bluesky": ""
       }
@@ -10244,6 +12052,60 @@
       },
       {
         "name": "Joshua Justison",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "tidyREDCap",
+    "title": "Helper Functions for Working with 'REDCap' Data",
+    "description": "Helper functions for processing 'REDCap' data in R. 'REDCap' is a web-enabled application for building and managing surveys and databases developed at Vanderbilt University.",
+    "repo_url": "https://github.com/RaymondBalise/tidyREDCap",
+    "pypi_url": "",
+    "pkdown_url": "https://raymondbalise.github.io/tidyREDCap/",
+    "bug_reports_url": "https://github.com/RaymondBalise/tidyREDCap/issues",
+    "logo_url": "https://raymondbalise.github.io/tidyREDCap/logo.png",
+    "last_updated": "2026-02-22",
+    "contributors": [
+      {
+        "name": "Raymond Balise",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Gabriel Odom",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Kyle Grealis",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Anna Calderon",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Layla Bouzoubaa",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "layla-bouzoubaa"
+      },
+      {
+        "name": "Wayne DeFreitas",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Lauren Nahodyl",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Daniel Maya",
         "mastodon": "",
         "bluesky": ""
       }
@@ -11134,6 +12996,25 @@
     ]
   },
   {
+    "name": "waeponwifestre",
+    "title": "A Pkgdown Template Package",
+    "description": "A personal template package for my pkgdown sites.",
+    "repo_url": "https://github.com/djnavarro/waeponwifestre",
+    "pypi_url": "",
+    "pkdown_url": "https://waeponwifestre.djnavarro.net/",
+    "bug_reports_url": "https://github.com/djnavarro/waeponwifestre/issues",
+    "logo_url": null,
+    "last_updated": "2026-07-19",
+    "contributors": [
+      {
+        "name": "Danielle Navarro",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "danielle-navarro"
+      }
+    ]
+  },
+  {
     "name": "washi",
     "title": "Washington Soil Health Initiative Branding",
     "description": "Create plots and tables in a consistent style with WaSHI (Washington Soil Health Initiative) branding. Use 'washi' to easily style your 'ggplot2' plots and 'flextable' tables.",
@@ -11465,6 +13346,74 @@
         "mastodon": "",
         "bluesky": "",
         "directory_id": "shannon-pileggi"
+      }
+    ]
+  },
+  {
+    "name": "woylier",
+    "title": "Alternative Tour Frame Interpolation Method",
+    "description": "This method generates a tour path by interpolating between d-D frames in p-D using Givens rotations. The algorithm arises from the problem of zeroing elements of a matrix. This interpolation method is useful for showing specific d-D frames in the tour, as opposed to d-D planes, as done by the geodesic interpolation. It is useful for projection pursuit indexes which are not s invariant. See more details in Buj, Cook, Asimov and Hurley (2005) <doi:10.1016/S0169-7161(04)24014-7> and Batsaikhan, Cook and Laa (2023) <doi:10.48550/arXiv.2311.08181>.",
+    "repo_url": "https://github.com/numbats/woylier",
+    "pypi_url": "",
+    "pkdown_url": "https://numbats.github.io/woylier/",
+    "bug_reports_url": "https://github.com/numbats/woylier/issues",
+    "logo_url": "https://numbats.github.io/woylier/logo.png",
+    "last_updated": "2024-10-01",
+    "contributors": [
+      {
+        "name": "Zola Batsaikan",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Dianne Cook",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "dianne-cook"
+      },
+      {
+        "name": "Ursula Laa",
+        "mastodon": "",
+        "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "yowie",
+    "title": "Longitudinal Wages Data from the National Longitudinal Survey of\nYouth 1979",
+    "description": "Longitudinal wages datasets and several demographic variables from the National Longitudinal Survey of Youth from 1979 to 2018. There are three data sets in this package: The wages data from the NLSY79 cohort; The wages data of the high school dropouts and; The demographic data of NLSY79 cohort.",
+    "repo_url": "https://github.com/numbats/yowie",
+    "pypi_url": "",
+    "pkdown_url": "",
+    "bug_reports_url": "https://github.com/numbats/yowie/issues",
+    "logo_url": "https://raw.githubusercontent.com/numbats/yowie/HEAD/man/figures/logo.png",
+    "last_updated": "2022-06-07",
+    "contributors": [
+      {
+        "name": "Dewi Amaliah",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Di Cook",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Emi Tanaka",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "emi-tanaka"
+      },
+      {
+        "name": "Kate Hyde",
+        "mastodon": "",
+        "bluesky": ""
+      },
+      {
+        "name": "Nicholas Tierney",
+        "mastodon": "",
+        "bluesky": ""
       }
     ]
   },
