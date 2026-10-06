@@ -7,6 +7,15 @@
     "bluesky": ""
   },
   {
+    "name": "Andrea Rau",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://andreamrau.netlify.app/index.xml"
+    ],
+    "mastodon": "",
+    "bluesky": ""
+  },
+  {
     "name": "Ariel Muldoon",
     "content_type": "blog",
     "rss_feed": [
@@ -22,7 +31,7 @@
       "https://www.apreshill.com/index.xml"
     ],
     "mastodon": "@apreshill@fosstodon.org",
-    "bluesky": ""
+    "bluesky": "apreshill.com"
   },
   {
     "name": "Beatriz Milz",
@@ -62,6 +71,15 @@
     "rss_feed": [],
     "mastodon": "",
     "bluesky": "cghlewis.bsky.social"
+  },
+  {
+    "name": "Chaima Boughanmi",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://chaimabgh.netlify.app/index.xml"
+    ],
+    "mastodon": "@chaimaboughanmi@mastodon.social",
+    "bluesky": ""
   },
   {
     "name": "Mine Çetinkaya-Rundel",
@@ -156,7 +174,7 @@
       "https://fgazzelloni.quarto.pub/index.xml"
     ],
     "mastodon": "@Fgazzelloni@fosstodon.org",
-    "bluesky": ""
+    "bluesky": "fgazzelloni.bsky.social"
   },
   {
     "name": "Florencia Grattarola",
@@ -172,7 +190,7 @@
     "content_type": "website",
     "rss_feed": [],
     "mastodon": "@florencia@techhub.social",
-    "bluesky": ""
+    "bluesky": "florencia-dandrea.bsky.social"
   },
   {
     "name": "Helena Jambor",
@@ -280,7 +298,7 @@
       "https://macarenaquiroga.netlify.app/tag/rstats/index.xml"
     ],
     "mastodon": "@macarenaquiroga@datasci.social",
-    "bluesky": ""
+    "bluesky": "macarenaquiroga.bsky.social"
   },
   {
     "name": "Maëlle Salmon",
