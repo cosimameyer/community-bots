@@ -1,1 +1,1 @@
-singularity-hpc
+snakedeploy

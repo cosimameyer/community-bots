@@ -21,5 +21,6 @@
   "pull-request-action": "",
   "roctet": "0.1.0",
   "singularity-compose": "0.1.19",
-  "singularity-hpc": "0.1.32"
+  "singularity-hpc": "0.1.32",
+  "snakedeploy": "0.17.1"
 }
