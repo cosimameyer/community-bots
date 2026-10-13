@@ -123,6 +123,15 @@
     "bluesky": "minedogucu.bsky.social"
   },
   {
+    "name": "Do Won Kim",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://do-won.github.io/index.xml"
+    ],
+    "mastodon": "",
+    "bluesky": "dowonkim.bsky.social"
+  },
+  {
     "name": "Athanasia Monika Mowinckel",
     "content_type": "blog",
     "rss_feed": [
