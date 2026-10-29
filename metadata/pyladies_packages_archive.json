@@ -24,5 +24,6 @@
   "singularity-hpc": "0.1.32",
   "snakedeploy": "0.17.1",
   "spython": "0.3.14",
-  "tributors": "0.1.1"
+  "tributors": "0.1.1",
+  "turtlethread": "0.0.11"
 }
