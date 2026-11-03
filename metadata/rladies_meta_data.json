@@ -328,6 +328,15 @@
     "bluesky": "@nrennie.bsky.social"
   },
   {
+    "name": "L. Paloma Rojas-Saunero",
+    "content_type": "blog",
+    "rss_feed": [
+      "https://paloma-rojas-saunero.netlify.app/index.xml"
+    ],
+    "mastodon": "",
+    "bluesky": "palolili23.bsky.social"
+  },
+  {
     "name": "Pao Corrales",
     "content_type": "blog",
     "rss_feed": [
