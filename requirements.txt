@@ -87,7 +87,7 @@ google-genai==2.12.1
     # via community-bots
 griffelib==2.1.0
     # via mkdocstrings-python
-grpcio==1.82.1
+grpcio==1.83.0
     # via community-bots
 h11==0.16.0
     # via httpcore
