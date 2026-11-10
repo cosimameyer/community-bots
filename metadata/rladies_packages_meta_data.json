@@ -7485,9 +7485,9 @@
     "description": "Tools for creating, analysing and reporting on CPD activities.",
     "repo_url": "https://github.com/trianglegirl/levelup",
     "pypi_url": "",
-    "pkdown_url": "",
+    "pkdown_url": "https://statsrhian.github.io/levelup",
     "bug_reports_url": "https://github.com/trianglegirl/levelup/issues",
-    "logo_url": null,
+    "logo_url": "https://statsrhian.github.io/levelup/logo.png",
     "last_updated": "2024-08-20",
     "contributors": [
       {
@@ -7558,6 +7558,25 @@
         "name": "Gabor Csardi",
         "mastodon": "",
         "bluesky": ""
+      }
+    ]
+  },
+  {
+    "name": "lovedial",
+    "title": "Lovedial",
+    "description": "Guess who likes you in this secret admirer phone game.",
+    "repo_url": "https://github.com/statsrhian/lovedial",
+    "pypi_url": "",
+    "pkdown_url": "https://statsrhian.github.io/lovedial/",
+    "bug_reports_url": "https://github.com/statsrhian/lovedial/issues",
+    "logo_url": "https://statsrhian.github.io/lovedial/logo.png",
+    "last_updated": "2026-11-06",
+    "contributors": [
+      {
+        "name": "Rhian Davies",
+        "mastodon": "",
+        "bluesky": "",
+        "directory_id": "rhian-davies"
       }
     ]
   },
