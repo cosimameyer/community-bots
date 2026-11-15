@@ -27,5 +27,6 @@
   "tributors": "0.1.1",
   "turtlethread": "0.0.11",
   "urlchecker": "0.0.35",
-  "vetiver": "0.2.6"
+  "vetiver": "0.2.6",
+  "watchme": "0.0.29"
 }
